@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import timedelta
 from pathlib import Path
 
-from sqlalchemy import text
+from sqlalchemy import select, text
 
 from app.core.config import BACKEND_DIR
 from app.core.db import Base, sessionmaker, utcnow
@@ -23,11 +23,13 @@ from app.models import (
     Service,
     TriageReport,
     User,
+    Verification,
     Vital,
     WorkerProfile,
 )
 from app.models.enums import Availability, Role, TriageStatus, VerificationStatus
 from app.services.patients import create_patient
+from app.services.uploads import store_bytes, upload_dir
 
 A, L, U, K = Availability.available, Availability.limited, Availability.unavailable, Availability.unknown
 FRESH, STALE, OLD = timedelta(hours=1), timedelta(hours=12), timedelta(days=4)
@@ -95,6 +97,53 @@ HOSPITAL_ROLES = [Role.facility_admin, Role.receptionist, Role.nurse, Role.docto
 FIRST_NAMES = ["Adaeze", "Tunde", "Bisi", "Chinedu", "Halima", "Segun", "Ngozi", "Ibrahim", "Kemi", "Emeka"]
 
 
+def synthetic_pdf(title: str) -> bytes:
+    """A tiny valid one-page PDF that says it is a synthetic demo document."""
+    text = f"SYNTHETIC DEMO DOCUMENT - NOT A REAL LICENCE - {title}".replace("(", "[").replace(")", "]")
+    stream = f"BT /F1 14 Tf 40 760 Td ({text}) Tj ET".encode()
+    objs = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        (b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R "
+        b"/Resources << /Font << /F1 5 0 R >> >> >>"),
+        b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    ]
+    out = bytearray(b"%PDF-1.4\n")
+    offsets = []
+    for i, body in enumerate(objs, start=1):
+        offsets.append(len(out))
+        out += f"{i} 0 obj\n".encode() + body + b"\nendobj\n"
+    xref = len(out)
+    out += f"xref\n0 {len(objs) + 1}\n0000000000 65535 f \n".encode()
+    for off in offsets:
+        out += f"{off:010d} 00000 n \n".encode()
+    out += f"trailer\n<< /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode()
+    return bytes(out)
+
+
+def clear_uploads() -> None:
+    for f in upload_dir().glob("*"):
+        if f.is_file() and f.suffix in {".pdf", ".png", ".jpg"} and len(f.stem) == 32:
+            f.unlink()
+
+
+async def add_verification(db, subject_type, user, fac, status, reviewer, doc_title=None, details=None):
+    docs = []
+    if doc_title:
+        kind = "facility_licence" if subject_type == "facility" else "worker_licence"
+        up = store_bytes(synthetic_pdf(doc_title), f"{doc_title.lower().replace(' ', '-')}.pdf", kind,
+                         user.id if user else None, fac.id if fac else None)
+        db.add(up)
+        await db.flush()
+        docs = [str(up.id)]
+    decided = status != VerificationStatus.pending
+    db.add(Verification(subject_type=subject_type, subject_user_id=user.id if user else None,
+                        subject_facility_id=fac.id if fac else None, status=status, documents=docs,
+                        details=details or {}, reviewer_id=reviewer.id if decided else None,
+                        decided_at=utcnow() - timedelta(days=30) if decided else None))
+
+
 async def wipe(db) -> None:
     tables = ", ".join(t.name for t in reversed(Base.metadata.sorted_tables))
     await db.execute(text(f"TRUNCATE {tables} RESTART IDENTITY CASCADE"))
@@ -108,6 +157,7 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
 
     async with sessionmaker()() as db:
         await wipe(db)
+        clear_uploads()
 
         for s in care_types()["services"]:
             db.add(Service(code=s["code"], name=s["name"], category=s["category"]))
@@ -138,6 +188,11 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
                          else VerificationStatus.pending)
                 db.add(u)
                 logins.append((f"{f.name} - {role.value}", email, u.status))
+                if role == Role.facility_admin:
+                    await db.flush()
+                    await add_verification(db, "facility", u, fac, f.status, admin, f"Facility licence {fac.name}",
+                                           {"licence_number": fac.licence_number,
+                                            "services": list(f.services)})
 
         for i, (name, bname, status) in enumerate(
             [("Mama Tola (chemist, demo)", "Tola Patent Medicine Store", VerificationStatus.approved),
@@ -151,6 +206,20 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
             db.add(WorkerProfile(user_id=u.id, worker_type="chemist", business_name=bname, lga="Abeokuta South",
                                  lat=DEMO_ORIGIN[0] + 0.002 * i, lng=DEMO_ORIGIN[1] - 0.002 * i))
             logins.append((f"Frontline worker {i}", email, status))
+            await add_verification(db, "worker", u, None, status, admin, f"PPMV licence {name}",
+                                   {"licence_number": u.licence_number, "worker_type": "chemist",
+                                    "business_name": bname, "lga": "Abeokuta South"})
+
+        # A staff member waiting for their facility admin at Central.
+        central = (await db.execute(select(Facility).where(Facility.name == FACILITIES[1].name))).scalar_one()
+        nurse = User(email="newnurse.central@vitalis.demo", password_hash=pw_hash, full_name="Funmi (new nurse, demo)",
+                     role=Role.nurse, status=VerificationStatus.pending, facility_id=central.id,
+                     licence_number="NMCN-DEMO-7781")
+        db.add(nurse)
+        await db.flush()
+        db.add(Verification(subject_type="staff", subject_user_id=nurse.id, subject_facility_id=central.id,
+                            details={"licence_number": nurse.licence_number, "role": "nurse"}))
+        logins.append(("Central - pending nurse", nurse.email, "pending"))
 
         # Demo patients (synthetic). Recovery codes let a demo phone restore them.
         patients = []

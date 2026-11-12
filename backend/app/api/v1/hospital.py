@@ -2,6 +2,7 @@
 
 import uuid
 from datetime import timedelta
+from typing import Literal
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -15,7 +16,17 @@ from app.core.deps import ensure_same_facility, require_hospital_staff
 from app.core.errors import AppError, Envelope, ok
 from app.engines.matching.engine import freshness_of
 from app.engines.triage.data import care_types, symptom_index
-from app.models import FacilityAlert, FacilityService, Patient, Referral, Service, TriageReport, User, Vital
+from app.models import (
+    FacilityAlert,
+    FacilityService,
+    Patient,
+    Referral,
+    Service,
+    TriageReport,
+    User,
+    Verification,
+    Vital,
+)
 from app.models.enums import AlertStatus, Availability, Role
 from app.realtime.broker import SSE_HEADERS, broker
 from app.schemas.referral import (
@@ -27,6 +38,7 @@ from app.schemas.referral import (
     VitalLine,
 )
 from app.services import referrals as svc
+from app.services import verification as vsvc
 
 router = APIRouter(prefix="/hospital", tags=["hospital"])
 
@@ -253,3 +265,66 @@ async def update_service(
 @router.get("/care-types")
 async def care_type_labels(_: User = Depends(any_staff)):
     return ok({k: v["label"] for k, v in care_types()["care_types"].items()})
+
+
+# ---------- staff approvals (facility admin) ----------
+class StaffRow(BaseModel):
+    user_id: uuid.UUID
+    full_name: str
+    email: str
+    role: str
+    status: str
+    status_reason: str | None
+    licence_number: str | None
+    created_at: str
+    verification_id: uuid.UUID | None
+
+
+class StaffDecisionIn(BaseModel):
+    decision: Literal["approve", "reject", "suspend"]
+    reason: str | None = None
+
+
+facility_admin_only = require_hospital_staff(Role.facility_admin)
+
+
+async def _staff_rows(db: AsyncSession, facility_id: uuid.UUID, me: uuid.UUID) -> list[StaffRow]:
+    users = (
+        await db.execute(
+            select(User)
+            .where(User.facility_id == facility_id, User.id != me, User.role != Role.facility_admin)
+            .order_by(User.status, User.full_name)
+        )
+    ).scalars().all()
+    out = []
+    for u in users:
+        v = await vsvc.latest_for_user(db, u.id)
+        out.append(StaffRow(user_id=u.id, full_name=u.full_name, email=u.email, role=u.role, status=u.status,
+                            status_reason=u.status_reason, licence_number=u.licence_number,
+                            created_at=u.created_at.isoformat(), verification_id=v.id if v else None))
+    return out
+
+
+@router.get("/staff", response_model=Envelope[list[StaffRow]])
+async def staff(user: User = Depends(facility_admin_only), db: AsyncSession = Depends(get_db)):
+    return ok(await _staff_rows(db, user.facility_id, user.id))
+
+
+@router.patch("/staff/{user_id}", response_model=Envelope[list[StaffRow]])
+async def decide_staff(
+    user_id: uuid.UUID, body: StaffDecisionIn, user: User = Depends(facility_admin_only),
+    db: AsyncSession = Depends(get_db),
+):
+    target = await db.get(User, user_id)
+    if not target or target.facility_id != user.facility_id or target.role == Role.facility_admin:
+        raise AppError(404, "not_found", "Not found")
+    v = await vsvc.latest_for_user(db, target.id)
+    if v is None or v.subject_type != "staff":
+        # Seeded or legacy accounts without a registration record get one so the decision is recorded.
+        v = Verification(subject_type="staff", subject_user_id=target.id, subject_facility_id=user.facility_id,
+                         status=target.status, details={"licence_number": target.licence_number})
+        db.add(v)
+        await db.flush()
+    await vsvc.decide(db, v, body.decision, body.reason, user)
+    await db.commit()
+    return ok(await _staff_rows(db, user.facility_id, user.id))

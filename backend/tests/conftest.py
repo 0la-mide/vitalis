@@ -11,6 +11,8 @@ os.environ["DATABASE_URL"] = os.environ.get(
 assert os.environ["DATABASE_URL"].rsplit("/", 1)[-1].endswith("_test"), "TEST_DATABASE_URL must point at a *_test DB"
 os.environ["MODEL_URL"] = "http://model-stub"
 os.environ["DEMO_PASSWORD"] = "test-password-123"
+# Keep test documents away from dev uploads.
+os.environ["UPLOAD_DIR"] = str(Path(__file__).resolve().parents[1] / "var" / "test-uploads")
 
 import httpx
 import pytest
@@ -63,8 +65,8 @@ async def client():
         yield c
 
 
-async def login(c: httpx.AsyncClient, email: str) -> dict:
-    r = await c.post("/api/v1/auth/login", json={"email": email, "password": PASSWORD})
+async def login(c: httpx.AsyncClient, email: str, password: str = PASSWORD) -> dict:
+    r = await c.post("/api/v1/auth/login", json={"email": email, "password": password})
     assert r.status_code == 200, r.text
     c.headers["x-csrf-token"] = r.json()["data"]["csrf_token"]
     return r.json()["data"]

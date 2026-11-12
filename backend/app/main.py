@@ -11,10 +11,20 @@ from app.core.ratelimit import limiter
 
 
 def build_router() -> APIRouter:
-    from app.api.v1 import auth, facilities, health, hospital, patients, referrals, triage
+    from app.api.v1 import (
+        admin,
+        auth,
+        facilities,
+        health,
+        hospital,
+        patients,
+        referrals,
+        registration,
+        triage,
+    )
 
     api = APIRouter(prefix="/api/v1")
-    for module in (health, auth, patients, triage, referrals, facilities, hospital):
+    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, admin):
         api.include_router(module.router)
     return api
 
