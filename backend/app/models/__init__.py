@@ -1,4 +1,5 @@
 from app.models.care import FacilityAlert, ModelPrediction, Referral, SymptomTap, TriageReport, Vital
+from app.models.consent import AccessRequest, Consent, QRGrant
 from app.models.encounter import (
     AIDraft,
     ClinicalNote,
@@ -14,8 +15,10 @@ from app.models.verification import Upload, Verification
 
 __all__ = [
     "AIDraft",
+    "AccessRequest",
     "AuditEvent",
     "ClinicalNote",
+    "Consent",
     "Encounter",
     "EncounterEvent",
     "Facility",
@@ -28,6 +31,7 @@ __all__ = [
     "PatientHistoryEntry",
     "Prescription",
     "PushSubscription",
+    "QRGrant",
     "Referral",
     "Service",
     "SymptomTap",

@@ -49,6 +49,11 @@ export function RecordCard({ encounterId, canAdd }: { encounterId: string; canAd
           {allergies.map((a) => `${a.text}${a.detail ? ` (${a.detail})` : ""}`).join("; ")}
         </div>
       ) : <div className="text-sm text-muted-foreground">No known allergies recorded.</div>}
+      {data?.hidden_from_other_hospitals ? (
+        <p className="text-xs text-muted-foreground">
+          {data.hidden_from_other_hospitals} more entr{data.hidden_from_other_hospitals === 1 ? "y" : "ies"} from other hospitals: visible once the patient shares their record.
+        </p>
+      ) : null}
       <div className="grid gap-3 sm:grid-cols-2">
         {KINDS.filter((k) => k.kind !== "allergy").map((k) => {
           const items = rows.filter((h) => h.kind === k.kind);

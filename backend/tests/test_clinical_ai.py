@@ -31,7 +31,8 @@ async def test_ai_flags_bp_diabetes_and_cross_hospital_allergy(staff_client):
     assert conds["hypertension"]["condition"].startswith("Uncontrolled stage 2 hypertension")
     assert "probable new diagnosis" in conds["diabetes"]["condition"]
     assert any("174" in e["text"] for e in conds["hypertension"]["evidence"])
-    assert any("Raised systolic BP on 3 earlier visit" in e["text"] for e in conds["hypertension"]["evidence"])
+    # Without the patient's consent Central only sees its own earlier visit (test_records covers all three).
+    assert any("Raised systolic BP on 1 earlier visit" in e["text"] for e in conds["hypertension"]["evidence"])
 
     hctz = next(m for m in out["medication_options"] if m["drug"].startswith("Hydrochlorothiazide"))
     assert hctz["safety"] == "avoid"

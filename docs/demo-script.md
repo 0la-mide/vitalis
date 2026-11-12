@@ -63,6 +63,10 @@ Simulated with a 1.5 s pause per action: 10 taps + 2 vitals + send in about 19 s
    *Lisinopril*, dose *10 mg once daily* → **Prescribe**. It joins her record as a current medicine.
 5. **Accept and draft note** → the AI text lands in the doctor's draft note; nothing is recorded until they sign.
 
+6. **Her record, her choice.** Before step 3, the other hospitals' visits are locked. Click **Ask the patient to
+   share**; on her phone tap **Allow** (or show her **Share** QR and scan it). The visits appear, and the AI trend now
+   spans three hospitals. On her phone, **Who looked** lists every view, with **Stop**.
+
 ## Talking points
 
 - *Safety rules before models:* stop the model (`Ctrl-C` on the model process) and repeat — the red flag still fires.

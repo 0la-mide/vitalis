@@ -38,11 +38,14 @@ in real time.
   shows trends, runs the **team's trained diabetes and heart models** (bands, measured vs assumed inputs), and screens
   treatments against allergies/medicines recorded at other hospitals. Safety-checked prescribing with audited override.
   Accept/edit/reject AI drafts; optional Gemini/Groq narrative with a canned fallback.
+- **Shared record + consent (from NCS):** patients see their own record across hospitals and share it by QR
+  (single use, 10 min) or by tapping Allow on a hospital's request; access lasts 24 h, can be stopped, and every view
+  shows in **Who looked**. Without consent a hospital sees only its own visits plus allergies; the AI follows the same rule.
 - **Network admin:** verification queue with documents, audit log viewer with filters, network counts (no patient names).
 - **Platform:** Argon2 + JWT in httpOnly cookies, CSRF double-submit, role + facility scoping, audit events, rate limits,
   security headers, response envelope, structured logs with request IDs. PWA with Serwist and an offline page.
 
-Not built yet (next phases): records + QR sharing, web push, full i18n text.
+Not built yet (next phases): web push, full i18n text, in-app QR camera scanner.
 
 ## Run it locally (no Docker needed)
 

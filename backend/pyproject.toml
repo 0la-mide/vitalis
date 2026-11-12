@@ -18,7 +18,7 @@ dependencies = [
     "pyjwt>=2.15.1",
     "python-multipart>=0.0.33",
     "pywebpush>=2.5.0",
-    "qrcode>=8.2",
+    "qrcode[pil]>=8.2",
     "scikit-learn==1.8.0",
     "slowapi>=0.1.10",
     "sqlalchemy[asyncio]>=2",

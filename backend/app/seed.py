@@ -255,7 +255,7 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
                          measured_at=t))
 
 
-        await seed_folake(db, now)
+        patients.append(await seed_folake(db, now))
         await db.commit()
 
     if not write_logins:
@@ -288,10 +288,15 @@ async def seed_folake(db, now) -> None:
 
     central = (await db.execute(select(Facility).where(Facility.name == FACILITIES[1].name))).scalar_one()
     teaching = (await db.execute(select(Facility).where(Facility.name == FACILITIES[3].name))).scalar_one()
-    staff = {u.role: u for u in (await db.execute(select(User).where(User.facility_id == central.id))).scalars()}
-    nurse, doctor, lab = staff[Role.nurse], staff[Role.doctor], staff[Role.lab]
+    lafenwa = (await db.execute(select(Facility).where(Facility.name == FACILITIES[4].name))).scalar_one()
 
-    p, _key, _rec = await create_patient(db, phone="+2348000000054", age_group="adult", sex="female",
+    async def staff_of(fac):
+        return {u.role: u for u in (await db.execute(select(User).where(User.facility_id == fac.id))).scalars()}
+
+    staff = await staff_of(central)
+    nurse, doctor = staff[Role.nurse], staff[Role.doctor]
+
+    p, _key, recovery = await create_patient(db, phone="+2348000000054", age_group="adult", sex="female",
                                          display_name="Mrs. Folake Adewale (demo)")
     p.date_of_birth = date(1972, 3, 14)
     H = PatientHistoryEntry
@@ -309,21 +314,23 @@ async def seed_folake(db, now) -> None:
     ])
 
     async def visit(days_ago: int, sbp: float, dbp: float, fbs: float | None, state=EncounterState.completed,
-                    complaint="Routine BP review"):
+                    complaint="Routine BP review", fac=central):
+        st = await staff_of(fac)
+        nurse, doctor, lab = st[Role.nurse], st[Role.doctor], st[Role.lab]
         at = now - timedelta(days=days_ago)
-        e = Encounter(facility_id=central.id, patient_id=p.id, state=state, chief_complaint=complaint,
+        e = Encounter(facility_id=fac.id, patient_id=p.id, state=state, chief_complaint=complaint,
                       created_by=nurse.id, created_at=at, updated_at=at,
                       completed_at=at + timedelta(hours=2) if state == EncounterState.completed else None)
         db.add(e)
         await db.flush()
         db.add(EncounterEvent(encounter_id=e.id, at=at, actor_id=nurse.id, kind="state", summary="Walk-in registered",
                               to_state="registered"))
-        for kind, val, unit in [("systolic_bp", sbp, "mmHg"), ("diastolic_bp", dbp, "mmHg"), ("weight_kg", 82, "kg"),
-                                ("height_cm", 162, "cm")]:
+        routine = [("weight_kg", 82, "kg"), ("height_cm", 162, "cm")] if state == EncounterState.completed else []
+        for kind, val, unit in [("systolic_bp", sbp, "mmHg"), ("diastolic_bp", dbp, "mmHg"), *routine]:
             db.add(Vital(patient_id=p.id, encounter_id=e.id, source="nurse", kind=kind, value=val, unit=unit,
                          measured_at=at, entered_by=nurse.id))
         if fbs is not None:
-            o = InvestigationOrder(encounter_id=e.id, facility_id=central.id, ordered_by=doctor.id, category="lab",
+            o = InvestigationOrder(encounter_id=e.id, facility_id=fac.id, ordered_by=doctor.id, category="lab",
                                    test_code="FBS", test_name="Fasting blood glucose", status="verified", created_at=at)
             db.add(o)
             await db.flush()
@@ -336,17 +343,19 @@ async def seed_folake(db, now) -> None:
                 created_at=at, signed_at=at))
         return e
 
-    await visit(400, 148, 92, None)
-    await visit(190, 152, 94, 104)
+    # Earlier visits at three different hospitals: Central only sees all of them once she shares her record.
+    await visit(400, 148, 92, None, fac=lafenwa)
+    await visit(190, 152, 94, 104, fac=teaching)
     await visit(60, 156, 96, 112)
     today = await visit(0, 174, 108, None, state=EncounterState.awaiting_doctor,
                         complaint="Headache and blurred vision; excessive thirst and frequent urination for about a week")
     for kind, val, unit in [("pulse", 92, "bpm"), ("temp_c", 36.9, "°C"), ("spo2", 97, "%"), ("weight_kg", 84, "kg"),
-                            ("blood_glucose", 236, "mg/dL")]:
+                            ("height_cm", 162, "cm"), ("blood_glucose", 236, "mg/dL")]:
         db.add(Vital(patient_id=p.id, encounter_id=today.id, source="nurse", kind=kind, value=val, unit=unit,
                      measured_at=now, entered_by=nurse.id))
     db.add(EncounterEvent(encounter_id=today.id, at=now, actor_id=nurse.id, kind="state", from_state="awaiting_nursing",
                           to_state="awaiting_doctor", summary="Waiting for nurse → Waiting for doctor"))
+    return "Mrs. Folake Adewale (demo)", p, recovery
 
 
 if __name__ == "__main__":

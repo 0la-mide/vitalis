@@ -1,13 +1,14 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Clock, Hospital, Loader2, Navigation, Phone, Siren } from "lucide-react";
+import { CheckCircle2, Clock, Hospital, Loader2, Navigation, Phone, ShieldCheck, Siren } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DevTimer, SpeakButton, stopDevTimer } from "@/components/triage/shared";
 import { RecoverySlip } from "@/components/triage/RecoverySlip";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api, type ReferralPatientOut } from "@/lib/api";
 import { useT } from "@/lib/i18n";
@@ -161,11 +162,44 @@ export default function ReferralPage() {
 
       <HospitalMap points={[{ id: f.id, name: f.name, lat: f.lat, lng: f.lng, highlight: true }]} />
 
+      {status !== "declined" && status !== "cancelled" ? <ShareWithHospital referralId={ref.id} hospital={f.name} /> : null}
+
       <RecoverySlip />
 
       <Link href="/" className="py-3 text-center text-sm text-muted-foreground underline-offset-4 hover:underline">
         VITALIS
       </Link>
     </main>
+  );
+}
+
+/** One optional tap: let the receiving hospital see records from other hospitals for 24 hours. */
+function ShareWithHospital({ referralId, hospital }: { referralId: string; hospital: string }) {
+  const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
+  const name = hospital.replace(" (Demo)", "");
+  if (state === "done") {
+    return (
+      <Card className="flex items-center gap-2 text-sm">
+        <ShieldCheck className="h-5 w-5 text-primary" /> {name} can see your health record for 24 hours. Stop it any time in My health record.
+      </Card>
+    );
+  }
+  return (
+    <Card className="space-y-2">
+      <p className="font-semibold">Share your health record with {name}?</p>
+      <p className="text-sm text-muted-foreground">They will see your earlier visits, results and medicines from other hospitals, for 24 hours.</p>
+      <Button variant="outline" size="lg" className="w-full" disabled={state === "busy"} onClick={async () => {
+        setState("busy");
+        try {
+          await api(`/me/referrals/${referralId}/share`, { method: "POST", patient: true });
+          setState("done");
+        } catch {
+          setState("error");
+        }
+      }}>
+        <ShieldCheck className="h-5 w-5" /> Share my record
+      </Button>
+      {state === "error" ? <p className="text-sm text-emergency">Could not share. Try again.</p> : null}
+    </Card>
   );
 }

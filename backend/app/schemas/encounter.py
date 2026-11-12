@@ -94,6 +94,7 @@ class Allowed(BaseModel):
 
 class EncounterOut(BaseModel):
     id: uuid.UUID
+    patient_id: uuid.UUID
     state: str
     state_label: str
     emergency: bool

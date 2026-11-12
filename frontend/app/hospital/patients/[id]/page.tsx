@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { AIPanel } from "@/components/hospital/AIPanel";
+import { NetworkRecordCard } from "@/components/hospital/NetworkRecord";
 import { PrescribeCard, RecordCard } from "@/components/hospital/RecordAndPrescribe";
 import { useFacilityStream } from "@/components/hospital/useFacilityStream";
 import { useMe } from "@/lib/staff";
@@ -86,6 +87,7 @@ export default function EncounterPage() {
         <div className="space-y-4">
           {e.referral ? <ReferralCard r={e.referral} /> : null}
           <RecordCard encounterId={e.id} canAdd={!closed && (me?.role === "nurse" || isDoctor)} />
+          <NetworkRecordCard patientId={e.patient_id} encounterId={e.id} />
           <VitalsCard e={e} mutate={mutate} busy={m.isPending} />
           {isDoctor && !closed ? (
             <AIPanel encounterId={e.id} canOrder={e.allowed.order_tests}

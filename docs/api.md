@@ -23,6 +23,18 @@ generates `frontend/types/api.ts` (`make types`).
 `Tap.kind`: `emergency{code}`, `context{age_group, sex, pregnant, who}`, `region{region}`,
 `symptom{code, region, selected}`, `severity{value 1-5}`, `onset{value now|today|days|week}`, `location{lat,lng | lga}`.
 
+## Patient record and sharing (header `X-Patient-Key`)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/me/records` | the patient's own record: history entries and visits at every hospital |
+| POST | `/me/consents` | `{facility_id?, scope: full|summary}` → `{consent_id, url, qr_png, expires_at}`; the QR works once and expires in 10 min; `facility_id` null = any verified hospital |
+| DELETE | `/me/consents/{id}` | stop sharing (revokes the consent and any unused QR) |
+| GET | `/me/access-log` | who can see the record now + every view/request (from the audit log) |
+| GET | `/me/access-requests` | pending requests from hospitals |
+| POST | `/me/access-requests/{id}` | `{decision: allow|deny}`; allow = 24 h consent for that hospital |
+| POST | `/me/referrals/{id}/share` | share with the hospital the referral is going to |
+
 ## Auth (staff, workers, admins)
 
 `POST /auth/login` · `POST /auth/refresh` · `POST /auth/logout` · `GET /auth/me` (works for pending users).
@@ -100,6 +112,18 @@ awaiting_disposition → completed | cancelled`. Emergency (red flag or ticked a
 
 Lab results accept structured values: `POST /hospital/orders/{id}/result {values: {"HbA1c": {"value": 7.4, "unit": "%"}}}`;
 H/L/POS flags come from the test catalogue's reference ranges.
+
+## Shared record across hospitals (facility-scoped)
+
+A hospital always sees its own visits and every allergy. Visits and history from other hospitals need the patient's
+consent (24 h, revocable). The AI and the safety check use exactly what the doctor can see.
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/qr/redeem` | `{token}` → `{patient_id, vitalis_id, consent, encounter_id}`; errors `qr_invalid` 404, `qr_used`/`qr_expired`/`qr_revoked` 410, `qr_other_facility` 403 |
+| GET | `/hospital/patients/{id}/consent` | `{active, consent, pending_request, hidden_history, other_hospital_visits}`; 404 unless the patient has a visit or referral here |
+| POST | `/hospital/patients/{id}/access-requests` | `{purpose}` → asks the patient on their phone (expires in 30 min) |
+| GET | `/hospital/patients/{id}/network-record` | visits at other hospitals; 403 `consent_required` without consent; audited |
 
 ## Frontline worker (role `worker`, approved; scoped to the worker's own reports)
 

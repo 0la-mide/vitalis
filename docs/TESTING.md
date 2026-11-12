@@ -35,6 +35,9 @@ Open **http://localhost:3000**.
    - **GPS is blocked** by the phone browser → the app shows "approximate location" and an **area picker**. That is the
      fallback working; pick *Abeokuta South* to match the demo.
    - **Offline mode / install as app** need HTTPS, so they won't work here.
+4. **QR codes on a phone:** set `PUBLIC_BASE_URL=http://192.168.3.15:3000` in `.env` and restart the backend, so
+   the patient's share QR points at the laptop rather than `localhost`. Staff scan it with the phone camera (there is
+   no in-app scanner) and sign in if asked.
 
 ---
 
@@ -142,6 +145,18 @@ Use a referral to **Sapon** (from A or D). Sign in as each Sapon role in turn (o
 3. [ ] **Reject** needs a reason; **Accept and draft note** adds the text to your draft note.
 4. [ ] `lab.central@…` → **Lab**: tests like HbA1c / Lipid profile show number fields with reference ranges and flag
    high/low automatically.
+
+### E3. Shared record and QR consent (2 windows)
+
+Patient window: `/card` → **Restore** with Folake's VITALIS ID and recovery code (`make logins`).
+1. [ ] Doctor on Folake's visit: **Records from other hospitals** is locked ("2 visit(s) at other hospitals… private").
+   Allergy from Ogun Teaching still shows. **Ask the patient to share** → "Waiting for the patient…".
+2. [ ] Patient: a banner "Abeokuta Central Hospital wants to see your health record" → **Allow**.
+   *Expect:* within ~3 s the doctor sees the Lafenwa and Ogun Teaching visits; **Run VITALIS AI** now says
+   "3 earlier visit(s)" with BP 148 → 152 → 156 across three hospitals.
+3. [ ] Patient → **Who looked**: the hospital with **Stop**, and each view listed. Tap **Stop**.
+4. [ ] Patient → **Share** → **Show my QR code** (10:00 countdown). Open the link on the doctor's device →
+   "Record shared with your hospital" → straight to her visit. Open it again → "already used".
 
 ### F. Registration and verification
 

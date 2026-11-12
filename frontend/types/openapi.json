@@ -2768,10 +2768,472 @@
           }
         }
       }
+    },
+    "/api/v1/me/records": {
+      "get": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "My Records",
+        "operationId": "my_records_api_v1_me_records_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MyRecord_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/consents": {
+      "post": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Share",
+        "description": "Creates a consent and a 10-minute, single-use QR. The QR holds only a link with a random token.",
+        "operationId": "share_api_v1_me_consents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShareIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ShareOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/consents/{consent_id}": {
+      "delete": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Revoke",
+        "operationId": "revoke_api_v1_me_consents__consent_id__delete",
+        "parameters": [
+          {
+            "name": "consent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Consent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/access-log": {
+      "get": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Access Log",
+        "operationId": "access_log_api_v1_me_access_log_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_AccessLog_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/access-requests": {
+      "get": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Access Requests",
+        "operationId": "access_requests_api_v1_me_access_requests_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_RequestRow__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/access-requests/{request_id}": {
+      "post": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Decide Request",
+        "operationId": "decide_request_api_v1_me_access_requests__request_id__post",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Request Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/referrals/{referral_id}/share": {
+      "post": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Share With Referral",
+        "description": "One tap on the referral screen: let the receiving hospital see records from other hospitals for 24 hours.",
+        "operationId": "share_with_referral_api_v1_me_referrals__referral_id__share_post",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ConsentRow_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/qr/redeem": {
+      "post": {
+        "tags": [
+          "shared record"
+        ],
+        "summary": "Redeem",
+        "operationId": "redeem_api_v1_qr_redeem_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RedeemIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_RedeemOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/patients/{patient_id}/consent": {
+      "get": {
+        "tags": [
+          "shared record"
+        ],
+        "summary": "Consent Status",
+        "operationId": "consent_status_api_v1_hospital_patients__patient_id__consent_get",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Patient Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ConsentStatus_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/patients/{patient_id}/access-requests": {
+      "post": {
+        "tags": [
+          "shared record"
+        ],
+        "summary": "Request Access",
+        "operationId": "request_access_api_v1_hospital_patients__patient_id__access_requests_post",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Patient Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccessIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ConsentStatus_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/patients/{patient_id}/network-record": {
+      "get": {
+        "tags": [
+          "shared record"
+        ],
+        "summary": "Network Record",
+        "operationId": "network_record_api_v1_hospital_patients__patient_id__network_record_get",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Patient Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_NetworkRecord_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AccessIn": {
+        "properties": {
+          "purpose": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Purpose",
+            "default": "Treatment at this hospital"
+          }
+        },
+        "type": "object",
+        "title": "AccessIn"
+      },
+      "AccessLog": {
+        "properties": {
+          "consents": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentRow"
+            },
+            "type": "array",
+            "title": "Consents"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/LookEvent"
+            },
+            "type": "array",
+            "title": "Events"
+          }
+        },
+        "type": "object",
+        "required": [
+          "consents",
+          "events"
+        ],
+        "title": "AccessLog"
+      },
       "Allowed": {
         "properties": {
           "transitions": {
@@ -3171,6 +3633,165 @@
         "type": "object",
         "title": "Body_resubmit_api_v1_auth_resubmit_post"
       },
+      "ConsentInfo": {
+        "properties": {
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "via": {
+            "type": "string",
+            "title": "Via"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scope",
+          "via",
+          "expires_at"
+        ],
+        "title": "ConsentInfo"
+      },
+      "ConsentRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "facility_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility Name"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "via": {
+            "type": "string",
+            "title": "Via"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "activated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activated At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "facility_name",
+          "scope",
+          "via",
+          "created_at",
+          "expires_at",
+          "activated_at",
+          "revoked_at",
+          "active"
+        ],
+        "title": "ConsentRow"
+      },
+      "ConsentStatus": {
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "consent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConsentInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pending_request": {
+            "type": "boolean",
+            "title": "Pending Request"
+          },
+          "hidden_history": {
+            "type": "integer",
+            "title": "Hidden History"
+          },
+          "other_hospital_visits": {
+            "type": "integer",
+            "title": "Other Hospital Visits"
+          }
+        },
+        "type": "object",
+        "required": [
+          "active",
+          "consent",
+          "pending_request",
+          "hidden_history",
+          "other_hospital_visits"
+        ],
+        "title": "ConsentStatus"
+      },
+      "DecideIn": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "allow",
+              "deny"
+            ],
+            "title": "Decision"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "DecideIn"
+      },
       "DecisionOut": {
         "properties": {
           "referral_id": {
@@ -3374,6 +3995,11 @@
             "format": "uuid",
             "title": "Id"
           },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
           "state": {
             "type": "string",
             "title": "State"
@@ -3495,6 +4121,7 @@
         "type": "object",
         "required": [
           "id",
+          "patient_id",
           "state",
           "state_label",
           "emergency",
@@ -3555,6 +4182,72 @@
           "readings"
         ],
         "title": "EncounterVitalsIn"
+      },
+      "Envelope_AccessLog_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AccessLog"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[AccessLog]"
+      },
+      "Envelope_ConsentRow_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConsentRow"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[ConsentRow]"
+      },
+      "Envelope_ConsentStatus_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConsentStatus"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[ConsentStatus]"
       },
       "Envelope_DecisionOut_": {
         "properties": {
@@ -3710,6 +4403,50 @@
         ],
         "title": "Envelope[Metrics]"
       },
+      "Envelope_MyRecord_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MyRecord"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[MyRecord]"
+      },
+      "Envelope_NetworkRecord_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/NetworkRecord"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[NetworkRecord]"
+      },
       "Envelope_OrderRow_": {
         "properties": {
           "data": {
@@ -3776,6 +4513,28 @@
         ],
         "title": "Envelope[RecordOut]"
       },
+      "Envelope_RedeemOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RedeemOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[RedeemOut]"
+      },
       "Envelope_ReferralPatientOut_": {
         "properties": {
           "data": {
@@ -3819,6 +4578,28 @@
           "data"
         ],
         "title": "Envelope[RegisteredOut]"
+      },
+      "Envelope_ShareOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ShareOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[ShareOut]"
       },
       "Envelope_Taxonomy_": {
         "properties": {
@@ -4160,6 +4941,32 @@
           "data"
         ],
         "title": "Envelope[list[LabQueueItem]]"
+      },
+      "Envelope_list_RequestRow__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/RequestRow"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[RequestRow]]"
       },
       "Envelope_list_ServiceRow__": {
         "properties": {
@@ -5018,6 +5825,61 @@
         ],
         "title": "LoginIn"
       },
+      "LookEvent": {
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          },
+          "who": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Who"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "facility": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility"
+          },
+          "what": {
+            "type": "string",
+            "title": "What"
+          }
+        },
+        "type": "object",
+        "required": [
+          "at",
+          "who",
+          "role",
+          "facility",
+          "what"
+        ],
+        "title": "LookEvent"
+      },
       "MeOut": {
         "properties": {
           "id": {
@@ -5167,6 +6029,99 @@
           "workers_pending"
         ],
         "title": "Metrics"
+      },
+      "MyRecord": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "history": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "History"
+          },
+          "visits": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Visits"
+          },
+          "triage": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Triage"
+          },
+          "referrals": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Referrals"
+          },
+          "chemist_vitals": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Chemist Vitals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id",
+          "history",
+          "visits",
+          "triage",
+          "referrals",
+          "chemist_vitals"
+        ],
+        "title": "MyRecord"
+      },
+      "NetworkRecord": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "consent": {
+            "$ref": "#/components/schemas/ConsentInfo"
+          },
+          "history": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "History"
+          },
+          "visits": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Visits"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id",
+          "consent",
+          "history",
+          "visits"
+        ],
+        "title": "NetworkRecord"
       },
       "NoteIn": {
         "properties": {
@@ -5674,12 +6629,17 @@
             },
             "type": "array",
             "title": "Prescriptions"
+          },
+          "hidden_from_other_hospitals": {
+            "type": "integer",
+            "title": "Hidden From Other Hospitals"
           }
         },
         "type": "object",
         "required": [
           "history",
-          "prescriptions"
+          "prescriptions",
+          "hidden_from_other_hospitals"
         ],
         "title": "RecordOut"
       },
@@ -5707,6 +6667,57 @@
           "message"
         ],
         "title": "RedFlagOut"
+      },
+      "RedeemIn": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 20,
+            "title": "Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "RedeemIn"
+      },
+      "RedeemOut": {
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "consent": {
+            "$ref": "#/components/schemas/ConsentInfo"
+          },
+          "encounter_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Encounter Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient_id",
+          "vitalis_id",
+          "consent",
+          "encounter_id"
+        ],
+        "title": "RedeemOut"
       },
       "ReferralCreateIn": {
         "properties": {
@@ -6010,6 +7021,47 @@
         ],
         "title": "RegisteredOut"
       },
+      "RequestRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "facility_name": {
+            "type": "string",
+            "title": "Facility Name"
+          },
+          "requested_by": {
+            "type": "string",
+            "title": "Requested By"
+          },
+          "purpose": {
+            "type": "string",
+            "title": "Purpose"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "facility_name",
+          "requested_by",
+          "purpose",
+          "created_at",
+          "expires_at"
+        ],
+        "title": "RequestRow"
+      },
       "ResultIn": {
         "properties": {
           "result_text": {
@@ -6150,6 +7202,75 @@
           "freshness"
         ],
         "title": "ServiceRow"
+      },
+      "ShareIn": {
+        "properties": {
+          "facility_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility Id"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "full",
+              "summary"
+            ],
+            "title": "Scope",
+            "default": "full"
+          }
+        },
+        "type": "object",
+        "title": "ShareIn"
+      },
+      "ShareOut": {
+        "properties": {
+          "consent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Consent Id"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "qr_png": {
+            "type": "string",
+            "title": "Qr Png"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "facility_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "consent_id",
+          "url",
+          "qr_png",
+          "expires_at",
+          "facility_name"
+        ],
+        "title": "ShareOut"
       },
       "StaffDecisionIn": {
         "properties": {

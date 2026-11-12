@@ -25,18 +25,23 @@ from app.models import (
     User,
     Vital,
 )
+from app.services import records
 
 
 def _short(name: str | None) -> str:
     return (name or "Unknown facility").replace(" (Demo)", "")
 
 
-async def history_items(db: AsyncSession, patient_id: uuid.UUID) -> dict[str, list[HistoryItem]]:
-    """The patient's network record, each item labelled with where and when it was recorded."""
+async def history_items(db: AsyncSession, patient_id: uuid.UUID, facility_id: uuid.UUID) -> dict[str, list[HistoryItem]]:
+    """What this facility may read of the patient's record, each item labelled with where and when it was recorded.
+
+    Allergies are always included (safety); other hospitals' entries need the patient's consent.
+    """
+    consent = await records.active_consent(db, patient_id, facility_id)
     rows = (await db.execute(
         select(PatientHistoryEntry, Facility.name)
         .outerjoin(Facility, Facility.id == PatientHistoryEntry.facility_id)
-        .where(PatientHistoryEntry.patient_id == patient_id, PatientHistoryEntry.active.is_(True))
+        .where(records.history_filter(patient_id, facility_id, consent))
         .order_by(PatientHistoryEntry.recorded_at)
     )).all()
     out: dict[str, list[HistoryItem]] = {"allergy": [], "condition": [], "medication": [], "family": []}
@@ -60,14 +65,10 @@ async def build_record(db: AsyncSession, enc: Encounter) -> ai.Record:
     assert patient and facility
     report = await db.get(TriageReport, enc.report_id) if enc.report_id else None
 
-    # Visits this facility may read: its own visits with this patient. (Consent-based sharing from other
-    # hospitals is added with the records + QR consent module.)
-    visible = (await db.execute(
-        select(Encounter).where(Encounter.patient_id == patient.id, Encounter.facility_id == enc.facility_id)
-        .order_by(Encounter.created_at)
-    )).scalars().all()
-    ids = [e.id for e in visible]
-    fac_names = {facility.id: _short(facility.name)}
+    # Visits this facility may read: its own, plus other hospitals' when the patient has shared their record.
+    ids, _consent = await records.visible_encounter_ids(db, patient.id, enc.facility_id)
+    visible = (await db.execute(select(Encounter).where(Encounter.id.in_(ids)).order_by(Encounter.created_at))).scalars().all()
+    fac_names = {f.id: _short(f.name) for f in (await db.execute(select(Facility))).scalars()}
 
     conds = [Vital.encounter_id.in_(ids)]
     if enc.report_id:
@@ -80,7 +81,8 @@ async def build_record(db: AsyncSession, enc: Encounter) -> ai.Record:
         if v.id in superseded:
             continue
         today = v.encounter_id == enc.id or (enc.report_id is not None and v.report_id == enc.report_id)
-        where = f"Referring chemist ({worker.full_name})" if v.source == "worker" and worker else fac_names[facility.id]
+        visit_fac = next((e.facility_id for e in visible if e.id == v.encounter_id), facility.id)
+        where = f"Referring chemist ({worker.full_name})" if v.source == "worker" and worker else fac_names[visit_fac]
         readings.append(ai.Reading(kind=v.kind, value=v.value, at=v.measured_at, facility=where, today=today))
 
     labs: list[ai.LabValue] = []
@@ -101,20 +103,22 @@ async def build_record(db: AsyncSession, enc: Encounter) -> ai.Record:
             except (TypeError, ValueError):
                 num = None
             labs.append(ai.LabValue(key=key, value=raw, num=num, unit=val.get("unit") if isinstance(val, dict) else None,
-                                    at=when, facility=fac_names[facility.id], test=order.test_name, today=today))
+                                    at=when, facility=fac_names[order.facility_id], test=order.test_name, today=today))
         if order.test_code in ("MP_RDT", "MP_FILM") and not res.values:
             labs.append(ai.LabValue(key="malaria", value=res.result_text, num=None, unit=None, at=when,
-                                    facility=fac_names[facility.id], test=order.test_name, today=today))
+                                    facility=fac_names[order.facility_id], test=order.test_name, today=today))
 
     idx = symptom_index()
     parts = [enc.chief_complaint or ""]
     if report:
         parts += [idx.get(s["code"], {}).get("labels", {}).get("en", s["code"]) for s in (report.answers or {}).get("symptoms", [])]
     notes = (await db.execute(select(ClinicalNote).where(ClinicalNote.encounter_id.in_(ids)))).scalars().all()
-    note_blobs = [(f"{fac_names[facility.id]} · {n.created_at:%d %b %Y}", n.body.lower()) for n in notes if n.status == "signed"]
+    enc_fac = {e.id: e.facility_id for e in visible}
+    note_blobs = [(f"{fac_names[enc_fac[n.encounter_id]]} · {n.created_at:%d %b %Y}", n.body.lower())
+                  for n in notes if n.status == "signed"]
     complaint = ", ".join(p for p in parts if p).strip(", ")
 
-    hist = await history_items(db, patient.id)
+    hist = await history_items(db, patient.id, enc.facility_id)
     ctx = (report.context if report else None) or {}
     age, age_src = ai.age_from(patient.date_of_birth, ctx.get("age_group") or patient.age_group)
     prior = [e for e in visible if e.id != enc.id]
@@ -124,7 +128,7 @@ async def build_record(db: AsyncSession, enc: Encounter) -> ai.Record:
         age=age, age_source=age_src, here=fac_names[facility.id], complaint=complaint,
         readings=readings, labs=labs,
         allergies=hist["allergy"], conditions=hist["condition"], medications=hist["medication"], family=hist["family"],
-        prior_visits=len(prior), prior_facilities=sorted({fac_names[facility.id]}) if prior else [],
+        prior_visits=len(prior), prior_facilities=sorted({fac_names[e.facility_id] for e in prior}),
         notes=note_blobs,
     )
 

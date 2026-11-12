@@ -74,7 +74,7 @@ completing it also completes the referral (the chemist sees "Completed").
 `engines/clinical/assessment.py` is the NCS `clinical_ai.py` rules (red flags, hypertension, diabetes, dyslipidaemia,
 malaria, respiratory, trends, provenance) on this data model. Two changes: the AI shows drug names and reasons only
 (no doses, per the brief), and a positive malaria test today counts as evidence. `services/clinical_ai.py` builds the
-input: this facility's visits with the patient, the referral (incl. chemist vitals), verified structured lab values and
+input: the visits this facility may see (its own, plus other hospitals' when the patient has shared), the referral (incl. chemist vitals), verified structured lab values and
 the patient's history entries with their source hospital. The team's models (`ml_models/*.joblib`, scikit-learn 1.8.0)
 load through `engines/ncs_models/adapter.py`: SHA-256 pinned, unpickled through a class allowlist, run off the event
 loop, shown as Low/Moderate/High bands; any failure falls back to rules only. Medication safety
@@ -82,6 +82,15 @@ loop, shown as Low/Moderate/High bands; any failure falls back to rules only. Me
 condition/pregnancy contraindications; prescribing a conflicting drug needs an audited override. Each run is an
 `ai_drafts` row (inputs, output, model versions, narrative provider, doctor action). The narrative is canned unless
 `ALLOW_EXTERNAL_LLM=true` (Gemini → Groq), forced to JSON, schema-validated, and rejected if it contains a dose.
+
+## Shared record and consent (ported from NCS)
+
+`models/consent.py`: `consents` (patient, facility or any, scope full|summary, via qr|referral|access_request,
+24 h from activation, revocable), `qr_grants` (hash of a single-use token, 10 min) and `access_requests`
+(pending → approved|denied|expired). `services/records.py` is the one gate: `visible_encounter_ids` and
+`history_filter` decide what a facility can see; the record card, the network record, the AI input and the
+prescribing safety check all go through it. Allergies are always visible to a treating hospital. Every view,
+request and QR redemption is an audit event, and the patient's **Who looked** tab reads them back.
 
 ## Registration and verification
 

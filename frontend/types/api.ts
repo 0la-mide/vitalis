@@ -1072,10 +1072,218 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Records */
+        get: operations["my_records_api_v1_me_records_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Share
+         * @description Creates a consent and a 10-minute, single-use QR. The QR holds only a link with a random token.
+         */
+        post: operations["share_api_v1_me_consents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/consents/{consent_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke */
+        delete: operations["revoke_api_v1_me_consents__consent_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/access-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Access Log */
+        get: operations["access_log_api_v1_me_access_log_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/access-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Access Requests */
+        get: operations["access_requests_api_v1_me_access_requests_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/access-requests/{request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide Request */
+        post: operations["decide_request_api_v1_me_access_requests__request_id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/referrals/{referral_id}/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Share With Referral
+         * @description One tap on the referral screen: let the receiving hospital see records from other hospitals for 24 hours.
+         */
+        post: operations["share_with_referral_api_v1_me_referrals__referral_id__share_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/qr/redeem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Redeem */
+        post: operations["redeem_api_v1_qr_redeem_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/patients/{patient_id}/consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consent Status */
+        get: operations["consent_status_api_v1_hospital_patients__patient_id__consent_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/patients/{patient_id}/access-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Request Access */
+        post: operations["request_access_api_v1_hospital_patients__patient_id__access_requests_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/patients/{patient_id}/network-record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Network Record */
+        get: operations["network_record_api_v1_hospital_patients__patient_id__network_record_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccessIn */
+        AccessIn: {
+            /**
+             * Purpose
+             * @default Treatment at this hospital
+             */
+            purpose: string;
+        };
+        /** AccessLog */
+        AccessLog: {
+            /** Consents */
+            consents: components["schemas"]["ConsentRow"][];
+            /** Events */
+            events: components["schemas"]["LookEvent"][];
+        };
         /** Allowed */
         Allowed: {
             /** Transitions */
@@ -1201,6 +1409,68 @@ export interface components {
             /** Document */
             document?: string | null;
         };
+        /** ConsentInfo */
+        ConsentInfo: {
+            /** Scope */
+            scope: string;
+            /** Via */
+            via: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** ConsentRow */
+        ConsentRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Facility Name */
+            facility_name: string | null;
+            /** Scope */
+            scope: string;
+            /** Via */
+            via: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Activated At */
+            activated_at: string | null;
+            /** Revoked At */
+            revoked_at: string | null;
+            /** Active */
+            active: boolean;
+        };
+        /** ConsentStatus */
+        ConsentStatus: {
+            /** Active */
+            active: boolean;
+            consent: components["schemas"]["ConsentInfo"] | null;
+            /** Pending Request */
+            pending_request: boolean;
+            /** Hidden History */
+            hidden_history: number;
+            /** Other Hospital Visits */
+            other_hospital_visits: number;
+        };
+        /** DecideIn */
+        DecideIn: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "allow" | "deny";
+        };
         /** DecisionOut */
         DecisionOut: {
             /**
@@ -1286,6 +1556,11 @@ export interface components {
              * Format: uuid
              */
             id: string;
+            /**
+             * Patient Id
+             * Format: uuid
+             */
+            patient_id: string;
             /** State */
             state: string;
             /** State Label */
@@ -1328,6 +1603,21 @@ export interface components {
             /** Correction Reason */
             correction_reason?: string | null;
         };
+        /** Envelope[AccessLog] */
+        Envelope_AccessLog_: {
+            data: components["schemas"]["AccessLog"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[ConsentRow] */
+        Envelope_ConsentRow_: {
+            data: components["schemas"]["ConsentRow"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[ConsentStatus] */
+        Envelope_ConsentStatus_: {
+            data: components["schemas"]["ConsentStatus"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[DecisionOut] */
         Envelope_DecisionOut_: {
             data: components["schemas"]["DecisionOut"];
@@ -1363,6 +1653,16 @@ export interface components {
             data: components["schemas"]["Metrics"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[MyRecord] */
+        Envelope_MyRecord_: {
+            data: components["schemas"]["MyRecord"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[NetworkRecord] */
+        Envelope_NetworkRecord_: {
+            data: components["schemas"]["NetworkRecord"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[OrderRow] */
         Envelope_OrderRow_: {
             data: components["schemas"]["OrderRow"];
@@ -1378,6 +1678,11 @@ export interface components {
             data: components["schemas"]["RecordOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[RedeemOut] */
+        Envelope_RedeemOut_: {
+            data: components["schemas"]["RedeemOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[ReferralPatientOut] */
         Envelope_ReferralPatientOut_: {
             data: components["schemas"]["ReferralPatientOut"];
@@ -1386,6 +1691,11 @@ export interface components {
         /** Envelope[RegisteredOut] */
         Envelope_RegisteredOut_: {
             data: components["schemas"]["RegisteredOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[ShareOut] */
+        Envelope_ShareOut_: {
+            data: components["schemas"]["ShareOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[Taxonomy] */
@@ -1465,6 +1775,12 @@ export interface components {
         Envelope_list_LabQueueItem__: {
             /** Data */
             data: components["schemas"]["LabQueueItem"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[RequestRow]] */
+        Envelope_list_RequestRow__: {
+            /** Data */
+            data: components["schemas"]["RequestRow"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[list[ServiceRow]] */
@@ -1752,6 +2068,22 @@ export interface components {
             /** Password */
             password: string;
         };
+        /** LookEvent */
+        LookEvent: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Who */
+            who: string | null;
+            /** Role */
+            role: string | null;
+            /** Facility */
+            facility: string | null;
+            /** What */
+            what: string;
+        };
         /** MeOut */
         MeOut: {
             /**
@@ -1799,6 +2131,45 @@ export interface components {
             workers_approved: number;
             /** Workers Pending */
             workers_pending: number;
+        };
+        /** MyRecord */
+        MyRecord: {
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** History */
+            history: {
+                [key: string]: unknown;
+            }[];
+            /** Visits */
+            visits: {
+                [key: string]: unknown;
+            }[];
+            /** Triage */
+            triage: {
+                [key: string]: unknown;
+            }[];
+            /** Referrals */
+            referrals: {
+                [key: string]: unknown;
+            }[];
+            /** Chemist Vitals */
+            chemist_vitals: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** NetworkRecord */
+        NetworkRecord: {
+            /** Vitalis Id */
+            vitalis_id: string;
+            consent: components["schemas"]["ConsentInfo"];
+            /** History */
+            history: {
+                [key: string]: unknown;
+            }[];
+            /** Visits */
+            visits: {
+                [key: string]: unknown;
+            }[];
         };
         /** NoteIn */
         NoteIn: {
@@ -1975,6 +2346,8 @@ export interface components {
             history: components["schemas"]["HistoryRow"][];
             /** Prescriptions */
             prescriptions: components["schemas"]["PrescriptionRow"][];
+            /** Hidden From Other Hospitals */
+            hidden_from_other_hospitals: number;
         };
         /** RedFlagOut */
         RedFlagOut: {
@@ -1982,6 +2355,24 @@ export interface components {
             fired: boolean;
             /** Message */
             message: string | null;
+        };
+        /** RedeemIn */
+        RedeemIn: {
+            /** Token */
+            token: string;
+        };
+        /** RedeemOut */
+        RedeemOut: {
+            /**
+             * Patient Id
+             * Format: uuid
+             */
+            patient_id: string;
+            /** Vitalis Id */
+            vitalis_id: string;
+            consent: components["schemas"]["ConsentInfo"];
+            /** Encounter Id */
+            encounter_id: string | null;
         };
         /** ReferralCreateIn */
         ReferralCreateIn: {
@@ -2078,6 +2469,30 @@ export interface components {
             /** Message */
             message: string;
         };
+        /** RequestRow */
+        RequestRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Facility Name */
+            facility_name: string;
+            /** Requested By */
+            requested_by: string;
+            /** Purpose */
+            purpose: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
         /** ResultIn */
         ResultIn: {
             /**
@@ -2130,6 +2545,36 @@ export interface components {
             last_confirmed_at: string | null;
             /** Freshness */
             freshness: string;
+        };
+        /** ShareIn */
+        ShareIn: {
+            /** Facility Id */
+            facility_id?: string | null;
+            /**
+             * Scope
+             * @default full
+             * @enum {string}
+             */
+            scope: "full" | "summary";
+        };
+        /** ShareOut */
+        ShareOut: {
+            /**
+             * Consent Id
+             * Format: uuid
+             */
+            consent_id: string;
+            /** Url */
+            url: string;
+            /** Qr Png */
+            qr_png: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Facility Name */
+            facility_name: string | null;
         };
         /** StaffDecisionIn */
         StaffDecisionIn: {
@@ -4708,6 +5153,326 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_WorkerReferralOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_records_api_v1_me_records_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_MyRecord_"];
+                };
+            };
+        };
+    };
+    share_api_v1_me_consents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShareIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_ShareOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_api_v1_me_consents__consent_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                consent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    access_log_api_v1_me_access_log_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_AccessLog_"];
+                };
+            };
+        };
+    };
+    access_requests_api_v1_me_access_requests_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_RequestRow__"];
+                };
+            };
+        };
+    };
+    decide_request_api_v1_me_access_requests__request_id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    share_with_referral_api_v1_me_referrals__referral_id__share_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                referral_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_ConsentRow_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    redeem_api_v1_qr_redeem_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RedeemIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RedeemOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    consent_status_api_v1_hospital_patients__patient_id__consent_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                patient_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_ConsentStatus_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    request_access_api_v1_hospital_patients__patient_id__access_requests_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                patient_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccessIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_ConsentStatus_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    network_record_api_v1_hospital_patients__patient_id__network_record_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                patient_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_NetworkRecord_"];
                 };
             };
             /** @description Validation Error */

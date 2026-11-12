@@ -24,7 +24,9 @@ export default function LoginPage() {
     try {
       const me = await api<MeOut>("/auth/login", { body: { email, password } });
       qc.setQueryData(["me"], me);
-      router.push(homeFor(me));
+      // Back to where they came from (e.g. a patient's QR link), but only within this app.
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(next && next.startsWith("/") && !next.startsWith("//") ? next : homeFor(me));
     } catch (err) {
       setError((err as Error).message);
       setBusy(false);

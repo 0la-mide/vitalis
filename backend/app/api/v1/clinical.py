@@ -26,7 +26,7 @@ from app.models import (
     TriageReport,
     User,
 )
-from app.services import clinical_ai
+from app.services import clinical_ai, records
 from app.services import encounters as esvc
 
 router = APIRouter(prefix="/hospital", tags=["clinical"])
@@ -58,6 +58,7 @@ class PrescriptionRow(BaseModel):
 class RecordOut(BaseModel):
     history: list[HistoryRow]
     prescriptions: list[PrescriptionRow]
+    hidden_from_other_hospitals: int  # entries recorded elsewhere that need the patient's consent
 
 
 class HistoryIn(BaseModel):
@@ -92,11 +93,13 @@ class DraftDecisionIn(BaseModel):
 
 
 async def _record(db: AsyncSession, enc: Encounter) -> RecordOut:
+    consent = await records.active_consent(db, enc.patient_id, enc.facility_id)
     rows = (await db.execute(
         select(PatientHistoryEntry, Facility.name).outerjoin(Facility, Facility.id == PatientHistoryEntry.facility_id)
-        .where(PatientHistoryEntry.patient_id == enc.patient_id, PatientHistoryEntry.active.is_(True))
+        .where(records.history_filter(enc.patient_id, enc.facility_id, consent))
         .order_by(PatientHistoryEntry.kind, PatientHistoryEntry.recorded_at)
     )).all()
+    hidden = 0 if consent else await records.hidden_history_count(db, enc.patient_id, enc.facility_id)
     rx = (await db.execute(select(Prescription).where(Prescription.encounter_id == enc.id)
                            .order_by(Prescription.created_at))).scalars().all()
     users = {u.id: u.full_name for u in (await db.execute(
@@ -108,6 +111,7 @@ async def _record(db: AsyncSession, enc: Encounter) -> RecordOut:
         prescriptions=[PrescriptionRow(id=p.id, drug=p.drug, dose=p.dose, status=p.status, safety=p.safety,
                                        override_reason=p.override_reason, prescribed_by=users.get(p.prescribed_by),
                                        created_at=p.created_at) for p in rx],
+        hidden_from_other_hospitals=hidden,
     )
 
 
@@ -136,7 +140,7 @@ async def add_history(encounter_id: uuid.UUID, body: HistoryIn, user: User = Dep
 
 
 async def _safety(db: AsyncSession, enc: Encounter, drug: str) -> ms.SafetyResult:
-    hist = await clinical_ai.history_items(db, enc.patient_id)
+    hist = await clinical_ai.history_items(db, enc.patient_id, enc.facility_id)
     report = await db.get(TriageReport, enc.report_id) if enc.report_id else None
     patient = await db.get(Patient, enc.patient_id)
     pregnant = bool((report.context or {}).get("pregnant")) if report else False

@@ -164,7 +164,7 @@ async def _detail(db: AsyncSession, enc: Encounter, user: User) -> EncounterOut:
                           | {e.actor_id for e in events})
 
     return EncounterOut(
-        id=enc.id, state=enc.state, state_label=esvc.STATE_LABEL[ES(enc.state)], emergency=enc.emergency,
+        id=enc.id, patient_id=enc.patient_id, state=enc.state, state_label=esvc.STATE_LABEL[ES(enc.state)], emergency=enc.emergency,
         chief_complaint=enc.chief_complaint, disposition=enc.disposition, disposition_note=enc.disposition_note,
         cancel_reason=enc.cancel_reason, created_at=enc.created_at, completed_at=enc.completed_at,
         patient=_patient_brief(patient, report), referral=referral,
