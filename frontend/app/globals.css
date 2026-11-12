@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+
+/* VITALIS palette: deep emerald + white + mint. Red is reserved for emergencies only. */
+:root {
+  --background: #ffffff;
+  --foreground: #0f1f1a;
+  --muted: #f1f7f4;
+  --muted-foreground: #4b6159;
+  --card: #ffffff;
+  --border: #d5e6de;
+  --primary: #046c4e;
+  --primary-strong: #034d38;
+  --primary-foreground: #ffffff;
+  --mint: #d8f3e6;
+  --mint-strong: #a7e3c6;
+  --emergency: #b42318;
+  --emergency-soft: #fdecea;
+  --warning: #9a6700;
+  --warning-soft: #fff4d6;
+  --ring: #10b981;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #07130f;
+    --foreground: #e6f2ec;
+    --muted: #0f221b;
+    --muted-foreground: #9db8ad;
+    --card: #0c1c16;
+    --border: #1f3a30;
+    --primary: #34d399;
+    --primary-strong: #6ee7b7;
+    --primary-foreground: #04261b;
+    --mint: #12352a;
+    --mint-strong: #1b4d3d;
+    --emergency: #f2564b;
+    --emergency-soft: #3a1210;
+    --warning: #f5c451;
+    --warning-soft: #33280b;
+    --ring: #34d399;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-mint: var(--mint);
+  --color-mint-strong: var(--mint-strong);
+  --color-emergency: var(--emergency);
+  --color-emergency-soft: var(--emergency-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+*:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@keyframes vt-flash {
+  0% {
+    background-color: var(--mint-strong);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.vt-new {
+  animation: vt-flash 2.5s ease-out;
+}
+
+@keyframes vt-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.vt-pulse {
+  animation: vt-pulse 1.6s ease-in-out infinite;
+}
+
+.body-region {
+  fill: var(--mint);
+  stroke: var(--primary);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill 120ms;
+}
+.body-region:hover,
+.body-region:focus-visible {
+  fill: var(--mint-strong);
+  outline: none;
+}
+.body-region[data-active="true"] {
+  fill: var(--primary);
+}

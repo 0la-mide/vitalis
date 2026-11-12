@@ -1,0 +1,480 @@
+{
+  "note": "Pre-recorded prompts go at /audio/{lang}/{code}.mp3. Missing files fall back to Web Speech (English only). Record each code in each language.",
+  "languages": [
+    "en",
+    "pcm",
+    "yo",
+    "ha",
+    "ig"
+  ],
+  "prompts": [
+    {
+      "code": "home_title",
+      "text_en": "What is happening?"
+    },
+    {
+      "code": "who_title",
+      "text_en": "Who is sick?"
+    },
+    {
+      "code": "who_child_age",
+      "text_en": "How old is the child?"
+    },
+    {
+      "code": "who_sex",
+      "text_en": "Boy/man or girl/woman?"
+    },
+    {
+      "code": "body_title",
+      "text_en": "Where is the problem?"
+    },
+    {
+      "code": "symptoms_title",
+      "text_en": "What do you see or feel?"
+    },
+    {
+      "code": "severity_title",
+      "text_en": "How bad is it?"
+    },
+    {
+      "code": "onset_title",
+      "text_en": "Since when?"
+    },
+    {
+      "code": "slip_title",
+      "text_en": "Your VITALIS card"
+    },
+    {
+      "code": "action_go_now",
+      "text_en": "Go to a hospital now"
+    },
+    {
+      "code": "action_go_today",
+      "text_en": "Go to a clinic or hospital today"
+    },
+    {
+      "code": "action_see_chemist",
+      "text_en": "See a chemist or clinic"
+    },
+    {
+      "code": "action_self_care",
+      "text_en": "Rest and care at home"
+    },
+    {
+      "code": "referral_pending",
+      "text_en": ""
+    },
+    {
+      "code": "referral_accepted",
+      "text_en": ""
+    },
+    {
+      "code": "referral_declined",
+      "text_en": ""
+    },
+    {
+      "code": "referral_more_info",
+      "text_en": ""
+    },
+    {
+      "code": "referral_arrived",
+      "text_en": ""
+    },
+    {
+      "code": "referral_overdue",
+      "text_en": ""
+    },
+    {
+      "code": "referral_completed",
+      "text_en": ""
+    },
+    {
+      "code": "region_head",
+      "text_en": "Head"
+    },
+    {
+      "code": "region_face",
+      "text_en": "Face"
+    },
+    {
+      "code": "region_eyes",
+      "text_en": "Eyes"
+    },
+    {
+      "code": "region_ears",
+      "text_en": "Ears"
+    },
+    {
+      "code": "region_mouth_throat",
+      "text_en": "Mouth / throat"
+    },
+    {
+      "code": "region_neck",
+      "text_en": "Neck"
+    },
+    {
+      "code": "region_chest",
+      "text_en": "Chest"
+    },
+    {
+      "code": "region_upper_abdomen",
+      "text_en": "Upper belly"
+    },
+    {
+      "code": "region_lower_abdomen",
+      "text_en": "Lower belly"
+    },
+    {
+      "code": "region_pelvis",
+      "text_en": "Private parts / groin"
+    },
+    {
+      "code": "region_back_upper",
+      "text_en": "Upper back"
+    },
+    {
+      "code": "region_back_lower",
+      "text_en": "Lower back"
+    },
+    {
+      "code": "region_arms",
+      "text_en": "Arms"
+    },
+    {
+      "code": "region_hands",
+      "text_en": "Hands"
+    },
+    {
+      "code": "region_legs",
+      "text_en": "Legs"
+    },
+    {
+      "code": "region_feet",
+      "text_en": "Feet"
+    },
+    {
+      "code": "region_skin",
+      "text_en": "Skin"
+    },
+    {
+      "code": "region_whole_body",
+      "text_en": "Whole body / can't point"
+    },
+    {
+      "code": "sym_headache",
+      "text_en": "Headache"
+    },
+    {
+      "code": "sym_head_injury",
+      "text_en": "Hit on the head"
+    },
+    {
+      "code": "sym_face_droop",
+      "text_en": "Face drooping on one side"
+    },
+    {
+      "code": "sym_face_swelling",
+      "text_en": "Swollen face"
+    },
+    {
+      "code": "sym_eye_red_pain",
+      "text_en": "Red or painful eye"
+    },
+    {
+      "code": "sym_vision_problem",
+      "text_en": "Can't see well"
+    },
+    {
+      "code": "sym_ear_pain",
+      "text_en": "Ear pain"
+    },
+    {
+      "code": "sym_ear_discharge",
+      "text_en": "Fluid from ear"
+    },
+    {
+      "code": "sym_sore_throat",
+      "text_en": "Sore throat"
+    },
+    {
+      "code": "sym_cant_swallow",
+      "text_en": "Can't swallow"
+    },
+    {
+      "code": "sym_mouth_bleeding",
+      "text_en": "Bleeding from mouth"
+    },
+    {
+      "code": "sym_neck_stiff",
+      "text_en": "Stiff neck"
+    },
+    {
+      "code": "sym_neck_swelling",
+      "text_en": "Lump or swelling"
+    },
+    {
+      "code": "sym_chest_pain",
+      "text_en": "Chest pain"
+    },
+    {
+      "code": "sym_breathing_difficulty",
+      "text_en": "Hard to breathe"
+    },
+    {
+      "code": "sym_cough",
+      "text_en": "Cough"
+    },
+    {
+      "code": "sym_cough_blood",
+      "text_en": "Coughing blood"
+    },
+    {
+      "code": "sym_palpitations",
+      "text_en": "Heart racing"
+    },
+    {
+      "code": "sym_abdominal_pain",
+      "text_en": "Belly pain"
+    },
+    {
+      "code": "sym_abdominal_swelling",
+      "text_en": "Swollen belly"
+    },
+    {
+      "code": "sym_vomiting",
+      "text_en": "Vomiting"
+    },
+    {
+      "code": "sym_vomiting_blood",
+      "text_en": "Vomiting blood"
+    },
+    {
+      "code": "sym_diarrhoea",
+      "text_en": "Watery stool"
+    },
+    {
+      "code": "sym_blood_in_stool",
+      "text_en": "Blood in stool"
+    },
+    {
+      "code": "sym_labour_pains",
+      "text_en": "Labour pains"
+    },
+    {
+      "code": "sym_reduced_fetal_movement",
+      "text_en": "Baby moving less"
+    },
+    {
+      "code": "sym_bleeding_vaginal_heavy",
+      "text_en": "Heavy bleeding"
+    },
+    {
+      "code": "sym_bleeding_vaginal_light",
+      "text_en": "Spotting / light bleeding"
+    },
+    {
+      "code": "sym_water_broken",
+      "text_en": "Water broke"
+    },
+    {
+      "code": "sym_vaginal_discharge",
+      "text_en": "Discharge"
+    },
+    {
+      "code": "sym_painful_urination",
+      "text_en": "Pain when passing urine"
+    },
+    {
+      "code": "sym_groin_pain",
+      "text_en": "Pain in groin"
+    },
+    {
+      "code": "sym_back_pain",
+      "text_en": "Back pain"
+    },
+    {
+      "code": "sym_limb_pain",
+      "text_en": "Pain"
+    },
+    {
+      "code": "sym_swelling",
+      "text_en": "Swelling"
+    },
+    {
+      "code": "sym_cant_move",
+      "text_en": "Can't move it"
+    },
+    {
+      "code": "sym_bone_deformed",
+      "text_en": "Bent or broken-looking"
+    },
+    {
+      "code": "sym_numbness",
+      "text_en": "Numb or weak"
+    },
+    {
+      "code": "sym_wound",
+      "text_en": "Cut or wound"
+    },
+    {
+      "code": "sym_burn",
+      "text_en": "Burn"
+    },
+    {
+      "code": "sym_bleeding_heavy",
+      "text_en": "Bleeding a lot"
+    },
+    {
+      "code": "sym_rash",
+      "text_en": "Rash"
+    },
+    {
+      "code": "sym_itching",
+      "text_en": "Itching"
+    },
+    {
+      "code": "sym_yellow_eyes_skin",
+      "text_en": "Yellow eyes or skin"
+    },
+    {
+      "code": "sym_skin_sore",
+      "text_en": "Sore that won't heal"
+    },
+    {
+      "code": "sym_fever",
+      "text_en": "Hot body / fever"
+    },
+    {
+      "code": "sym_high_fever",
+      "text_en": "Very hot body"
+    },
+    {
+      "code": "sym_weakness",
+      "text_en": "Very weak"
+    },
+    {
+      "code": "sym_confusion",
+      "text_en": "Confused or talking strangely"
+    },
+    {
+      "code": "sym_dizzy_faint",
+      "text_en": "Dizzy or fainting"
+    },
+    {
+      "code": "sym_not_drinking",
+      "text_en": "Can't drink or breastfeed"
+    },
+    {
+      "code": "sym_lethargic",
+      "text_en": "Very sleepy, hard to wake"
+    },
+    {
+      "code": "sym_unconscious",
+      "text_en": "Not waking up"
+    },
+    {
+      "code": "sym_seizure",
+      "text_en": "Fitting / shaking"
+    },
+    {
+      "code": "sym_severe_injury",
+      "text_en": "Accident / bad injury"
+    },
+    {
+      "code": "emg_heavy_bleeding",
+      "text_en": "Heavy bleeding"
+    },
+    {
+      "code": "emg_cant_breathe",
+      "text_en": "Can't breathe"
+    },
+    {
+      "code": "emg_unconscious",
+      "text_en": "Unconscious / not waking"
+    },
+    {
+      "code": "emg_chest_pain",
+      "text_en": "Chest pain"
+    },
+    {
+      "code": "emg_seizure",
+      "text_en": "Seizure / fitting"
+    },
+    {
+      "code": "emg_accident",
+      "text_en": "Accident / injury"
+    },
+    {
+      "code": "emg_pregnancy",
+      "text_en": "Pregnancy problem"
+    },
+    {
+      "code": "emg_child_sick",
+      "text_en": "Child very sick"
+    },
+    {
+      "code": "sev_1",
+      "text_en": "A little"
+    },
+    {
+      "code": "sev_2",
+      "text_en": "Some"
+    },
+    {
+      "code": "sev_3",
+      "text_en": "Bad"
+    },
+    {
+      "code": "sev_4",
+      "text_en": "Very bad"
+    },
+    {
+      "code": "sev_5",
+      "text_en": "Worst ever"
+    },
+    {
+      "code": "onset_now",
+      "text_en": "Just now"
+    },
+    {
+      "code": "onset_today",
+      "text_en": "Today"
+    },
+    {
+      "code": "onset_days",
+      "text_en": "2–3 days"
+    },
+    {
+      "code": "onset_week",
+      "text_en": "A week or more"
+    },
+    {
+      "code": "who_adult",
+      "text_en": "Adult"
+    },
+    {
+      "code": "who_child",
+      "text_en": "Child"
+    },
+    {
+      "code": "who_under5",
+      "text_en": "Under 5"
+    },
+    {
+      "code": "who_5_12",
+      "text_en": "5 to 12"
+    },
+    {
+      "code": "who_teen",
+      "text_en": "Teenager"
+    },
+    {
+      "code": "who_pregnant",
+      "text_en": "Pregnant woman"
+    },
+    {
+      "code": "who_elderly",
+      "text_en": "Elderly"
+    }
+  ]
+}

@@ -1,0 +1,3039 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VITALIS API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Health_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MeOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Refresh",
+        "operationId": "refresh_api_v1_auth_refresh_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MeOut_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Me",
+        "description": "Available to pending/rejected/suspended users too: it powers their status page.",
+        "operationId": "me_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MeOut_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/patients/start": {
+      "post": {
+        "tags": [
+          "patient"
+        ],
+        "summary": "Start",
+        "description": "No login. Creates a patient and returns a device key + one-time recovery code (shown once).",
+        "operationId": "start_api_v1_patients_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientStartIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PatientKeysOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/patients/recover": {
+      "post": {
+        "tags": [
+          "patient"
+        ],
+        "summary": "Recover",
+        "operationId": "recover_api_v1_patients_recover_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientRecoverIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PatientKeysOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/triage/taxonomy": {
+      "get": {
+        "tags": [
+          "triage"
+        ],
+        "summary": "Taxonomy",
+        "description": "Public UI taxonomy (regions, symptoms, emergencies, who, severity, onset). No model codes.",
+        "operationId": "taxonomy_api_v1_triage_taxonomy_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Taxonomy_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/triage": {
+      "post": {
+        "tags": [
+          "triage"
+        ],
+        "summary": "Start Triage",
+        "operationId": "start_triage_api_v1_triage_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TriageStartIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_TriageOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/triage/{report_id}/taps": {
+      "post": {
+        "tags": [
+          "triage"
+        ],
+        "summary": "Taps",
+        "operationId": "taps_api_v1_triage__report_id__taps_post",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Report Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TapsIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_TriageOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/triage/{report_id}": {
+      "get": {
+        "tags": [
+          "triage"
+        ],
+        "summary": "Get Triage",
+        "operationId": "get_triage_api_v1_triage__report_id__get",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Report Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_TriageOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/triage/{report_id}/referral": {
+      "post": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Request Referral",
+        "operationId": "request_referral_api_v1_triage__report_id__referral_post",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Report Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReferralCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ReferralPatientOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/referrals/{referral_id}": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Get Referral",
+        "operationId": "get_referral_api_v1_referrals__referral_id__get",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_ReferralPatientOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/referrals/{referral_id}/stream": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Stream Referral",
+        "operationId": "stream_referral_api_v1_referrals__referral_id__stream_get",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/facilities": {
+      "get": {
+        "tags": [
+          "facilities"
+        ],
+        "summary": "List Facilities",
+        "description": "Verified facilities only, ranked for a care type.",
+        "operationId": "list_facilities_api_v1_facilities_get",
+        "parameters": [
+          {
+            "name": "care_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Care Type"
+            }
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 90,
+              "minimum": -90,
+              "default": 7.1475,
+              "title": "Lat"
+            }
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 180,
+              "minimum": -180,
+              "default": 3.3619,
+              "title": "Lng"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_HospitalCard__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/incoming": {
+      "get": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Incoming",
+        "operationId": "incoming_api_v1_hospital_incoming_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_IncomingItem__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/stream": {
+      "get": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Stream",
+        "operationId": "stream_api_v1_hospital_stream_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/referrals/{referral_id}": {
+      "get": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Get Referral",
+        "operationId": "get_referral_api_v1_hospital_referrals__referral_id__get",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_IncomingItem_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Decide",
+        "operationId": "decide_api_v1_hospital_referrals__referral_id__patch",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DecisionOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/referrals/{referral_id}/arrived": {
+      "post": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Arrived",
+        "operationId": "arrived_api_v1_hospital_referrals__referral_id__arrived_post",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DecisionOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/alerts/{alert_id}/ready": {
+      "post": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Alert Ready",
+        "operationId": "alert_ready_api_v1_hospital_alerts__alert_id__ready_post",
+        "parameters": [
+          {
+            "name": "alert_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Alert Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/services": {
+      "get": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Services",
+        "operationId": "services_api_v1_hospital_services_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_ServiceRow__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/services/{service_id}": {
+      "patch": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Update Service",
+        "operationId": "update_service_api_v1_hospital_services__service_id__patch",
+        "parameters": [
+          {
+            "name": "service_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Service Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicePatchIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_ServiceRow__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/care-types": {
+      "get": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Care Type Labels",
+        "operationId": "care_type_labels_api_v1_hospital_care_types_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Availability": {
+        "type": "string",
+        "enum": [
+          "available",
+          "limited",
+          "unavailable",
+          "unknown"
+        ],
+        "title": "Availability"
+      },
+      "DecisionIn": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "accept",
+              "decline",
+              "more_info"
+            ],
+            "title": "Action"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "DecisionIn"
+      },
+      "DecisionOut": {
+        "properties": {
+          "referral_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Referral Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "next_referral_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Referral Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "referral_id",
+          "status",
+          "next_referral_id"
+        ],
+        "title": "DecisionOut"
+      },
+      "Envelope_DecisionOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DecisionOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[DecisionOut]"
+      },
+      "Envelope_Health_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Health"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[Health]"
+      },
+      "Envelope_IncomingItem_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/IncomingItem"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[IncomingItem]"
+      },
+      "Envelope_MeOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MeOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[MeOut]"
+      },
+      "Envelope_PatientKeysOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PatientKeysOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[PatientKeysOut]"
+      },
+      "Envelope_ReferralPatientOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ReferralPatientOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[ReferralPatientOut]"
+      },
+      "Envelope_Taxonomy_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Taxonomy"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[Taxonomy]"
+      },
+      "Envelope_TriageOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TriageOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[TriageOut]"
+      },
+      "Envelope_dict_": {
+        "properties": {
+          "data": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[dict]"
+      },
+      "Envelope_list_HospitalCard__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/HospitalCard"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[HospitalCard]]"
+      },
+      "Envelope_list_IncomingItem__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/IncomingItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[IncomingItem]]"
+      },
+      "Envelope_list_ServiceRow__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ServiceRow"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[ServiceRow]]"
+      },
+      "ExcludedCard": {
+        "properties": {
+          "facility_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Facility Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "distance_km": {
+            "type": "number",
+            "title": "Distance Km"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          }
+        },
+        "type": "object",
+        "required": [
+          "facility_id",
+          "name",
+          "distance_km",
+          "reasons"
+        ],
+        "title": "ExcludedCard"
+      },
+      "FacilityBrief": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "status"
+        ],
+        "title": "FacilityBrief"
+      },
+      "FacilityPublic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lga": {
+            "type": "string",
+            "title": "Lga"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lng": {
+            "type": "number",
+            "title": "Lng"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "lga",
+          "address",
+          "phone",
+          "lat",
+          "lng"
+        ],
+        "title": "FacilityPublic"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "database": {
+            "type": "string",
+            "title": "Database"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "database",
+          "version"
+        ],
+        "title": "Health"
+      },
+      "HospitalCard": {
+        "properties": {
+          "facility_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Facility Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lga": {
+            "type": "string",
+            "title": "Lga"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lng": {
+            "type": "number",
+            "title": "Lng"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "distance_km": {
+            "type": "number",
+            "title": "Distance Km"
+          },
+          "eta_minutes": {
+            "type": "integer",
+            "title": "Eta Minutes"
+          },
+          "eta_is_estimate": {
+            "type": "boolean",
+            "title": "Eta Is Estimate",
+            "default": true
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "freshness": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "stale",
+              "unknown"
+            ],
+            "title": "Freshness"
+          },
+          "last_confirmed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Confirmed At"
+          },
+          "ready_now": {
+            "type": "boolean",
+            "title": "Ready Now"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "facility_id",
+          "name",
+          "lga",
+          "lat",
+          "lng",
+          "phone",
+          "distance_km",
+          "eta_minutes",
+          "score",
+          "freshness",
+          "last_confirmed_at",
+          "ready_now",
+          "reasons",
+          "warnings"
+        ],
+        "title": "HospitalCard"
+      },
+      "HospitalSummary": {
+        "properties": {
+          "nearby": {
+            "type": "integer",
+            "title": "Nearby"
+          },
+          "can_handle": {
+            "type": "integer",
+            "title": "Can Handle"
+          },
+          "ready_now": {
+            "type": "integer",
+            "title": "Ready Now"
+          },
+          "top": {
+            "items": {
+              "$ref": "#/components/schemas/HospitalCard"
+            },
+            "type": "array",
+            "title": "Top"
+          },
+          "excluded": {
+            "items": {
+              "$ref": "#/components/schemas/ExcludedCard"
+            },
+            "type": "array",
+            "title": "Excluded"
+          },
+          "approximate_location": {
+            "type": "boolean",
+            "title": "Approximate Location"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nearby",
+          "can_handle",
+          "ready_now",
+          "top",
+          "excluded",
+          "approximate_location"
+        ],
+        "title": "HospitalSummary"
+      },
+      "IncomingItem": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "referral",
+              "alert"
+            ],
+            "title": "Kind"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "report_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Report Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "patient": {
+            "$ref": "#/components/schemas/IncomingPatient"
+          },
+          "care_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Type"
+          },
+          "red_flag": {
+            "type": "boolean",
+            "title": "Red Flag"
+          },
+          "red_flag_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Red Flag Message"
+          },
+          "symptoms": {
+            "items": {
+              "$ref": "#/components/schemas/SymptomLine"
+            },
+            "type": "array",
+            "title": "Symptoms"
+          },
+          "vitals": {
+            "items": {
+              "$ref": "#/components/schemas/VitalLine"
+            },
+            "type": "array",
+            "title": "Vitals"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "eta_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eta Minutes"
+          },
+          "expected_arrival_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Arrival At"
+          },
+          "decision_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision Reason"
+          },
+          "referred_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referred By"
+          },
+          "accepted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "arrived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrived At"
+          },
+          "overdue_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overdue At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "id",
+          "report_id",
+          "status",
+          "created_at",
+          "patient",
+          "care_type",
+          "red_flag",
+          "red_flag_message",
+          "symptoms",
+          "vitals",
+          "distance_km",
+          "eta_minutes",
+          "expected_arrival_at",
+          "decision_reason",
+          "referred_by",
+          "accepted_at",
+          "arrived_at",
+          "overdue_at"
+        ],
+        "title": "IncomingItem"
+      },
+      "IncomingPatient": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "age_group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Group"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          },
+          "pregnant": {
+            "type": "boolean",
+            "title": "Pregnant"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id",
+          "age_group",
+          "sex",
+          "pregnant"
+        ],
+        "title": "IncomingPatient"
+      },
+      "LoginIn": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginIn"
+      },
+      "MeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "status_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Reason"
+          },
+          "facility": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FacilityBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "csrf_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Csrf Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "full_name",
+          "role",
+          "status",
+          "status_reason",
+          "facility"
+        ],
+        "title": "MeOut"
+      },
+      "PageMeta": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "PageMeta"
+      },
+      "PatientKeysOut": {
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "device_key": {
+            "type": "string",
+            "title": "Device Key"
+          },
+          "recovery_code": {
+            "type": "string",
+            "title": "Recovery Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient_id",
+          "vitalis_id",
+          "device_key",
+          "recovery_code"
+        ],
+        "title": "PatientKeysOut"
+      },
+      "PatientRecoverIn": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "maxLength": 16,
+            "title": "Vitalis Id"
+          },
+          "recovery_code": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Recovery Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id",
+          "recovery_code"
+        ],
+        "title": "PatientRecoverIn"
+      },
+      "PatientStartIn": {
+        "properties": {
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "pattern": "^\\+?[0-9 ]{7,20}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "type": "object",
+        "title": "PatientStartIn"
+      },
+      "RedFlagOut": {
+        "properties": {
+          "fired": {
+            "type": "boolean",
+            "title": "Fired"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fired",
+          "message"
+        ],
+        "title": "RedFlagOut"
+      },
+      "ReferralCreateIn": {
+        "properties": {
+          "facility_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility Id"
+          }
+        },
+        "type": "object",
+        "title": "ReferralCreateIn"
+      },
+      "ReferralPatientOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "report_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Report Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "facility": {
+            "$ref": "#/components/schemas/FacilityPublic"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "eta_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eta Minutes"
+          },
+          "eta_is_estimate": {
+            "type": "boolean",
+            "title": "Eta Is Estimate",
+            "default": true
+          },
+          "directions_url": {
+            "type": "string",
+            "title": "Directions Url"
+          },
+          "what_to_bring": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "What To Bring"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "decline_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decline Reason"
+          },
+          "next_referral_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Referral Id"
+          },
+          "previous_facility_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Facility Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "accepted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "arrived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrived At"
+          },
+          "overdue_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overdue At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "report_id",
+          "status",
+          "facility",
+          "distance_km",
+          "eta_minutes",
+          "directions_url",
+          "what_to_bring",
+          "vitalis_id",
+          "decline_reason",
+          "next_referral_id",
+          "previous_facility_name",
+          "created_at",
+          "accepted_at",
+          "arrived_at",
+          "overdue_at"
+        ],
+        "title": "ReferralPatientOut",
+        "description": "What the family sees. No clinical labels."
+      },
+      "ServicePatchIn": {
+        "properties": {
+          "availability_status": {
+            "$ref": "#/components/schemas/Availability"
+          }
+        },
+        "type": "object",
+        "required": [
+          "availability_status"
+        ],
+        "title": "ServicePatchIn"
+      },
+      "ServiceRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "availability_status": {
+            "type": "string",
+            "title": "Availability Status"
+          },
+          "last_confirmed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Confirmed At"
+          },
+          "freshness": {
+            "type": "string",
+            "title": "Freshness"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "category",
+          "availability_status",
+          "last_confirmed_at",
+          "freshness"
+        ],
+        "title": "ServiceRow"
+      },
+      "SymptomLine": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severity"
+          },
+          "onset": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "label",
+          "region",
+          "severity",
+          "onset"
+        ],
+        "title": "SymptomLine"
+      },
+      "Tap": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "emergency",
+              "context",
+              "region",
+              "symptom",
+              "severity",
+              "onset",
+              "location"
+            ],
+            "title": "Kind"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 48
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "selected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "age_group": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Group"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          },
+          "pregnant": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pregnant"
+          },
+          "who": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Who"
+          },
+          "lat": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lat"
+          },
+          "lng": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lng"
+          },
+          "lga": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lga"
+          },
+          "client_ts": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Ts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "Tap"
+      },
+      "TapsIn": {
+        "properties": {
+          "taps": {
+            "items": {
+              "$ref": "#/components/schemas/Tap"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Taps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "taps"
+        ],
+        "title": "TapsIn"
+      },
+      "TaxEmergency": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "icon": {
+            "type": "string",
+            "title": "Icon"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Labels"
+          },
+          "audio": {
+            "type": "string",
+            "title": "Audio"
+          },
+          "context": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Context"
+          },
+          "symptoms": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Symptoms"
+          },
+          "next": {
+            "type": "string",
+            "enum": [
+              "emergency",
+              "body",
+              "who_child"
+            ],
+            "title": "Next"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "icon",
+          "labels",
+          "audio",
+          "context",
+          "symptoms",
+          "next"
+        ],
+        "title": "TaxEmergency"
+      },
+      "TaxLga": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lng": {
+            "type": "number",
+            "title": "Lng"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "lat",
+          "lng"
+        ],
+        "title": "TaxLga"
+      },
+      "TaxOnset": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "icon": {
+            "type": "string",
+            "title": "Icon"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Labels"
+          },
+          "audio": {
+            "type": "string",
+            "title": "Audio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "icon",
+          "labels",
+          "audio"
+        ],
+        "title": "TaxOnset"
+      },
+      "TaxRegion": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "view": {
+            "type": "string",
+            "title": "View"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Labels"
+          },
+          "audio": {
+            "type": "string",
+            "title": "Audio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "view",
+          "labels",
+          "audio"
+        ],
+        "title": "TaxRegion"
+      },
+      "TaxSeverity": {
+        "properties": {
+          "value": {
+            "type": "integer",
+            "title": "Value"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Labels"
+          },
+          "audio": {
+            "type": "string",
+            "title": "Audio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "labels",
+          "audio"
+        ],
+        "title": "TaxSeverity"
+      },
+      "TaxSymptom": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "regions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Regions"
+          },
+          "icon": {
+            "type": "string",
+            "title": "Icon"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Labels"
+          },
+          "audio": {
+            "type": "string",
+            "title": "Audio"
+          },
+          "pregnant_only": {
+            "type": "boolean",
+            "title": "Pregnant Only",
+            "default": false
+          },
+          "female_only": {
+            "type": "boolean",
+            "title": "Female Only",
+            "default": false
+          },
+          "child_only": {
+            "type": "boolean",
+            "title": "Child Only",
+            "default": false
+          },
+          "emergency_only": {
+            "type": "boolean",
+            "title": "Emergency Only",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "regions",
+          "icon",
+          "labels",
+          "audio"
+        ],
+        "title": "TaxSymptom"
+      },
+      "TaxWho": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "icon": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Labels"
+          },
+          "audio": {
+            "type": "string",
+            "title": "Audio"
+          },
+          "context": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Context"
+          },
+          "sub": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/TaxWho"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sub"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "labels",
+          "audio",
+          "context"
+        ],
+        "title": "TaxWho"
+      },
+      "Taxonomy": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "needs_clinical_review": {
+            "type": "boolean",
+            "title": "Needs Clinical Review"
+          },
+          "languages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Languages"
+          },
+          "regions": {
+            "items": {
+              "$ref": "#/components/schemas/TaxRegion"
+            },
+            "type": "array",
+            "title": "Regions"
+          },
+          "symptoms": {
+            "items": {
+              "$ref": "#/components/schemas/TaxSymptom"
+            },
+            "type": "array",
+            "title": "Symptoms"
+          },
+          "emergencies": {
+            "items": {
+              "$ref": "#/components/schemas/TaxEmergency"
+            },
+            "type": "array",
+            "title": "Emergencies"
+          },
+          "who": {
+            "items": {
+              "$ref": "#/components/schemas/TaxWho"
+            },
+            "type": "array",
+            "title": "Who"
+          },
+          "severity": {
+            "items": {
+              "$ref": "#/components/schemas/TaxSeverity"
+            },
+            "type": "array",
+            "title": "Severity"
+          },
+          "onset": {
+            "items": {
+              "$ref": "#/components/schemas/TaxOnset"
+            },
+            "type": "array",
+            "title": "Onset"
+          },
+          "lgas": {
+            "items": {
+              "$ref": "#/components/schemas/TaxLga"
+            },
+            "type": "array",
+            "title": "Lgas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "needs_clinical_review",
+          "languages",
+          "regions",
+          "symptoms",
+          "emergencies",
+          "who",
+          "severity",
+          "onset",
+          "lgas"
+        ],
+        "title": "Taxonomy"
+      },
+      "TriageOut": {
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Report Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "red_flag": {
+            "$ref": "#/components/schemas/RedFlagOut"
+          },
+          "care_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Type"
+          },
+          "care_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Label"
+          },
+          "action_level": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "go_now",
+                  "go_today",
+                  "see_chemist",
+                  "self_care"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Level"
+          },
+          "self_care_return_if": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Self Care Return If"
+          },
+          "what_to_bring": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "What To Bring"
+          },
+          "heads_up_sent": {
+            "type": "boolean",
+            "title": "Heads Up Sent"
+          },
+          "hospitals": {
+            "$ref": "#/components/schemas/HospitalSummary"
+          },
+          "context": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Context"
+          },
+          "answers": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Answers"
+          },
+          "active_referral_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Referral Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "report_id",
+          "status",
+          "red_flag",
+          "care_type",
+          "care_label",
+          "action_level",
+          "self_care_return_if",
+          "what_to_bring",
+          "heads_up_sent",
+          "hospitals",
+          "context",
+          "answers"
+        ],
+        "title": "TriageOut"
+      },
+      "TriageStartIn": {
+        "properties": {
+          "taps": {
+            "items": {
+              "$ref": "#/components/schemas/Tap"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Taps"
+          }
+        },
+        "type": "object",
+        "title": "TriageStartIn"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VitalLine": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "measured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Measured At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "value",
+          "unit",
+          "source",
+          "measured_at"
+        ],
+        "title": "VitalLine"
+      }
+    }
+  }
+}
