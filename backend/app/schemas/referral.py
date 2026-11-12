@@ -95,3 +95,4 @@ class DecisionOut(BaseModel):
     referral_id: uuid.UUID
     status: str
     next_referral_id: uuid.UUID | None
+    encounter_id: uuid.UUID | None = None  # set when arrival opens an encounter

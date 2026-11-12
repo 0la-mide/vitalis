@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/hospital", label: "Incoming" },
+  { href: "/hospital/patients", label: "Patients" },
   { href: "/hospital/availability", label: "Availability" },
 ];
 
@@ -32,14 +33,21 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
               {me ? `${me.full_name} · ${ROLE_LABEL[me.role] ?? me.role}` : ""}
             </div>
           </div>
-          <nav className="flex gap-1">
-            {[...NAV, ...(me?.role === "facility_admin" ? [{ href: "/hospital/staff", label: "Staff" }] : [])].map((n) => (
+          <nav className="flex flex-wrap gap-1">
+            {[
+              ...NAV.slice(0, 2),
+              ...(me?.role === "lab" ? [{ href: "/hospital/lab", label: "Lab" }] : []),
+              ...NAV.slice(2),
+              ...(me?.role === "facility_admin" ? [{ href: "/hospital/staff", label: "Staff" }] : []),
+            ].map((n) => (
               <Link
                 key={n.href}
                 href={n.href}
                 className={cn(
                   "rounded-lg px-3 py-2 text-sm font-semibold",
-                  path === n.href ? "bg-mint text-primary-strong" : "hover:bg-muted",
+                  (n.href === "/hospital" ? path === n.href : path.startsWith(n.href))
+                    ? "bg-mint text-primary-strong"
+                    : "hover:bg-muted",
                 )}
               >
                 {n.label}

@@ -1,0 +1,22 @@
+{
+  "version": "inv-2026-11-12.1",
+  "needs_clinical_review": true,
+  "note": "Orderable tests for the demo. A catalogue, not clinical advice: facilities should load their own list.",
+  "tests": [
+    {"code": "FBC", "name": "Full blood count", "category": "lab"},
+    {"code": "HB", "name": "Haemoglobin / PCV", "category": "lab"},
+    {"code": "GXM", "name": "Blood group and crossmatch", "category": "lab"},
+    {"code": "MP_RDT", "name": "Malaria RDT", "category": "lab"},
+    {"code": "MP_FILM", "name": "Malaria parasite film", "category": "lab"},
+    {"code": "URINALYSIS", "name": "Urinalysis", "category": "lab"},
+    {"code": "RBS", "name": "Random blood sugar", "category": "lab"},
+    {"code": "E_U_CR", "name": "Electrolytes, urea, creatinine", "category": "lab"},
+    {"code": "CLOTTING", "name": "Clotting profile", "category": "lab"},
+    {"code": "WIDAL", "name": "Widal test", "category": "lab"},
+    {"code": "USS_OBS", "name": "Obstetric ultrasound", "category": "radiology"},
+    {"code": "USS_ABD", "name": "Abdominal ultrasound", "category": "radiology"},
+    {"code": "CXR", "name": "Chest X-ray", "category": "radiology"},
+    {"code": "XR_LIMB", "name": "Limb X-ray", "category": "radiology"},
+    {"code": "ECG", "name": "ECG", "category": "radiology"}
+  ]
+}

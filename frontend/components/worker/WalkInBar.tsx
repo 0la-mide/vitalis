@@ -5,17 +5,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { api, type TriageOut } from "@/lib/api";
 import { useTriage } from "@/lib/triage-store";
+import { VITAL_FIELDS } from "@/lib/vitals";
 import { cn, timeAgo } from "@/lib/utils";
 
-const FIELDS = [
-  { kind: "systolic_bp", label: "BP systolic", unit: "mmHg", step: "1" },
-  { kind: "diastolic_bp", label: "BP diastolic", unit: "mmHg", step: "1" },
-  { kind: "pulse", label: "Pulse", unit: "bpm", step: "1" },
-  { kind: "temp_c", label: "Temperature", unit: "°C", step: "0.1" },
-  { kind: "spo2", label: "SpO₂", unit: "%", step: "1" },
-  { kind: "resp_rate", label: "Resp. rate", unit: "/min", step: "1" },
-  { kind: "weight_kg", label: "Weight", unit: "kg", step: "0.1" },
-] as const;
+const FIELDS = VITAL_FIELDS;
 
 type Saved = { kind: string; value: number; at: string };
 

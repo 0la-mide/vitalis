@@ -37,6 +37,7 @@ from app.schemas.referral import (
     SymptomLine,
     VitalLine,
 )
+from app.services import encounters as esvc
 from app.services import referrals as svc
 from app.services import verification as vsvc
 
@@ -184,8 +185,12 @@ async def decide(
 async def arrived(referral_id: uuid.UUID, user: User = Depends(front_desk), db: AsyncSession = Depends(get_db)):
     ref = await _scoped_referral(db, referral_id, user)
     await svc.mark_arrived(db, ref, user.id)
-    out = DecisionOut(referral_id=ref.id, status=ref.status, next_referral_id=None)
+    # Arrival opens the encounter with everything the referral already carries: no re-typing.
+    enc = await esvc.open_encounter(db, facility_id=user.facility_id, patient_id=ref.patient_id, actor=user,
+                                    referral=ref)
+    out = DecisionOut(referral_id=ref.id, status=ref.status, next_referral_id=None, encounter_id=enc.id)
     await db.commit()
+    esvc.publish(enc, "encounter.new")
     return ok(out)
 
 

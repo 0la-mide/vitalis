@@ -12,6 +12,8 @@ export function homeFor(me: MeOut): string {
   if (me.status !== "approved") return "/auth/status";
   if (me.role === "network_admin") return "/admin";
   if (me.role === "worker") return "/worker";
+  if (me.role === "lab" && me.facility?.status === "approved") return "/hospital/lab";
+  if (["nurse", "doctor"].includes(me.role) && me.facility?.status === "approved") return "/hospital/patients";
   if (HOSPITAL_ROLES.includes(me.role) && me.facility?.status === "approved") return "/hospital";
   return "/auth/status";
 }

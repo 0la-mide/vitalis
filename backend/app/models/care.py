@@ -63,7 +63,8 @@ class Vital(IdMixin, Base):
 
     patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id", ondelete="CASCADE"), index=True)
     report_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("triage_reports.id", ondelete="SET NULL"))
-    encounter_id: Mapped[uuid.UUID | None]  # FK added with encounters (Phase 6)
+    encounter_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("encounters.id", ondelete="SET NULL"),
+                                                           index=True)
     source: Mapped[str] = mapped_column(String(16))  # worker | nurse
     kind: Mapped[str] = mapped_column(String(24))  # spo2, systolic_bp, diastolic_bp, pulse, temp_c, resp_rate, weight_kg
     value: Mapped[float]

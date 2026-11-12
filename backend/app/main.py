@@ -14,6 +14,7 @@ def build_router() -> APIRouter:
     from app.api.v1 import (
         admin,
         auth,
+        encounters,
         facilities,
         health,
         hospital,
@@ -25,7 +26,7 @@ def build_router() -> APIRouter:
     )
 
     api = APIRouter(prefix="/api/v1")
-    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, admin, worker):
+    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, encounters, admin, worker):
         api.include_router(module.router)
     return api
 

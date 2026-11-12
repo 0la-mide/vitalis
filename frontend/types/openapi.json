@@ -1179,6 +1179,543 @@
         }
       }
     },
+    "/api/v1/hospital/encounters": {
+      "get": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "List Encounters",
+        "operationId": "list_encounters_api_v1_hospital_encounters_get",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "comma-separated states; default = open",
+              "title": "State"
+            },
+            "description": "comma-separated states; default = open"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_EncounterListItem__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Register Walk In",
+        "operationId": "register_walk_in_api_v1_hospital_encounters_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalkInIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_WalkInOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/tests": {
+      "get": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Test Catalogue",
+        "operationId": "test_catalogue_api_v1_hospital_tests_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_TestOption__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}": {
+      "get": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Get Encounter",
+        "operationId": "get_encounter_api_v1_hospital_encounters__encounter_id__get",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/transition": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Move",
+        "operationId": "move_api_v1_hospital_encounters__encounter_id__transition_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/vitals": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Record Vitals",
+        "operationId": "record_vitals_api_v1_hospital_encounters__encounter_id__vitals_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncounterVitalsIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/notes": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Write Note",
+        "operationId": "write_note_api_v1_hospital_encounters__encounter_id__notes_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/notes/{note_id}/sign": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Sign",
+        "operationId": "sign_api_v1_hospital_encounters__encounter_id__notes__note_id__sign_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Note Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/orders": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Order",
+        "operationId": "order_api_v1_hospital_encounters__encounter_id__orders_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrdersIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/lab/queue": {
+      "get": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Lab Queue",
+        "operationId": "lab_queue_api_v1_hospital_lab_queue_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_LabQueueItem__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/orders/{order_id}/result": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Result",
+        "operationId": "result_api_v1_hospital_orders__order_id__result_post",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResultIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_OrderRow_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/orders/{order_id}/verify": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Verify",
+        "operationId": "verify_api_v1_hospital_orders__order_id__verify_post",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_OrderRow_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/verifications": {
       "get": {
         "tags": [
@@ -1896,6 +2433,42 @@
   },
   "components": {
     "schemas": {
+      "Allowed": {
+        "properties": {
+          "transitions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Transitions"
+          },
+          "record_vitals": {
+            "type": "boolean",
+            "title": "Record Vitals"
+          },
+          "write_notes": {
+            "type": "boolean",
+            "title": "Write Notes"
+          },
+          "order_tests": {
+            "type": "boolean",
+            "title": "Order Tests"
+          },
+          "cancel": {
+            "type": "boolean",
+            "title": "Cancel"
+          }
+        },
+        "type": "object",
+        "required": [
+          "transitions",
+          "record_vitals",
+          "write_notes",
+          "order_tests",
+          "cancel"
+        ],
+        "title": "Allowed"
+      },
       "AuditOut": {
         "properties": {
           "id": {
@@ -2281,6 +2854,18 @@
               }
             ],
             "title": "Next Referral Id"
+          },
+          "encounter_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Encounter Id"
           }
         },
         "type": "object",
@@ -2290,6 +2875,269 @@
           "next_referral_id"
         ],
         "title": "DecisionOut"
+      },
+      "EncounterListItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "state_label": {
+            "type": "string",
+            "title": "State Label"
+          },
+          "emergency": {
+            "type": "boolean",
+            "title": "Emergency"
+          },
+          "patient": {
+            "$ref": "#/components/schemas/IncomingPatient"
+          },
+          "care_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Label"
+          },
+          "headline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headline"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "open_orders": {
+            "type": "integer",
+            "title": "Open Orders"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "state_label",
+          "emergency",
+          "patient",
+          "care_label",
+          "headline",
+          "created_at",
+          "updated_at",
+          "open_orders"
+        ],
+        "title": "EncounterListItem"
+      },
+      "EncounterOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "state_label": {
+            "type": "string",
+            "title": "State Label"
+          },
+          "emergency": {
+            "type": "boolean",
+            "title": "Emergency"
+          },
+          "chief_complaint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chief Complaint"
+          },
+          "disposition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disposition"
+          },
+          "disposition_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disposition Note"
+          },
+          "cancel_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancel Reason"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "patient": {
+            "$ref": "#/components/schemas/IncomingPatient"
+          },
+          "referral": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReferralSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vitals": {
+            "items": {
+              "$ref": "#/components/schemas/VitalRow"
+            },
+            "type": "array",
+            "title": "Vitals"
+          },
+          "notes": {
+            "items": {
+              "$ref": "#/components/schemas/NoteRow"
+            },
+            "type": "array",
+            "title": "Notes"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/OrderRow"
+            },
+            "type": "array",
+            "title": "Orders"
+          },
+          "timeline": {
+            "items": {
+              "$ref": "#/components/schemas/TimelineRow"
+            },
+            "type": "array",
+            "title": "Timeline"
+          },
+          "allowed": {
+            "$ref": "#/components/schemas/Allowed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "state_label",
+          "emergency",
+          "chief_complaint",
+          "disposition",
+          "disposition_note",
+          "cancel_reason",
+          "created_at",
+          "completed_at",
+          "patient",
+          "referral",
+          "vitals",
+          "notes",
+          "orders",
+          "timeline",
+          "allowed"
+        ],
+        "title": "EncounterOut"
+      },
+      "EncounterVitalsIn": {
+        "properties": {
+          "readings": {
+            "items": {
+              "$ref": "#/components/schemas/VitalIn"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Readings"
+          },
+          "corrected_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corrected From"
+          },
+          "correction_reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correction Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "readings"
+        ],
+        "title": "EncounterVitalsIn"
       },
       "Envelope_DecisionOut_": {
         "properties": {
@@ -2312,6 +3160,28 @@
           "data"
         ],
         "title": "Envelope[DecisionOut]"
+      },
+      "Envelope_EncounterOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EncounterOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[EncounterOut]"
       },
       "Envelope_Health_": {
         "properties": {
@@ -2400,6 +3270,28 @@
           "data"
         ],
         "title": "Envelope[Metrics]"
+      },
+      "Envelope_OrderRow_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OrderRow"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[OrderRow]"
       },
       "Envelope_PatientKeysOut_": {
         "properties": {
@@ -2533,6 +3425,28 @@
         ],
         "title": "Envelope[VerificationOut]"
       },
+      "Envelope_WalkInOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WalkInOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[WalkInOut]"
+      },
       "Envelope_WorkerReferralOut_": {
         "properties": {
           "data": {
@@ -2627,6 +3541,32 @@
         ],
         "title": "Envelope[list[AuditOut]]"
       },
+      "Envelope_list_EncounterListItem__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/EncounterListItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[EncounterListItem]]"
+      },
       "Envelope_list_FacilityOption__": {
         "properties": {
           "data": {
@@ -2705,6 +3645,32 @@
         ],
         "title": "Envelope[list[IncomingItem]]"
       },
+      "Envelope_list_LabQueueItem__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/LabQueueItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[LabQueueItem]]"
+      },
       "Envelope_list_ServiceRow__": {
         "properties": {
           "data": {
@@ -2756,6 +3722,32 @@
           "data"
         ],
         "title": "Envelope[list[StaffRow]]"
+      },
+      "Envelope_list_TestOption__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/TestOption"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[TestOption]]"
       },
       "Envelope_list_VerificationOut__": {
         "properties": {
@@ -3368,6 +4360,38 @@
         ],
         "title": "IncomingPatient"
       },
+      "LabQueueItem": {
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/OrderRow"
+          },
+          "encounter_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Encounter Id"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "emergency": {
+            "type": "boolean",
+            "title": "Emergency"
+          },
+          "patient": {
+            "$ref": "#/components/schemas/IncomingPatient"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order",
+          "encounter_id",
+          "vitalis_id",
+          "emergency",
+          "patient"
+        ],
+        "title": "LabQueueItem"
+      },
       "LoginIn": {
         "properties": {
           "email": {
@@ -3538,6 +4562,295 @@
           "workers_pending"
         ],
         "title": "Metrics"
+      },
+      "NoteIn": {
+        "properties": {
+          "body": {
+            "type": "string",
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Body"
+          },
+          "note_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "body"
+        ],
+        "title": "NoteIn"
+      },
+      "NoteRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "author_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Author Id"
+          },
+          "author": {
+            "type": "string",
+            "title": "Author"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "body": {
+            "type": "string",
+            "title": "Body"
+          },
+          "supersedes_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supersedes Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "signed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Signed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "author_id",
+          "author",
+          "status",
+          "version",
+          "body",
+          "supersedes_id",
+          "created_at",
+          "signed_at"
+        ],
+        "title": "NoteRow"
+      },
+      "OrderItemIn": {
+        "properties": {
+          "test_code": {
+            "type": "string",
+            "maxLength": 48,
+            "title": "Test Code"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "routine",
+              "urgent"
+            ],
+            "title": "Priority",
+            "default": "routine"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "test_code"
+        ],
+        "title": "OrderItemIn"
+      },
+      "OrderRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "test_code": {
+            "type": "string",
+            "title": "Test Code"
+          },
+          "test_name": {
+            "type": "string",
+            "title": "Test Name"
+          },
+          "priority": {
+            "type": "string",
+            "title": "Priority"
+          },
+          "clinical_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinical Note"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "ordered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ordered By"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "result_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Text"
+          },
+          "abnormal": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abnormal"
+          },
+          "entered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entered By"
+          },
+          "entered_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entered At"
+          },
+          "verified_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified By"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "test_code",
+          "test_name",
+          "priority",
+          "clinical_note",
+          "status",
+          "ordered_by",
+          "created_at"
+        ],
+        "title": "OrderRow"
+      },
+      "OrdersIn": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderItemIn"
+            },
+            "type": "array",
+            "maxItems": 15,
+            "minItems": 1,
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "OrdersIn"
       },
       "PageMeta": {
         "properties": {
@@ -3832,6 +5145,95 @@
         "title": "ReferralPatientOut",
         "description": "What the family sees. No clinical labels."
       },
+      "ReferralSummary": {
+        "properties": {
+          "referral_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Referral Id"
+          },
+          "referred_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referred By"
+          },
+          "red_flag_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Red Flag Message"
+          },
+          "care_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Type"
+          },
+          "care_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Label"
+          },
+          "symptoms": {
+            "items": {
+              "$ref": "#/components/schemas/SymptomLine"
+            },
+            "type": "array",
+            "title": "Symptoms"
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Sent At"
+          },
+          "arrived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrived At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "referral_id",
+          "referred_by",
+          "red_flag_message",
+          "care_type",
+          "care_label",
+          "symptoms",
+          "sent_at",
+          "arrived_at"
+        ],
+        "title": "ReferralSummary"
+      },
       "RegisteredOut": {
         "properties": {
           "user_id": {
@@ -3867,6 +5269,26 @@
           "message"
         ],
         "title": "RegisteredOut"
+      },
+      "ResultIn": {
+        "properties": {
+          "result_text": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Result Text"
+          },
+          "abnormal": {
+            "type": "boolean",
+            "title": "Abnormal",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "result_text"
+        ],
+        "title": "ResultIn"
       },
       "ServicePatchIn": {
         "properties": {
@@ -4702,6 +6124,139 @@
         ],
         "title": "Taxonomy"
       },
+      "TestOption": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "category"
+        ],
+        "title": "TestOption"
+      },
+      "TimelineRow": {
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          },
+          "actor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor"
+          },
+          "actor_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Role"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "at",
+          "actor",
+          "actor_role",
+          "kind",
+          "summary"
+        ],
+        "title": "TimelineRow"
+      },
+      "TransitionIn": {
+        "properties": {
+          "to": {
+            "type": "string",
+            "enum": [
+              "awaiting_nursing",
+              "awaiting_doctor",
+              "results_ready",
+              "awaiting_disposition",
+              "completed",
+              "cancelled"
+            ],
+            "title": "To"
+          },
+          "disposition": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "discharged",
+                  "admitted",
+                  "transferred",
+                  "left"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disposition"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "to"
+        ],
+        "title": "TransitionIn"
+      },
       "TriageOut": {
         "properties": {
           "report_id": {
@@ -5156,6 +6711,81 @@
         ],
         "title": "VitalLine"
       },
+      "VitalRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "measured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Measured At"
+          },
+          "entered_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entered By"
+          },
+          "corrected_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corrected From"
+          },
+          "superseded": {
+            "type": "boolean",
+            "title": "Superseded"
+          },
+          "urgent": {
+            "type": "boolean",
+            "title": "Urgent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "value",
+          "unit",
+          "source",
+          "measured_at",
+          "entered_by",
+          "corrected_from",
+          "superseded",
+          "urgent"
+        ],
+        "title": "VitalRow"
+      },
       "VitalsIn": {
         "properties": {
           "report_id": {
@@ -5179,6 +6809,90 @@
           "readings"
         ],
         "title": "VitalsIn"
+      },
+      "WalkInIn": {
+        "properties": {
+          "age_group": {
+            "type": "string",
+            "enum": [
+              "under5",
+              "child",
+              "teen",
+              "adult",
+              "elderly"
+            ],
+            "title": "Age Group"
+          },
+          "sex": {
+            "type": "string",
+            "enum": [
+              "female",
+              "male",
+              "unknown"
+            ],
+            "title": "Sex",
+            "default": "unknown"
+          },
+          "pregnant": {
+            "type": "boolean",
+            "title": "Pregnant",
+            "default": false
+          },
+          "emergency": {
+            "type": "boolean",
+            "title": "Emergency",
+            "default": false
+          },
+          "chief_complaint": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Chief Complaint"
+          },
+          "family_phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "pattern": "^\\+?[0-9 ]{7,20}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Phone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "age_group",
+          "chief_complaint"
+        ],
+        "title": "WalkInIn"
+      },
+      "WalkInOut": {
+        "properties": {
+          "encounter_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Encounter Id"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "recovery_code": {
+            "type": "string",
+            "title": "Recovery Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "encounter_id",
+          "vitalis_id",
+          "recovery_code"
+        ],
+        "title": "WalkInOut"
       },
       "WorkerReferralOut": {
         "properties": {

@@ -85,3 +85,31 @@ class AlertStatus(StrEnum):
     sent = "sent"
     ready = "ready"
     dismissed = "dismissed"
+
+
+class EncounterState(StrEnum):
+    registered = "registered"
+    awaiting_nursing = "awaiting_nursing"
+    awaiting_doctor = "awaiting_doctor"
+    awaiting_investigation = "awaiting_investigation"
+    results_ready = "results_ready"
+    awaiting_disposition = "awaiting_disposition"
+    completed = "completed"
+    cancelled = "cancelled"
+
+
+ES = EncounterState
+# Allowed manual transitions and the roles that may perform them. Order/result-driven moves
+# (awaiting_doctor -> awaiting_investigation -> results_ready) happen automatically.
+ENCOUNTER_TRANSITIONS: dict[tuple[str, str], set[str]] = {
+    (ES.registered, ES.awaiting_nursing): {"receptionist", "nurse", "facility_admin"},
+    (ES.registered, ES.awaiting_doctor): {"receptionist", "nurse", "doctor", "facility_admin"},
+    (ES.awaiting_nursing, ES.awaiting_doctor): {"nurse", "facility_admin"},
+    (ES.awaiting_doctor, ES.awaiting_disposition): {"doctor"},
+    (ES.results_ready, ES.awaiting_disposition): {"doctor"},
+    (ES.results_ready, ES.awaiting_doctor): {"doctor", "nurse"},
+    (ES.awaiting_disposition, ES.completed): {"receptionist", "nurse", "doctor", "facility_admin"},
+}
+CANCELLABLE = {ES.registered, ES.awaiting_nursing, ES.awaiting_doctor, ES.awaiting_investigation, ES.results_ready,
+               ES.awaiting_disposition}
+CANCEL_ROLES = {"receptionist", "doctor", "facility_admin"}

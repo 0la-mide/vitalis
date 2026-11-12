@@ -65,6 +65,27 @@ Documents: PDF/JPG/PNG by **magic bytes**, max 5 MB, random file names in `UPLOA
 | GET | `/hospital/staff` | facility_admin — staff at their facility incl. pending |
 | PATCH | `/hospital/staff/{user_id}` | facility_admin — `{decision: approve|reject|suspend, reason}`; other facilities' staff → 404 |
 
+## Receiving hospital encounters (facility-scoped)
+
+| Method | Path | Roles |
+|---|---|---|
+| POST | `/hospital/referrals/{id}/arrived` | receptionist, nurse, facility_admin — now also opens the encounter (`encounter_id` in the response) |
+| POST | `/hospital/encounters` | receptionist, nurse, facility_admin — register a walk-in (returns VITALIS ID + recovery code) |
+| GET | `/hospital/encounters?state=` | any hospital role — open encounters by default (patient board) |
+| GET | `/hospital/encounters/{id}` | any hospital role — referral, vitals (chemist + hospital), signed notes, orders/results, timeline, `allowed` actions; audited |
+| POST | `/hospital/encounters/{id}/transition` | `{to, disposition?, note?, reason?}` — role rules in `ENCOUNTER_TRANSITIONS`; disposition needs a signed note; cancel needs a reason |
+| POST | `/hospital/encounters/{id}/vitals` | nurse, doctor — `{readings, corrected_from?, correction_reason?}`; corrections keep the original; urgent readings flagged by the red-flag vitals rules |
+| POST | `/hospital/encounters/{id}/notes` | doctor — `{body, note_id?}`: new draft, edit own draft, or amend a signed note (new version) |
+| POST | `/hospital/encounters/{id}/notes/{nid}/sign` | doctor (author only) |
+| POST | `/hospital/encounters/{id}/orders` | doctor — `{items[{test_code, priority}]}` → state `awaiting_investigation` |
+| GET | `/hospital/tests` | test catalogue (`data/investigations.json`) |
+| GET | `/hospital/lab/queue` | lab |
+| POST | `/hospital/orders/{id}/result` | lab — `{result_text, abnormal}` |
+| POST | `/hospital/orders/{id}/verify` | lab — separate step; when every order is verified → `results_ready` |
+
+States: `registered → awaiting_nursing → awaiting_doctor → awaiting_investigation → results_ready →
+awaiting_disposition → completed | cancelled`. Emergency (red flag or ticked at registration) skips to the doctor.
+
 ## Frontline worker (role `worker`, approved; scoped to the worker's own reports)
 
 | Method | Path | Notes |

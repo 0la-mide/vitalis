@@ -34,6 +34,18 @@ Setup (2 minutes before): `make demo-reset`, `make dev`. Open two windows:
 
 Simulated with a 1.5 s pause per action: 10 taps + 2 vitals + send in about 19 s.
 
+## At the hospital: arrival to discharge, no re-typing
+
+1. Sapon receptionist (`receptionist.sapon@vitalis.demo`) → **Incoming** → **Confirm arrival & open encounter**. The
+   encounter already has the referral, symptoms and the chemist's vitals.
+2. Nurse (`nurse.sapon@…`) → **Patients** → record vitals: they appear beside the chemist's with ↑/↓ arrows (an SpO₂
+   below 92 is flagged urgent). **Send to doctor**.
+3. Doctor (`doctor.sapon@…`) → write the note → **Save draft** → **Sign note** → **Order tests** (tap twice for urgent).
+4. Lab (`lab.sapon@…`) → **Lab** → enter each result → **Verify**. The encounter returns to the doctor as
+   "Results ready".
+5. Doctor → **Decide disposition** (e.g. admitted) → receptionist → **Complete encounter**. The timeline shows every
+   handoff with time and name; the chemist's referral shows "Completed".
+
 ## Talking points
 
 - *Safety rules before models:* stop the model (`Ctrl-C` on the model process) and repeat — the red flag still fires.

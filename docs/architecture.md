@@ -58,6 +58,17 @@ the patient's device key. Vitals are stored with `source=worker`, `entered_by` a
 rules (reusing the last stored model prediction, so the care type does not change). Referrals carry `worker_id`, so the
 worker's SSE channel and the overdue job (SMS to the worker's phone) both reach them.
 
+## Receiving hospital
+
+Reception confirms arrival, which opens an `encounter` linked to the referral and triage report, so the symptoms, danger
+sign, care type and the chemist's vitals are already there. Emergencies go straight to the doctor; others to nursing.
+Every step writes an `encounter_events` row (time, staff, from/to state) that the timeline shows. Nurse vitals sit next
+to the chemist's with a trend arrow; a correction is a new reading pointing at the old one (`corrected_from`), never an
+overwrite. Doctor notes are private drafts until signed; signed notes are immutable and amended by a new version. Orders
+move the encounter to `awaiting_investigation`; lab enters a result and verifies it as a separate action, and when all
+orders are verified the encounter returns to the doctor as `results_ready`. A disposition needs a signed note;
+completing it also completes the referral (the chemist sees "Completed").
+
 ## Registration and verification
 
 Self-registration creates `pending` accounts plus a `verifications` row (subject `facility`, `worker` or `staff`) with

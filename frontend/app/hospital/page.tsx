@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BellRing, CheckCircle2, Clock, Radio, Siren, UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
@@ -31,6 +32,7 @@ const AGE: Record<string, string> = { under5: "Under 5", child: "Child 5–12", 
 
 export default function IncomingPage() {
   const qc = useQueryClient();
+  const router = useRouter();
   const { data: me } = useMe();
   const [live, setLive] = useState(false);
   const [fresh, setFresh] = useState<Set<string>>(new Set());
@@ -79,6 +81,11 @@ export default function IncomingPage() {
       return api(`/hospital/alerts/${v.id}/ready`, { method: "POST" });
     },
     onSettled: () => qc.invalidateQueries({ queryKey: ["incoming"] }),
+    // Arrival opens the encounter: go straight to it.
+    onSuccess: (data, v) => {
+      const enc = (data as { encounter_id?: string | null } | undefined)?.encounter_id;
+      if (v.kind === "arrived" && enc) router.push(`/hospital/patients/${enc}`);
+    },
   });
 
   const open = items.filter((i) => ["pending", "more_info", "sent", "ready", "accepted", "overdue"].includes(i.status));
@@ -267,7 +274,7 @@ function IncomingCard({
 
       {i.kind === "referral" && (i.status === "accepted" || i.status === "overdue") && canArrive ? (
         <Button size="lg" variant="mint" className="w-full" disabled={busy} onClick={() => onAct({ kind: "arrived" })}>
-          Confirm arrival
+          Confirm arrival &amp; open encounter
         </Button>
       ) : null}
       {!canDecide && i.kind === "referral" && i.status === "pending" ? (

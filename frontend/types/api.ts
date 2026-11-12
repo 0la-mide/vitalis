@@ -550,6 +550,194 @@ export interface paths {
         patch: operations["decide_staff_api_v1_hospital_staff__user_id__patch"];
         trace?: never;
     };
+    "/api/v1/hospital/encounters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Encounters */
+        get: operations["list_encounters_api_v1_hospital_encounters_get"];
+        put?: never;
+        /** Register Walk In */
+        post: operations["register_walk_in_api_v1_hospital_encounters_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/tests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Test Catalogue */
+        get: operations["test_catalogue_api_v1_hospital_tests_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Encounter */
+        get: operations["get_encounter_api_v1_hospital_encounters__encounter_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move */
+        post: operations["move_api_v1_hospital_encounters__encounter_id__transition_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/vitals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record Vitals */
+        post: operations["record_vitals_api_v1_hospital_encounters__encounter_id__vitals_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Write Note */
+        post: operations["write_note_api_v1_hospital_encounters__encounter_id__notes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/notes/{note_id}/sign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign */
+        post: operations["sign_api_v1_hospital_encounters__encounter_id__notes__note_id__sign_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Order */
+        post: operations["order_api_v1_hospital_encounters__encounter_id__orders_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/lab/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lab Queue */
+        get: operations["lab_queue_api_v1_hospital_lab_queue_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/orders/{order_id}/result": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Result */
+        post: operations["result_api_v1_hospital_orders__order_id__result_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/orders/{order_id}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify */
+        post: operations["verify_api_v1_hospital_orders__order_id__verify_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/verifications": {
         parameters: {
             query?: never;
@@ -785,6 +973,19 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Allowed */
+        Allowed: {
+            /** Transitions */
+            transitions: string[];
+            /** Record Vitals */
+            record_vitals: boolean;
+            /** Write Notes */
+            write_notes: boolean;
+            /** Order Tests */
+            order_tests: boolean;
+            /** Cancel */
+            cancel: boolean;
+        };
         /** AuditOut */
         AuditOut: {
             /**
@@ -908,10 +1109,97 @@ export interface components {
             status: string;
             /** Next Referral Id */
             next_referral_id: string | null;
+            /** Encounter Id */
+            encounter_id?: string | null;
+        };
+        /** EncounterListItem */
+        EncounterListItem: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** State */
+            state: string;
+            /** State Label */
+            state_label: string;
+            /** Emergency */
+            emergency: boolean;
+            patient: components["schemas"]["IncomingPatient"];
+            /** Care Label */
+            care_label: string | null;
+            /** Headline */
+            headline: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Open Orders */
+            open_orders: number;
+        };
+        /** EncounterOut */
+        EncounterOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** State */
+            state: string;
+            /** State Label */
+            state_label: string;
+            /** Emergency */
+            emergency: boolean;
+            /** Chief Complaint */
+            chief_complaint: string | null;
+            /** Disposition */
+            disposition: string | null;
+            /** Disposition Note */
+            disposition_note: string | null;
+            /** Cancel Reason */
+            cancel_reason: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Completed At */
+            completed_at: string | null;
+            patient: components["schemas"]["IncomingPatient"];
+            referral: components["schemas"]["ReferralSummary"] | null;
+            /** Vitals */
+            vitals: components["schemas"]["VitalRow"][];
+            /** Notes */
+            notes: components["schemas"]["NoteRow"][];
+            /** Orders */
+            orders: components["schemas"]["OrderRow"][];
+            /** Timeline */
+            timeline: components["schemas"]["TimelineRow"][];
+            allowed: components["schemas"]["Allowed"];
+        };
+        /** EncounterVitalsIn */
+        EncounterVitalsIn: {
+            /** Readings */
+            readings: components["schemas"]["VitalIn"][];
+            /** Corrected From */
+            corrected_from?: string | null;
+            /** Correction Reason */
+            correction_reason?: string | null;
         };
         /** Envelope[DecisionOut] */
         Envelope_DecisionOut_: {
             data: components["schemas"]["DecisionOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[EncounterOut] */
+        Envelope_EncounterOut_: {
+            data: components["schemas"]["EncounterOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[Health] */
@@ -932,6 +1220,11 @@ export interface components {
         /** Envelope[Metrics] */
         Envelope_Metrics_: {
             data: components["schemas"]["Metrics"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[OrderRow] */
+        Envelope_OrderRow_: {
+            data: components["schemas"]["OrderRow"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[PatientKeysOut] */
@@ -964,6 +1257,11 @@ export interface components {
             data: components["schemas"]["VerificationOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[WalkInOut] */
+        Envelope_WalkInOut_: {
+            data: components["schemas"]["WalkInOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[WorkerReferralOut] */
         Envelope_WorkerReferralOut_: {
             data: components["schemas"]["WorkerReferralOut"];
@@ -988,6 +1286,12 @@ export interface components {
             data: components["schemas"]["AuditOut"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[list[EncounterListItem]] */
+        Envelope_list_EncounterListItem__: {
+            /** Data */
+            data: components["schemas"]["EncounterListItem"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[list[FacilityOption]] */
         Envelope_list_FacilityOption__: {
             /** Data */
@@ -1006,6 +1310,12 @@ export interface components {
             data: components["schemas"]["IncomingItem"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[list[LabQueueItem]] */
+        Envelope_list_LabQueueItem__: {
+            /** Data */
+            data: components["schemas"]["LabQueueItem"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[list[ServiceRow]] */
         Envelope_list_ServiceRow__: {
             /** Data */
@@ -1016,6 +1326,12 @@ export interface components {
         Envelope_list_StaffRow__: {
             /** Data */
             data: components["schemas"]["StaffRow"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[TestOption]] */
+        Envelope_list_TestOption__: {
+            /** Data */
+            data: components["schemas"]["TestOption"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[list[VerificationOut]] */
@@ -1222,6 +1538,20 @@ export interface components {
             /** Pregnant */
             pregnant: boolean;
         };
+        /** LabQueueItem */
+        LabQueueItem: {
+            order: components["schemas"]["OrderRow"];
+            /**
+             * Encounter Id
+             * Format: uuid
+             */
+            encounter_id: string;
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** Emergency */
+            emergency: boolean;
+            patient: components["schemas"]["IncomingPatient"];
+        };
         /** LoginIn */
         LoginIn: {
             /**
@@ -1279,6 +1609,100 @@ export interface components {
             workers_approved: number;
             /** Workers Pending */
             workers_pending: number;
+        };
+        /** NoteIn */
+        NoteIn: {
+            /** Body */
+            body: string;
+            /** Note Id */
+            note_id?: string | null;
+        };
+        /** NoteRow */
+        NoteRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Author Id
+             * Format: uuid
+             */
+            author_id: string;
+            /** Author */
+            author: string;
+            /** Status */
+            status: string;
+            /** Version */
+            version: number;
+            /** Body */
+            body: string;
+            /** Supersedes Id */
+            supersedes_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Signed At */
+            signed_at: string | null;
+        };
+        /** OrderItemIn */
+        OrderItemIn: {
+            /** Test Code */
+            test_code: string;
+            /**
+             * Priority
+             * @default routine
+             * @enum {string}
+             */
+            priority: "routine" | "urgent";
+            /** Note */
+            note?: string | null;
+        };
+        /** OrderRow */
+        OrderRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Category */
+            category: string;
+            /** Test Code */
+            test_code: string;
+            /** Test Name */
+            test_name: string;
+            /** Priority */
+            priority: string;
+            /** Clinical Note */
+            clinical_note: string | null;
+            /** Status */
+            status: string;
+            /** Ordered By */
+            ordered_by: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Result Text */
+            result_text?: string | null;
+            /** Abnormal */
+            abnormal?: boolean | null;
+            /** Entered By */
+            entered_by?: string | null;
+            /** Entered At */
+            entered_at?: string | null;
+            /** Verified By */
+            verified_by?: string | null;
+            /** Verified At */
+            verified_at?: string | null;
+        };
+        /** OrdersIn */
+        OrdersIn: {
+            /** Items */
+            items: components["schemas"]["OrderItemIn"][];
         };
         /** PageMeta */
         PageMeta: {
@@ -1378,6 +1802,31 @@ export interface components {
             /** Overdue At */
             overdue_at: string | null;
         };
+        /** ReferralSummary */
+        ReferralSummary: {
+            /**
+             * Referral Id
+             * Format: uuid
+             */
+            referral_id: string;
+            /** Referred By */
+            referred_by: string | null;
+            /** Red Flag Message */
+            red_flag_message: string | null;
+            /** Care Type */
+            care_type: string | null;
+            /** Care Label */
+            care_label: string | null;
+            /** Symptoms */
+            symptoms: components["schemas"]["SymptomLine"][];
+            /**
+             * Sent At
+             * Format: date-time
+             */
+            sent_at: string;
+            /** Arrived At */
+            arrived_at: string | null;
+        };
         /** RegisteredOut */
         RegisteredOut: {
             /**
@@ -1391,6 +1840,16 @@ export interface components {
             facility_id?: string | null;
             /** Message */
             message: string;
+        };
+        /** ResultIn */
+        ResultIn: {
+            /** Result Text */
+            result_text: string;
+            /**
+             * Abnormal
+             * @default false
+             */
+            abnormal: boolean;
         };
         /** ServicePatchIn */
         ServicePatchIn: {
@@ -1675,6 +2134,45 @@ export interface components {
             /** Lgas */
             lgas: components["schemas"]["TaxLga"][];
         };
+        /** TestOption */
+        TestOption: {
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+            /** Category */
+            category: string;
+        };
+        /** TimelineRow */
+        TimelineRow: {
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            /** Actor */
+            actor: string | null;
+            /** Actor Role */
+            actor_role: string | null;
+            /** Kind */
+            kind: string;
+            /** Summary */
+            summary: string;
+        };
+        /** TransitionIn */
+        TransitionIn: {
+            /**
+             * To
+             * @enum {string}
+             */
+            to: "awaiting_nursing" | "awaiting_doctor" | "results_ready" | "awaiting_disposition" | "completed" | "cancelled";
+            /** Disposition */
+            disposition?: ("discharged" | "admitted" | "transferred" | "left") | null;
+            /** Note */
+            note?: string | null;
+            /** Reason */
+            reason?: string | null;
+        };
         /** TriageOut */
         TriageOut: {
             /**
@@ -1817,6 +2315,35 @@ export interface components {
              */
             measured_at: string;
         };
+        /** VitalRow */
+        VitalRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Value */
+            value: number;
+            /** Unit */
+            unit: string;
+            /** Source */
+            source: string;
+            /**
+             * Measured At
+             * Format: date-time
+             */
+            measured_at: string;
+            /** Entered By */
+            entered_by: string | null;
+            /** Corrected From */
+            corrected_from: string | null;
+            /** Superseded */
+            superseded: boolean;
+            /** Urgent */
+            urgent: boolean;
+        };
         /** VitalsIn */
         VitalsIn: {
             /**
@@ -1826,6 +2353,46 @@ export interface components {
             report_id: string;
             /** Readings */
             readings: components["schemas"]["VitalIn"][];
+        };
+        /** WalkInIn */
+        WalkInIn: {
+            /**
+             * Age Group
+             * @enum {string}
+             */
+            age_group: "under5" | "child" | "teen" | "adult" | "elderly";
+            /**
+             * Sex
+             * @default unknown
+             * @enum {string}
+             */
+            sex: "female" | "male" | "unknown";
+            /**
+             * Pregnant
+             * @default false
+             */
+            pregnant: boolean;
+            /**
+             * Emergency
+             * @default false
+             */
+            emergency: boolean;
+            /** Chief Complaint */
+            chief_complaint: string;
+            /** Family Phone */
+            family_phone?: string | null;
+        };
+        /** WalkInOut */
+        WalkInOut: {
+            /**
+             * Encounter Id
+             * Format: uuid
+             */
+            encounter_id: string;
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** Recovery Code */
+            recovery_code: string;
         };
         /** WorkerReferralOut */
         WorkerReferralOut: {
@@ -2827,6 +3394,380 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_list_StaffRow__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_encounters_api_v1_hospital_encounters_get: {
+        parameters: {
+            query?: {
+                /** @description comma-separated states; default = open */
+                state?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_EncounterListItem__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    register_walk_in_api_v1_hospital_encounters_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WalkInIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_WalkInOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    test_catalogue_api_v1_hospital_tests_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_TestOption__"];
+                };
+            };
+        };
+    };
+    get_encounter_api_v1_hospital_encounters__encounter_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    move_api_v1_hospital_encounters__encounter_id__transition_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    record_vitals_api_v1_hospital_encounters__encounter_id__vitals_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EncounterVitalsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    write_note_api_v1_hospital_encounters__encounter_id__notes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NoteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sign_api_v1_hospital_encounters__encounter_id__notes__note_id__sign_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+                note_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    order_api_v1_hospital_encounters__encounter_id__orders_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrdersIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lab_queue_api_v1_hospital_lab_queue_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_LabQueueItem__"];
+                };
+            };
+        };
+    };
+    result_api_v1_hospital_orders__order_id__result_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResultIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_OrderRow_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_api_v1_hospital_orders__order_id__verify_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_OrderRow_"];
                 };
             };
             /** @description Validation Error */
