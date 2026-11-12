@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd backend && uv run uvicorn app.main:app --port 8000 --reload"],
+      "port": 8000
+    },
+    {
+      "name": "model",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd backend && uv run uvicorn --app-dir ../model app:app --port 8100"],
+      "port": 8100
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd frontend && npm run dev"],
+      "port": 3000
+    }
+  ]
+}
