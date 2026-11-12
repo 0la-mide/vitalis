@@ -1,4 +1,4 @@
-.PHONY: setup db migrate seed demo-reset dev backend model frontend test lint types build
+.PHONY: setup db migrate seed demo-reset dev backend model frontend test lint types build overdue-now logins
 
 BACKEND := cd backend &&
 FRONTEND := cd frontend &&
@@ -47,3 +47,9 @@ types: ## Regenerate frontend API types from FastAPI's OpenAPI
 
 build:
 	$(FRONTEND) npm run build
+
+overdue-now: ## Testing only: make every accepted referral look 3 h old; the overdue job flags it within a minute
+	PGPASSWORD=vitalis_dev psql -h localhost -U vitalis -d vitalis -c "UPDATE referrals SET accepted_at = now() - interval '3 hours' WHERE status = 'accepted'"
+
+logins: ## Show the demo accounts (password included; local only)
+	@cat backend/var/DEMO_LOGINS.md

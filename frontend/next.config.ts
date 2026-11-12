@@ -4,6 +4,8 @@ const API_ORIGIN = process.env.API_ORIGIN ?? "http://localhost:8000";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Dev only: let phones on the same Wi-Fi open the dev server by LAN IP (e.g. http://192.168.x.x:3000).
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
   poweredByHeader: false,
   turbopack: {
     rules: {
