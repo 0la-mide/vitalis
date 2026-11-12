@@ -1,0 +1,125 @@
+{
+  "version": "rf-2026-11-12.1",
+  "needs_clinical_review": true,
+  "note": "Deterministic danger-sign rules. Evaluated BEFORE any model or network call. Thresholds are placeholders drafted by the engineering team and MUST be reviewed by a clinician before any real use. Condition atoms: symptom, symptom_any, pregnant, age_group_in, severity_gte (on the listed symptoms), vital lt/gt.",
+  "rules": [
+    {
+      "id": "RF_PREG_HEAVY_BLEEDING",
+      "care_type": "obstetrics",
+      "message": "Heavy bleeding in pregnancy is an emergency. Go to a hospital now.",
+      "all": [
+        {"pregnant": true},
+        {"symptom_any": ["BLEEDING_VAGINAL_HEAVY", "BLEEDING_HEAVY"]}
+      ]
+    },
+    {
+      "id": "RF_PREG_BLEEDING_WITH_PAIN_OR_DIZZY",
+      "care_type": "obstetrics",
+      "message": "Bleeding in pregnancy with pain or dizziness is an emergency. Go to a hospital now.",
+      "all": [
+        {"pregnant": true},
+        {"symptom_any": ["BLEEDING_VAGINAL_LIGHT", "BLEEDING_VAGINAL_HEAVY"]},
+        {"symptom_any": ["ABDOMINAL_PAIN", "LABOUR_PAINS", "DIZZY_FAINT"]}
+      ]
+    },
+    {
+      "id": "RF_PREG_BLEEDING_SEVERE",
+      "care_type": "obstetrics",
+      "message": "Bleeding in pregnancy that feels bad is an emergency. Go to a hospital now.",
+      "all": [
+        {"pregnant": true},
+        {"severity_gte": 4, "symptoms": ["BLEEDING_VAGINAL_LIGHT"]}
+      ]
+    },
+    {
+      "id": "RF_BREATHING",
+      "care_type": "respiratory",
+      "message": "Trouble breathing is an emergency. Go to a hospital now.",
+      "all": [{"symptom": "BREATHING_DIFFICULTY"}]
+    },
+    {
+      "id": "RF_UNCONSCIOUS",
+      "care_type": "general_medical",
+      "message": "Someone who will not wake up needs a hospital now. Lay them on their side.",
+      "all": [{"symptom": "UNCONSCIOUS"}]
+    },
+    {
+      "id": "RF_SEIZURE",
+      "care_type": "general_medical",
+      "care_type_if_child": "paediatrics",
+      "care_type_if_pregnant": "obstetrics",
+      "message": "Fitting is an emergency. Keep them safe from falling and go to a hospital now.",
+      "all": [{"symptom": "SEIZURE"}]
+    },
+    {
+      "id": "RF_CHEST_PAIN_ADULT",
+      "care_type": "cardiac",
+      "message": "Chest pain in an adult can be serious. Go to a hospital now.",
+      "all": [
+        {"symptom": "CHEST_PAIN"},
+        {"age_group_in": ["adult", "elderly"]}
+      ]
+    },
+    {
+      "id": "RF_SEVERE_INJURY",
+      "care_type": "trauma_surgery",
+      "message": "A bad injury needs a hospital now. Press on any bleeding with a clean cloth.",
+      "any": [
+        {"symptom": "SEVERE_INJURY"},
+        {"symptom": "BLEEDING_HEAVY"},
+        {"severity_gte": 5, "symptoms": ["WOUND", "BURN", "HEAD_INJURY", "BONE_DEFORMED", "CANT_MOVE"]}
+      ]
+    },
+    {
+      "id": "RF_CHILD_DANGER_SIGNS",
+      "care_type": "paediatrics",
+      "message": "This child has danger signs. Go to a hospital now.",
+      "all": [
+        {"age_group_in": ["under5", "child"]},
+        {"symptom_any": ["NOT_DRINKING", "LETHARGIC", "SEIZURE", "UNCONSCIOUS"]}
+      ]
+    },
+    {
+      "id": "RF_UNDER5_HIGH_FEVER",
+      "care_type": "paediatrics",
+      "message": "A very hot body in a young child needs a hospital now.",
+      "all": [
+        {"age_group_in": ["under5"]},
+        {"symptom": "HIGH_FEVER"}
+      ]
+    },
+    {
+      "id": "RF_VITAL_SPO2_LOW",
+      "care_type": "respiratory",
+      "message": "Oxygen level is low. Go to a hospital now.",
+      "all": [{"vital": "spo2", "lt": 92}]
+    },
+    {
+      "id": "RF_VITAL_SBP_LOW",
+      "care_type": "general_medical",
+      "care_type_if_pregnant": "obstetrics",
+      "message": "Blood pressure is very low. Go to a hospital now.",
+      "all": [{"vital": "systolic_bp", "lt": 90}]
+    },
+    {
+      "id": "RF_VITAL_SBP_HIGH",
+      "care_type": "general_medical",
+      "care_type_if_pregnant": "obstetrics",
+      "message": "Blood pressure is very high. Go to a hospital now.",
+      "all": [{"vital": "systolic_bp", "gt": 179}]
+    },
+    {
+      "id": "RF_VITAL_PULSE",
+      "care_type": "general_medical",
+      "message": "Heart rate is dangerous. Go to a hospital now.",
+      "any": [{"vital": "pulse", "gt": 130}, {"vital": "pulse", "lt": 40}]
+    },
+    {
+      "id": "RF_VITAL_TEMP",
+      "care_type": "general_medical",
+      "care_type_if_child": "paediatrics",
+      "message": "Body temperature is dangerous. Go to a hospital now.",
+      "any": [{"vital": "temp_c", "gt": 39.9}, {"vital": "temp_c", "lt": 35}]
+    }
+  ]
+}

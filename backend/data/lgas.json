@@ -1,0 +1,15 @@
+{
+  "note": "Approximate centroids for location fallback when GPS is refused. Ogun State. Synthetic/demo use.",
+  "default": "Abeokuta South",
+  "lgas": [
+    {"name": "Abeokuta South", "lat": 7.1475, "lng": 3.3619},
+    {"name": "Abeokuta North", "lat": 7.1830, "lng": 3.3070},
+    {"name": "Odeda", "lat": 7.2280, "lng": 3.5280},
+    {"name": "Obafemi Owode", "lat": 6.9500, "lng": 3.5000},
+    {"name": "Ewekoro", "lat": 6.9330, "lng": 3.2160},
+    {"name": "Ifo", "lat": 6.8150, "lng": 3.1950},
+    {"name": "Ado-Odo/Ota", "lat": 6.6950, "lng": 3.1950},
+    {"name": "Sagamu", "lat": 6.8320, "lng": 3.6460},
+    {"name": "Ijebu Ode", "lat": 6.8200, "lng": 3.9200}
+  ]
+}

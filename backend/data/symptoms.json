@@ -1,0 +1,1566 @@
+{
+  "version": "2026-11-12.1",
+  "needs_clinical_review": true,
+  "languages": [
+    "en",
+    "pcm",
+    "yo",
+    "ha",
+    "ig"
+  ],
+  "note": "UI taxonomy. model_code maps each UI symptom to the disease model's input vocabulary (stub-0.1). Update model_code, not code, when the real model's vocabulary arrives.",
+  "regions": [
+    {
+      "code": "head",
+      "view": "front",
+      "labels": {
+        "en": "Head",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_head"
+    },
+    {
+      "code": "face",
+      "view": "front",
+      "labels": {
+        "en": "Face",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_face"
+    },
+    {
+      "code": "eyes",
+      "view": "front",
+      "labels": {
+        "en": "Eyes",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_eyes"
+    },
+    {
+      "code": "ears",
+      "view": "front",
+      "labels": {
+        "en": "Ears",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_ears"
+    },
+    {
+      "code": "mouth_throat",
+      "view": "front",
+      "labels": {
+        "en": "Mouth / throat",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_mouth_throat"
+    },
+    {
+      "code": "neck",
+      "view": "both",
+      "labels": {
+        "en": "Neck",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_neck"
+    },
+    {
+      "code": "chest",
+      "view": "front",
+      "labels": {
+        "en": "Chest",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_chest"
+    },
+    {
+      "code": "upper_abdomen",
+      "view": "front",
+      "labels": {
+        "en": "Upper belly",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_upper_abdomen"
+    },
+    {
+      "code": "lower_abdomen",
+      "view": "front",
+      "labels": {
+        "en": "Lower belly",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_lower_abdomen"
+    },
+    {
+      "code": "pelvis",
+      "view": "front",
+      "labels": {
+        "en": "Private parts / groin",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_pelvis"
+    },
+    {
+      "code": "back_upper",
+      "view": "back",
+      "labels": {
+        "en": "Upper back",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_back_upper"
+    },
+    {
+      "code": "back_lower",
+      "view": "back",
+      "labels": {
+        "en": "Lower back",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_back_lower"
+    },
+    {
+      "code": "arms",
+      "view": "both",
+      "labels": {
+        "en": "Arms",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_arms"
+    },
+    {
+      "code": "hands",
+      "view": "both",
+      "labels": {
+        "en": "Hands",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_hands"
+    },
+    {
+      "code": "legs",
+      "view": "both",
+      "labels": {
+        "en": "Legs",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_legs"
+    },
+    {
+      "code": "feet",
+      "view": "both",
+      "labels": {
+        "en": "Feet",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_feet"
+    },
+    {
+      "code": "skin",
+      "view": "both",
+      "labels": {
+        "en": "Skin",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_skin"
+    },
+    {
+      "code": "whole_body",
+      "view": "none",
+      "labels": {
+        "en": "Whole body / can't point",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "region_whole_body"
+    }
+  ],
+  "symptoms": [
+    {
+      "code": "HEADACHE",
+      "regions": [
+        "head"
+      ],
+      "icon": "pain",
+      "labels": {
+        "en": "Headache",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_headache",
+      "model_code": "HEADACHE"
+    },
+    {
+      "code": "HEAD_INJURY",
+      "regions": [
+        "head"
+      ],
+      "icon": "injury",
+      "labels": {
+        "en": "Hit on the head",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_head_injury",
+      "model_code": "HEAD_INJURY"
+    },
+    {
+      "code": "FACE_DROOP",
+      "regions": [
+        "face"
+      ],
+      "icon": "face_droop",
+      "labels": {
+        "en": "Face drooping on one side",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_face_droop",
+      "model_code": "FACIAL_DROOP"
+    },
+    {
+      "code": "FACE_SWELLING",
+      "regions": [
+        "face"
+      ],
+      "icon": "swelling",
+      "labels": {
+        "en": "Swollen face",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_face_swelling",
+      "model_code": "FACIAL_SWELLING"
+    },
+    {
+      "code": "EYE_RED_PAIN",
+      "regions": [
+        "eyes"
+      ],
+      "icon": "eye",
+      "labels": {
+        "en": "Red or painful eye",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_eye_red_pain",
+      "model_code": "EYE_PAIN"
+    },
+    {
+      "code": "VISION_PROBLEM",
+      "regions": [
+        "eyes"
+      ],
+      "icon": "eye_blur",
+      "labels": {
+        "en": "Can't see well",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_vision_problem",
+      "model_code": "VISION_LOSS"
+    },
+    {
+      "code": "EAR_PAIN",
+      "regions": [
+        "ears"
+      ],
+      "icon": "ear",
+      "labels": {
+        "en": "Ear pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_ear_pain",
+      "model_code": "EAR_PAIN"
+    },
+    {
+      "code": "EAR_DISCHARGE",
+      "regions": [
+        "ears"
+      ],
+      "icon": "discharge",
+      "labels": {
+        "en": "Fluid from ear",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_ear_discharge",
+      "model_code": "EAR_DISCHARGE"
+    },
+    {
+      "code": "SORE_THROAT",
+      "regions": [
+        "mouth_throat"
+      ],
+      "icon": "throat",
+      "labels": {
+        "en": "Sore throat",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_sore_throat",
+      "model_code": "SORE_THROAT"
+    },
+    {
+      "code": "CANT_SWALLOW",
+      "regions": [
+        "mouth_throat"
+      ],
+      "icon": "throat",
+      "labels": {
+        "en": "Can't swallow",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_cant_swallow",
+      "model_code": "DYSPHAGIA"
+    },
+    {
+      "code": "MOUTH_BLEEDING",
+      "regions": [
+        "mouth_throat"
+      ],
+      "icon": "bleeding",
+      "labels": {
+        "en": "Bleeding from mouth",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_mouth_bleeding",
+      "model_code": "ORAL_BLEEDING"
+    },
+    {
+      "code": "NECK_STIFF",
+      "regions": [
+        "neck"
+      ],
+      "icon": "neck",
+      "labels": {
+        "en": "Stiff neck",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_neck_stiff",
+      "model_code": "NECK_STIFFNESS"
+    },
+    {
+      "code": "NECK_SWELLING",
+      "regions": [
+        "neck"
+      ],
+      "icon": "swelling",
+      "labels": {
+        "en": "Lump or swelling",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_neck_swelling",
+      "model_code": "NECK_SWELLING"
+    },
+    {
+      "code": "CHEST_PAIN",
+      "regions": [
+        "chest"
+      ],
+      "icon": "chest_pain",
+      "labels": {
+        "en": "Chest pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_chest_pain",
+      "model_code": "CHEST_PAIN"
+    },
+    {
+      "code": "BREATHING_DIFFICULTY",
+      "regions": [
+        "chest"
+      ],
+      "icon": "lungs",
+      "labels": {
+        "en": "Hard to breathe",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_breathing_difficulty",
+      "model_code": "BREATHING_DIFFICULTY"
+    },
+    {
+      "code": "COUGH",
+      "regions": [
+        "chest",
+        "mouth_throat"
+      ],
+      "icon": "cough",
+      "labels": {
+        "en": "Cough",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_cough",
+      "model_code": "COUGH"
+    },
+    {
+      "code": "COUGH_BLOOD",
+      "regions": [
+        "chest"
+      ],
+      "icon": "bleeding",
+      "labels": {
+        "en": "Coughing blood",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_cough_blood",
+      "model_code": "HAEMOPTYSIS"
+    },
+    {
+      "code": "PALPITATIONS",
+      "regions": [
+        "chest"
+      ],
+      "icon": "heart",
+      "labels": {
+        "en": "Heart racing",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_palpitations",
+      "model_code": "PALPITATIONS"
+    },
+    {
+      "code": "ABDOMINAL_PAIN",
+      "regions": [
+        "upper_abdomen",
+        "lower_abdomen"
+      ],
+      "icon": "pain",
+      "labels": {
+        "en": "Belly pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_abdominal_pain",
+      "model_code": "ABDOMINAL_PAIN"
+    },
+    {
+      "code": "ABDOMINAL_SWELLING",
+      "regions": [
+        "upper_abdomen",
+        "lower_abdomen"
+      ],
+      "icon": "swelling",
+      "labels": {
+        "en": "Swollen belly",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_abdominal_swelling",
+      "model_code": "ABDOMINAL_DISTENSION"
+    },
+    {
+      "code": "VOMITING",
+      "regions": [
+        "upper_abdomen",
+        "whole_body"
+      ],
+      "icon": "vomit",
+      "labels": {
+        "en": "Vomiting",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_vomiting",
+      "model_code": "VOMITING"
+    },
+    {
+      "code": "VOMITING_BLOOD",
+      "regions": [
+        "upper_abdomen"
+      ],
+      "icon": "bleeding",
+      "labels": {
+        "en": "Vomiting blood",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_vomiting_blood",
+      "model_code": "HAEMATEMESIS"
+    },
+    {
+      "code": "DIARRHOEA",
+      "regions": [
+        "lower_abdomen",
+        "whole_body"
+      ],
+      "icon": "toilet",
+      "labels": {
+        "en": "Watery stool",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_diarrhoea",
+      "model_code": "DIARRHOEA"
+    },
+    {
+      "code": "BLOOD_IN_STOOL",
+      "regions": [
+        "lower_abdomen"
+      ],
+      "icon": "bleeding",
+      "labels": {
+        "en": "Blood in stool",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_blood_in_stool",
+      "model_code": "HAEMATOCHEZIA"
+    },
+    {
+      "code": "LABOUR_PAINS",
+      "regions": [
+        "lower_abdomen",
+        "pelvis"
+      ],
+      "icon": "contractions",
+      "labels": {
+        "en": "Labour pains",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_labour_pains",
+      "model_code": "LABOUR_PAIN",
+      "pregnant_only": true
+    },
+    {
+      "code": "REDUCED_FETAL_MOVEMENT",
+      "regions": [
+        "lower_abdomen"
+      ],
+      "icon": "baby",
+      "labels": {
+        "en": "Baby moving less",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_reduced_fetal_movement",
+      "model_code": "REDUCED_FETAL_MOVEMENT",
+      "pregnant_only": true
+    },
+    {
+      "code": "BLEEDING_VAGINAL_HEAVY",
+      "regions": [
+        "pelvis"
+      ],
+      "icon": "bleeding_heavy",
+      "labels": {
+        "en": "Heavy bleeding",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_bleeding_vaginal_heavy",
+      "model_code": "BLEEDING_VAGINAL",
+      "female_only": true,
+      "model_severity": 5
+    },
+    {
+      "code": "BLEEDING_VAGINAL_LIGHT",
+      "regions": [
+        "pelvis"
+      ],
+      "icon": "bleeding",
+      "labels": {
+        "en": "Spotting / light bleeding",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_bleeding_vaginal_light",
+      "model_code": "BLEEDING_VAGINAL",
+      "female_only": true
+    },
+    {
+      "code": "WATER_BROKEN",
+      "regions": [
+        "pelvis"
+      ],
+      "icon": "water",
+      "labels": {
+        "en": "Water broke",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_water_broken",
+      "model_code": "RUPTURE_OF_MEMBRANES",
+      "pregnant_only": true
+    },
+    {
+      "code": "VAGINAL_DISCHARGE",
+      "regions": [
+        "pelvis"
+      ],
+      "icon": "discharge",
+      "labels": {
+        "en": "Discharge",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_vaginal_discharge",
+      "model_code": "VAGINAL_DISCHARGE",
+      "female_only": true
+    },
+    {
+      "code": "PAINFUL_URINATION",
+      "regions": [
+        "pelvis"
+      ],
+      "icon": "urine",
+      "labels": {
+        "en": "Pain when passing urine",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_painful_urination",
+      "model_code": "DYSURIA"
+    },
+    {
+      "code": "GROIN_PAIN",
+      "regions": [
+        "pelvis"
+      ],
+      "icon": "pain",
+      "labels": {
+        "en": "Pain in groin",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_groin_pain",
+      "model_code": "GROIN_PAIN"
+    },
+    {
+      "code": "BACK_PAIN",
+      "regions": [
+        "back_upper",
+        "back_lower"
+      ],
+      "icon": "pain",
+      "labels": {
+        "en": "Back pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_back_pain",
+      "model_code": "BACK_PAIN"
+    },
+    {
+      "code": "LIMB_PAIN",
+      "regions": [
+        "arms",
+        "hands",
+        "legs",
+        "feet"
+      ],
+      "icon": "pain",
+      "labels": {
+        "en": "Pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_limb_pain",
+      "model_code": "LIMB_PAIN"
+    },
+    {
+      "code": "SWELLING",
+      "regions": [
+        "arms",
+        "hands",
+        "legs",
+        "feet"
+      ],
+      "icon": "swelling",
+      "labels": {
+        "en": "Swelling",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_swelling",
+      "model_code": "LIMB_SWELLING"
+    },
+    {
+      "code": "CANT_MOVE",
+      "regions": [
+        "arms",
+        "legs",
+        "back_lower"
+      ],
+      "icon": "cant_move",
+      "labels": {
+        "en": "Can't move it",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_cant_move",
+      "model_code": "CANT_MOVE"
+    },
+    {
+      "code": "BONE_DEFORMED",
+      "regions": [
+        "arms",
+        "legs"
+      ],
+      "icon": "bone",
+      "labels": {
+        "en": "Bent or broken-looking",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_bone_deformed",
+      "model_code": "DEFORMITY"
+    },
+    {
+      "code": "NUMBNESS",
+      "regions": [
+        "arms",
+        "hands",
+        "legs",
+        "feet",
+        "face"
+      ],
+      "icon": "numb",
+      "labels": {
+        "en": "Numb or weak",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_numbness",
+      "model_code": "NUMBNESS"
+    },
+    {
+      "code": "WOUND",
+      "regions": [
+        "head",
+        "face",
+        "chest",
+        "upper_abdomen",
+        "lower_abdomen",
+        "back_upper",
+        "back_lower",
+        "skin",
+        "arms",
+        "hands",
+        "legs",
+        "feet"
+      ],
+      "icon": "wound",
+      "labels": {
+        "en": "Cut or wound",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_wound",
+      "model_code": "WOUND"
+    },
+    {
+      "code": "BURN",
+      "regions": [
+        "head",
+        "face",
+        "chest",
+        "upper_abdomen",
+        "lower_abdomen",
+        "back_upper",
+        "back_lower",
+        "skin",
+        "arms",
+        "hands",
+        "legs",
+        "feet"
+      ],
+      "icon": "burn",
+      "labels": {
+        "en": "Burn",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_burn",
+      "model_code": "BURN"
+    },
+    {
+      "code": "BLEEDING_HEAVY",
+      "regions": [
+        "head",
+        "face",
+        "chest",
+        "upper_abdomen",
+        "lower_abdomen",
+        "back_upper",
+        "back_lower",
+        "skin",
+        "arms",
+        "hands",
+        "legs",
+        "feet",
+        "mouth_throat"
+      ],
+      "icon": "bleeding_heavy",
+      "labels": {
+        "en": "Bleeding a lot",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_bleeding_heavy",
+      "model_code": "HAEMORRHAGE",
+      "model_severity": 5
+    },
+    {
+      "code": "RASH",
+      "regions": [
+        "skin",
+        "whole_body"
+      ],
+      "icon": "rash",
+      "labels": {
+        "en": "Rash",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_rash",
+      "model_code": "RASH"
+    },
+    {
+      "code": "ITCHING",
+      "regions": [
+        "skin"
+      ],
+      "icon": "itch",
+      "labels": {
+        "en": "Itching",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_itching",
+      "model_code": "PRURITUS"
+    },
+    {
+      "code": "YELLOW_EYES_SKIN",
+      "regions": [
+        "skin",
+        "eyes"
+      ],
+      "icon": "yellow",
+      "labels": {
+        "en": "Yellow eyes or skin",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_yellow_eyes_skin",
+      "model_code": "JAUNDICE"
+    },
+    {
+      "code": "SKIN_SORE",
+      "regions": [
+        "skin"
+      ],
+      "icon": "sore",
+      "labels": {
+        "en": "Sore that won't heal",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_skin_sore",
+      "model_code": "SKIN_ULCER"
+    },
+    {
+      "code": "FEVER",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "fever",
+      "labels": {
+        "en": "Hot body / fever",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_fever",
+      "model_code": "FEVER"
+    },
+    {
+      "code": "HIGH_FEVER",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "fever_high",
+      "labels": {
+        "en": "Very hot body",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_high_fever",
+      "model_code": "FEVER",
+      "model_severity": 5
+    },
+    {
+      "code": "WEAKNESS",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "weak",
+      "labels": {
+        "en": "Very weak",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_weakness",
+      "model_code": "WEAKNESS"
+    },
+    {
+      "code": "CONFUSION",
+      "regions": [
+        "whole_body",
+        "head"
+      ],
+      "icon": "confused",
+      "labels": {
+        "en": "Confused or talking strangely",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_confusion",
+      "model_code": "CONFUSION"
+    },
+    {
+      "code": "DIZZY_FAINT",
+      "regions": [
+        "whole_body",
+        "head"
+      ],
+      "icon": "dizzy",
+      "labels": {
+        "en": "Dizzy or fainting",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_dizzy_faint",
+      "model_code": "DIZZINESS"
+    },
+    {
+      "code": "NOT_DRINKING",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "cup",
+      "labels": {
+        "en": "Can't drink or breastfeed",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_not_drinking",
+      "model_code": "UNABLE_TO_DRINK",
+      "child_only": true
+    },
+    {
+      "code": "LETHARGIC",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "sleepy",
+      "labels": {
+        "en": "Very sleepy, hard to wake",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_lethargic",
+      "model_code": "LETHARGY",
+      "child_only": true
+    },
+    {
+      "code": "UNCONSCIOUS",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "unconscious",
+      "labels": {
+        "en": "Not waking up",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_unconscious",
+      "model_code": "UNCONSCIOUS",
+      "emergency_only": true
+    },
+    {
+      "code": "SEIZURE",
+      "regions": [
+        "whole_body"
+      ],
+      "icon": "seizure",
+      "labels": {
+        "en": "Fitting / shaking",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_seizure",
+      "model_code": "SEIZURE"
+    },
+    {
+      "code": "SEVERE_INJURY",
+      "regions": [],
+      "icon": "accident",
+      "labels": {
+        "en": "Accident / bad injury",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_severe_injury",
+      "model_code": "MAJOR_TRAUMA",
+      "emergency_only": true
+    }
+  ],
+  "emergencies": [
+    {
+      "code": "heavy_bleeding",
+      "icon": "bleeding_heavy",
+      "labels": {
+        "en": "Heavy bleeding",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_heavy_bleeding",
+      "context": {},
+      "symptoms": [
+        {
+          "code": "BLEEDING_HEAVY",
+          "severity": 5,
+          "onset": "now"
+        }
+      ],
+      "next": "emergency"
+    },
+    {
+      "code": "cant_breathe",
+      "icon": "lungs",
+      "labels": {
+        "en": "Can't breathe",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_cant_breathe",
+      "context": {},
+      "symptoms": [
+        {
+          "code": "BREATHING_DIFFICULTY",
+          "severity": 5,
+          "onset": "now"
+        }
+      ],
+      "next": "emergency"
+    },
+    {
+      "code": "unconscious",
+      "icon": "unconscious",
+      "labels": {
+        "en": "Unconscious / not waking",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_unconscious",
+      "context": {},
+      "symptoms": [
+        {
+          "code": "UNCONSCIOUS",
+          "severity": 5,
+          "onset": "now"
+        }
+      ],
+      "next": "emergency"
+    },
+    {
+      "code": "chest_pain",
+      "icon": "chest_pain",
+      "labels": {
+        "en": "Chest pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_chest_pain",
+      "context": {
+        "age_group": "adult"
+      },
+      "symptoms": [
+        {
+          "code": "CHEST_PAIN",
+          "region": "chest",
+          "severity": 4,
+          "onset": "now"
+        }
+      ],
+      "next": "emergency"
+    },
+    {
+      "code": "seizure",
+      "icon": "seizure",
+      "labels": {
+        "en": "Seizure / fitting",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_seizure",
+      "context": {},
+      "symptoms": [
+        {
+          "code": "SEIZURE",
+          "severity": 5,
+          "onset": "now"
+        }
+      ],
+      "next": "emergency"
+    },
+    {
+      "code": "accident",
+      "icon": "accident",
+      "labels": {
+        "en": "Accident / injury",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_accident",
+      "context": {},
+      "symptoms": [
+        {
+          "code": "SEVERE_INJURY",
+          "severity": 5,
+          "onset": "now"
+        }
+      ],
+      "next": "emergency"
+    },
+    {
+      "code": "pregnancy",
+      "icon": "pregnant",
+      "labels": {
+        "en": "Pregnancy problem",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_pregnancy",
+      "context": {
+        "age_group": "adult",
+        "sex": "female",
+        "pregnant": true,
+        "who": "pregnant"
+      },
+      "symptoms": [],
+      "next": "body"
+    },
+    {
+      "code": "child_sick",
+      "icon": "child",
+      "labels": {
+        "en": "Child very sick",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "emg_child_sick",
+      "context": {
+        "who": "child"
+      },
+      "symptoms": [],
+      "next": "who_child"
+    }
+  ],
+  "who": [
+    {
+      "code": "adult",
+      "icon": "adult",
+      "labels": {
+        "en": "Adult",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "who_adult",
+      "context": {
+        "age_group": "adult",
+        "pregnant": false
+      }
+    },
+    {
+      "code": "child",
+      "icon": "child",
+      "labels": {
+        "en": "Child",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "who_child",
+      "context": {
+        "age_group": "child"
+      },
+      "sub": [
+        {
+          "code": "under5",
+          "labels": {
+            "en": "Under 5",
+            "pcm": "",
+            "yo": "",
+            "ha": "",
+            "ig": ""
+          },
+          "audio": "who_under5",
+          "context": {
+            "age_group": "under5"
+          }
+        },
+        {
+          "code": "child",
+          "labels": {
+            "en": "5 to 12",
+            "pcm": "",
+            "yo": "",
+            "ha": "",
+            "ig": ""
+          },
+          "audio": "who_5_12",
+          "context": {
+            "age_group": "child"
+          }
+        },
+        {
+          "code": "teen",
+          "labels": {
+            "en": "Teenager",
+            "pcm": "",
+            "yo": "",
+            "ha": "",
+            "ig": ""
+          },
+          "audio": "who_teen",
+          "context": {
+            "age_group": "teen"
+          }
+        }
+      ]
+    },
+    {
+      "code": "pregnant",
+      "icon": "pregnant",
+      "labels": {
+        "en": "Pregnant woman",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "who_pregnant",
+      "context": {
+        "age_group": "adult",
+        "sex": "female",
+        "pregnant": true
+      }
+    },
+    {
+      "code": "elderly",
+      "icon": "elderly",
+      "labels": {
+        "en": "Elderly",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "who_elderly",
+      "context": {
+        "age_group": "elderly",
+        "pregnant": false
+      }
+    }
+  ],
+  "severity": [
+    {
+      "value": 1,
+      "labels": {
+        "en": "A little",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sev_1"
+    },
+    {
+      "value": 2,
+      "labels": {
+        "en": "Some",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sev_2"
+    },
+    {
+      "value": 3,
+      "labels": {
+        "en": "Bad",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sev_3"
+    },
+    {
+      "value": 4,
+      "labels": {
+        "en": "Very bad",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sev_4"
+    },
+    {
+      "value": 5,
+      "labels": {
+        "en": "Worst ever",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sev_5"
+    }
+  ],
+  "onset": [
+    {
+      "code": "now",
+      "icon": "bolt",
+      "labels": {
+        "en": "Just now",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "onset_now"
+    },
+    {
+      "code": "today",
+      "icon": "sun",
+      "labels": {
+        "en": "Today",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "onset_today"
+    },
+    {
+      "code": "days",
+      "icon": "calendar",
+      "labels": {
+        "en": "2–3 days",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "onset_days"
+    },
+    {
+      "code": "week",
+      "icon": "calendar_week",
+      "labels": {
+        "en": "A week or more",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "onset_week"
+    }
+  ]
+}

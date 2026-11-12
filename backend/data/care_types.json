@@ -1,0 +1,125 @@
+{
+  "version": "ct-2026-11-12.1",
+  "needs_clinical_review": true,
+  "note": "Maps model conditions to a care type, each care type to the services a facility MUST have to be matched (essential) and services that help (preferred). Region defaults are used when the model is down.",
+  "services": [
+    {"code": "emergency_unit", "name": "Emergency unit open", "category": "unit"},
+    {"code": "general_doctor_on_duty", "name": "Doctor on duty", "category": "staff"},
+    {"code": "obstetrician_on_duty", "name": "Obstetrician on duty", "category": "staff"},
+    {"code": "paediatrician_on_duty", "name": "Paediatrician on duty", "category": "staff"},
+    {"code": "surgeon_on_duty", "name": "Surgeon on duty", "category": "staff"},
+    {"code": "blood_bank", "name": "Blood available", "category": "resource"},
+    {"code": "theatre", "name": "Theatre available", "category": "unit"},
+    {"code": "oxygen", "name": "Oxygen available", "category": "resource"},
+    {"code": "icu", "name": "ICU bed", "category": "unit"},
+    {"code": "neonatal_unit", "name": "Newborn unit", "category": "unit"},
+    {"code": "ecg", "name": "ECG", "category": "resource"},
+    {"code": "xray", "name": "X-ray", "category": "resource"},
+    {"code": "lab", "name": "Laboratory", "category": "resource"},
+    {"code": "isolation_ward", "name": "Isolation ward", "category": "unit"}
+  ],
+  "care_types": {
+    "obstetrics": {
+      "label": "Pregnancy and birth care",
+      "essential": ["obstetrician_on_duty", "blood_bank", "theatre"],
+      "preferred": ["neonatal_unit", "emergency_unit"],
+      "what_to_bring": ["Antenatal card", "Any medicines she is taking", "Clean cloths or pads", "Phone and charger"]
+    },
+    "trauma_surgery": {
+      "label": "Injury and surgery",
+      "essential": ["surgeon_on_duty", "theatre", "blood_bank"],
+      "preferred": ["xray", "emergency_unit", "icu"],
+      "what_to_bring": ["Any medicines they take", "Phone and charger"]
+    },
+    "cardiac": {
+      "label": "Heart care",
+      "essential": ["emergency_unit", "general_doctor_on_duty", "ecg"],
+      "preferred": ["icu", "oxygen", "lab"],
+      "what_to_bring": ["Any medicines they take", "Phone and charger"]
+    },
+    "respiratory": {
+      "label": "Breathing care",
+      "essential": ["general_doctor_on_duty", "oxygen"],
+      "preferred": ["emergency_unit", "xray", "icu"],
+      "what_to_bring": ["Any inhalers or medicines", "Phone and charger"]
+    },
+    "paediatrics": {
+      "label": "Child care",
+      "essential": ["paediatrician_on_duty", "oxygen"],
+      "preferred": ["neonatal_unit", "lab", "emergency_unit"],
+      "what_to_bring": ["Child's health card", "Any medicines given", "Phone and charger"]
+    },
+    "general_medical": {
+      "label": "General medical care",
+      "essential": ["general_doctor_on_duty"],
+      "preferred": ["emergency_unit", "lab", "oxygen"],
+      "what_to_bring": ["Any medicines they take", "Phone and charger"]
+    },
+    "infectious_disease": {
+      "label": "Infection care",
+      "essential": ["general_doctor_on_duty", "lab"],
+      "preferred": ["isolation_ward", "oxygen"],
+      "what_to_bring": ["Any medicines they take", "Phone and charger"]
+    }
+  },
+  "conditions": {
+    "ANTEPARTUM_HAEMORRHAGE": "obstetrics",
+    "PRETERM_LABOUR": "obstetrics",
+    "ABNORMAL_UTERINE_BLEEDING": "general_medical",
+    "ACUTE_CORONARY_SYNDROME": "cardiac",
+    "PNEUMONIA": "respiratory",
+    "ASTHMA_EXACERBATION": "respiratory",
+    "MALARIA": "infectious_disease",
+    "MEASLES": "infectious_disease",
+    "GASTROENTERITIS": "general_medical",
+    "CHOLERA": "infectious_disease",
+    "EPILEPSY": "general_medical",
+    "FEBRILE_SEIZURE": "paediatrics",
+    "LACERATION": "trauma_surgery",
+    "FRACTURE": "trauma_surgery",
+    "BURN_INJURY": "trauma_surgery",
+    "TENSION_HEADACHE": "general_medical",
+    "APPENDICITIS": "trauma_surgery",
+    "GASTRITIS": "general_medical",
+    "ALTERED_CONSCIOUSNESS": "general_medical"
+  },
+  "context_overrides": {
+    "pregnant_regions": {"pelvis": "obstetrics", "lower_abdomen": "obstetrics"},
+    "child_care_type": "paediatrics"
+  },
+  "region_defaults": {
+    "head": "general_medical",
+    "face": "general_medical",
+    "eyes": "general_medical",
+    "ears": "general_medical",
+    "mouth_throat": "general_medical",
+    "neck": "general_medical",
+    "chest": "respiratory",
+    "upper_abdomen": "general_medical",
+    "lower_abdomen": "general_medical",
+    "pelvis": "general_medical",
+    "back_upper": "general_medical",
+    "back_lower": "general_medical",
+    "arms": "trauma_surgery",
+    "hands": "trauma_surgery",
+    "legs": "trauma_surgery",
+    "feet": "trauma_surgery",
+    "skin": "general_medical",
+    "whole_body": "general_medical"
+  },
+  "action_rules": {
+    "note": "Applied only when no red flag fired. First match wins.",
+    "rules": [
+      {"if": {"severity_gte": 4}, "action": "go_today"},
+      {"if": {"care_type_in": ["obstetrics", "paediatrics", "cardiac"]}, "action": "go_today"},
+      {"if": {"onset_in": ["week"], "severity_gte": 3}, "action": "go_today"},
+      {"if": {"severity_gte": 3}, "action": "see_chemist"},
+      {"if": {}, "action": "self_care"}
+    ],
+    "self_care_return_if": [
+      "It gets worse or does not improve in 2 days",
+      "Fever, fitting, bleeding or trouble breathing",
+      "They cannot eat or drink"
+    ]
+  }
+}
