@@ -17,8 +17,13 @@ export type Step =
   | "emergency";
 
 type Location = { lat: number; lng: number } | { lga: string } | null;
+export type Mode = "patient" | "worker";
+export type WalkIn = { patientId: string; vitalisId: string; recoveryCode: string };
+type WorkerStart = { triage: TriageOut; patient_id: string; vitalis_id: string; recovery_code: string };
 
 type State = {
+  mode: Mode;
+  walkIn: WalkIn | null;
   reportId: string | null;
   entry: string | null;
   result: TriageOut | null;
@@ -32,12 +37,13 @@ type State = {
   tapCount: number;
   startedAt: number | null;
   // actions
-  reset: () => void;
+  reset: (mode?: Mode) => void;
+  setResult: (r: TriageOut) => void;
   setLocation: (l: Location) => void;
   go: (s: Step) => void;
   back: () => void;
   countTap: () => void;
-  begin: (taps: Tap[], next: Step) => Promise<TriageOut | null>;
+  begin: (taps: Tap[], next: Step, opts?: { familyPhone?: string }) => Promise<TriageOut | null>;
   tap: (taps: Tap[]) => void;
   flush: () => Promise<TriageOut | null>;
   setRegion: (r: string | null) => void;
@@ -69,7 +75,14 @@ function persistTimer(startedAt: number | null, taps: number) {
   }
 }
 
+/** Endpoint base for the current mode: the family's own phone, or a frontline worker on their behalf. */
+export function triageBase(mode: Mode): { path: string; patient: boolean } {
+  return mode === "worker" ? { path: "/worker/triage", patient: false } : { path: "/triage", patient: true };
+}
+
 export const useTriage = create<State>((set, get) => ({
+  mode: "patient",
+  walkIn: null,
   reportId: null,
   entry: null,
   result: null,
@@ -83,9 +96,15 @@ export const useTriage = create<State>((set, get) => ({
   tapCount: 0,
   startedAt: null,
 
-  reset: () => {
+  setResult: (result) => {
+    set({ result });
+    if (result.red_flag.fired && get().step !== "emergency") {
+      set((s) => ({ step: "emergency", history: [...s.history, s.step] }));
+    }
+  },
+  reset: (mode = "patient") => {
     queue = [];
-    set({ reportId: null, entry: null, result: null, step: "who", history: [], region: null, selected: [], error: null,
+    set({ mode, walkIn: null, reportId: null, entry: null, result: null, step: "who", history: [], region: null, selected: [], error: null,
           tapCount: 0, startedAt: null });
   },
   setLocation: (location) => {
@@ -106,11 +125,24 @@ export const useTriage = create<State>((set, get) => ({
     persistTimer(startedAt, tapCount);
   },
 
-  begin: async (taps, next) => {
+  begin: async (taps, next, opts) => {
     get().countTap();
     const entry = taps.find((t) => t.kind === "emergency")?.code ?? "other";
     set({ busy: true, error: null, step: next, history: [], entry, selected: [], region: null });
     try {
+      if (get().mode === "worker") {
+        const body: Record<string, unknown> = { taps: [...locationTap(get().location), ...taps] };
+        if (opts?.familyPhone) body.family_phone = opts.familyPhone;
+        const res = await api<WorkerStart>("/worker/triage", { body });
+        set({
+          reportId: res.triage.report_id,
+          result: res.triage,
+          busy: false,
+          walkIn: { patientId: res.patient_id, vitalisId: res.vitalis_id, recoveryCode: res.recovery_code },
+        });
+        if (res.triage.red_flag.fired) set({ step: "emergency" });
+        return res.triage;
+      }
       await ensurePatient();
       const body = { taps: [...locationTap(get().location), ...taps] };
       let result: TriageOut;
@@ -148,7 +180,8 @@ export const useTriage = create<State>((set, get) => ({
     queue = [];
     inflight = (async () => {
       try {
-        const result = await api<TriageOut>(`/triage/${id}/taps`, { body: { taps: batch }, patient: true });
+        const base = triageBase(get().mode);
+        const result = await api<TriageOut>(`${base.path}/${id}/taps`, { body: { taps: batch }, patient: base.patient });
         set({ result, error: null });
         if (result.red_flag.fired && get().step !== "emergency") {
           set((s) => ({ step: "emergency", history: [...s.history, s.step] }));

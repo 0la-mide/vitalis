@@ -13,7 +13,7 @@ from app.core.db import utcnow
 from app.core.errors import AppError
 from app.engines.matching.engine import Match, match
 from app.engines.matching.loader import load_snapshots
-from app.models import Facility, Patient, Referral, TriageReport
+from app.models import Facility, Patient, Referral, TriageReport, User
 from app.models.enums import REFERRAL_TRANSITIONS, ReferralStatus, TriageStatus
 from app.realtime.broker import broker
 from app.services.notify import sms
@@ -181,6 +181,12 @@ async def run_overdue_check(db: AsyncSession) -> int:
         await audit(db, "referral.overdue", actor_type="system", subject_type="referral", subject_id=ref.id,
                     facility_id=ref.facility_id)
         publish(ref, "referral.overdue")
+        worker = await db.get(User, ref.worker_id) if ref.worker_id else None
+        if worker and worker.phone and facility and patient:
+            await sms().send(
+                worker.phone,
+                f"VITALIS: your referral {patient.vitalis_id} to {facility.name} is overdue. Please check on them.",
+            )
         if patient and patient.phone and facility:
             await sms().send(
                 patient.phone,

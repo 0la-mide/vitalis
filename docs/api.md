@@ -65,6 +65,21 @@ Documents: PDF/JPG/PNG by **magic bytes**, max 5 MB, random file names in `UPLOA
 | GET | `/hospital/staff` | facility_admin — staff at their facility incl. pending |
 | PATCH | `/hospital/staff/{user_id}` | facility_admin — `{decision: approve|reject|suspend, reason}`; other facilities' staff → 404 |
 
+## Frontline worker (role `worker`, approved; scoped to the worker's own reports)
+
+| Method | Path | Notes |
+|---|---|---|
+| POST | `/worker/triage` | `{taps, family_phone?}` → creates the walk-in patient + report; returns `triage`, `vitalis_id`, one-time `recovery_code` (no device key). Defaults location to the worker's shop |
+| POST | `/worker/triage/{id}/taps` | same taps as the patient app |
+| GET | `/worker/triage/{id}` | current state |
+| POST | `/worker/patients/{patient_id}/vitals` | `{report_id, readings[{kind, value, measured_at?}]}`; kinds: systolic_bp, diastolic_bp, pulse, temp_c, spo2, resp_rate, weight_kg (units fixed, plausibility ranges enforced); re-runs red flags → `TriageOut` |
+| POST | `/worker/triage/{id}/referral` | `{facility_id?}` → `WorkerReferralOut` |
+| GET | `/worker/referrals` | last 7 days, live status (incl. decline reason, arrived, overdue) |
+| GET | `/worker/referrals/{id}` | one referral |
+| GET | `/worker/referrals/stream` | SSE on `worker:<id>` |
+
+The worker sees care type, danger-sign message and suggested hospitals — never model likelihoods.
+
 ## Public
 
 `GET /facilities?care_type=&lat=&lng=` — verified facilities ranked for a care type. `GET /health`.

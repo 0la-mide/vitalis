@@ -49,6 +49,15 @@ double-submit (`vt_csrf` cookie echoed as `X-CSRF-Token`) on all staff mutations
 checks role, approved account and approved facility; every hospital query is filtered by `user.facility_id`, and
 cross-facility IDs return 404. Pending / rejected / suspended accounts can only call `/auth/me`.
 
+## Frontline worker app
+
+The worker app reuses the patient tap flow (`components/triage/TriageFlow.tsx` with `mode="worker"`). Calls go to
+`/worker/*` with cookie auth instead of `X-Patient-Key`. `POST /worker/triage` creates the walk-in patient
+(`created_by_worker_id`) and returns the VITALIS ID and one-time recovery code for the paper slip; the worker never holds
+the patient's device key. Vitals are stored with `source=worker`, `entered_by` and `report_id`, and re-run the red-flag
+rules (reusing the last stored model prediction, so the care type does not change). Referrals carry `worker_id`, so the
+worker's SSE channel and the overdue job (SMS to the worker's phone) both reach them.
+
 ## Registration and verification
 
 Self-registration creates `pending` accounts plus a `verifications` row (subject `facility`, `worker` or `staff`) with

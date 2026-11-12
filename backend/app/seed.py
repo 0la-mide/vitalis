@@ -200,7 +200,7 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
              ("Pending Worker (demo)", "New PPMV Shop", VerificationStatus.pending)], start=1):
             email = f"chemist{i}@vitalis.demo"
             u = User(email=email, password_hash=pw_hash, full_name=name, role=Role.worker, status=status,
-                     licence_number=f"PPMV-OG-{2000 + i}")
+                     licence_number=f"PPMV-OG-{2000 + i}", phone=f"+23480000002{i:02d}")
             db.add(u)
             await db.flush()
             db.add(WorkerProfile(user_id=u.id, worker_type="chemist", business_name=bname, lga="Abeokuta South",

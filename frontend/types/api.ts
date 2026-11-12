@@ -639,6 +639,148 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/worker/triage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start
+         * @description Creates the walk-in patient and a triage report labelled as done on their behalf.
+         */
+        post: operations["start_api_v1_worker_triage_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/triage/{report_id}/taps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Taps */
+        post: operations["taps_api_v1_worker_triage__report_id__taps_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/triage/{report_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Triage */
+        get: operations["get_triage_api_v1_worker_triage__report_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/patients/{patient_id}/vitals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add Vitals
+         * @description Records vitals (units fixed per kind) and re-runs the red-flag rules immediately.
+         */
+        post: operations["add_vitals_api_v1_worker_patients__patient_id__vitals_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/triage/{report_id}/referral": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refer */
+        post: operations["refer_api_v1_worker_triage__report_id__referral_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Referrals */
+        get: operations["my_referrals_api_v1_worker_referrals_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/referrals/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Stream */
+        get: operations["stream_api_v1_worker_referrals_stream_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/worker/referrals/{referral_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Referral */
+        get: operations["get_referral_api_v1_worker_referrals__referral_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -822,6 +964,16 @@ export interface components {
             data: components["schemas"]["VerificationOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[WorkerReferralOut] */
+        Envelope_WorkerReferralOut_: {
+            data: components["schemas"]["WorkerReferralOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[WorkerTriageStartOut] */
+        Envelope_WorkerTriageStartOut_: {
+            data: components["schemas"]["WorkerTriageStartOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[dict] */
         Envelope_dict_: {
             /** Data */
@@ -870,6 +1022,12 @@ export interface components {
         Envelope_list_VerificationOut__: {
             /** Data */
             data: components["schemas"]["VerificationOut"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[WorkerReferralOut]] */
+        Envelope_list_WorkerReferralOut__: {
+            /** Data */
+            data: components["schemas"]["WorkerReferralOut"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** ExcludedCard */
@@ -1631,6 +1789,18 @@ export interface components {
             /** Documents */
             documents: components["schemas"]["UploadOut"][];
         };
+        /** VitalIn */
+        VitalIn: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "systolic_bp" | "diastolic_bp" | "pulse" | "temp_c" | "spo2" | "resp_rate" | "weight_kg";
+            /** Value */
+            value: number;
+            /** Measured At */
+            measured_at?: string | null;
+        };
         /** VitalLine */
         VitalLine: {
             /** Kind */
@@ -1646,6 +1816,102 @@ export interface components {
              * Format: date-time
              */
             measured_at: string;
+        };
+        /** VitalsIn */
+        VitalsIn: {
+            /**
+             * Report Id
+             * Format: uuid
+             */
+            report_id: string;
+            /** Readings */
+            readings: components["schemas"]["VitalIn"][];
+        };
+        /** WorkerReferralOut */
+        WorkerReferralOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Report Id
+             * Format: uuid
+             */
+            report_id: string;
+            /** Status */
+            status: string;
+            /** Vitalis Id */
+            vitalis_id: string;
+            /**
+             * Facility Id
+             * Format: uuid
+             */
+            facility_id: string;
+            /** Facility Name */
+            facility_name: string;
+            /** Facility Phone */
+            facility_phone: string | null;
+            /** Facility Lat */
+            facility_lat: number;
+            /** Facility Lng */
+            facility_lng: number;
+            /** Care Type */
+            care_type: string | null;
+            /** Care Label */
+            care_label: string | null;
+            /** Red Flag */
+            red_flag: boolean;
+            /** Red Flag Message */
+            red_flag_message: string | null;
+            /** Distance Km */
+            distance_km: number | null;
+            /** Eta Minutes */
+            eta_minutes: number | null;
+            /** Decision Reason */
+            decision_reason: string | null;
+            /** Next Referral Id */
+            next_referral_id: string | null;
+            /** Previous Facility Name */
+            previous_facility_name: string | null;
+            /** Directions Url */
+            directions_url: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Accepted At */
+            accepted_at: string | null;
+            /** Declined At */
+            declined_at: string | null;
+            /** Arrived At */
+            arrived_at: string | null;
+            /** Overdue At */
+            overdue_at: string | null;
+        };
+        /** WorkerTriageIn */
+        WorkerTriageIn: {
+            /** Taps */
+            taps?: components["schemas"]["Tap"][];
+            /** Family Phone */
+            family_phone?: string | null;
+        };
+        /**
+         * WorkerTriageStartOut
+         * @description Recovery code is returned once, for the slip handed to the family. No device key: the worker never holds it.
+         */
+        WorkerTriageStartOut: {
+            triage: components["schemas"]["TriageOut"];
+            /**
+             * Patient Id
+             * Format: uuid
+             */
+            patient_id: string;
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** Recovery Code */
+            recovery_code: string;
         };
         /** DecisionIn */
         app__schemas__referral__DecisionIn: {
@@ -2758,6 +3024,246 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_Metrics_"];
+                };
+            };
+        };
+    };
+    start_api_v1_worker_triage_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkerTriageIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_WorkerTriageStartOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    taps_api_v1_worker_triage__report_id__taps_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TapsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_TriageOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_triage_api_v1_worker_triage__report_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_TriageOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_vitals_api_v1_worker_patients__patient_id__vitals_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                patient_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VitalsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_TriageOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    refer_api_v1_worker_triage__report_id__referral_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                report_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferralCreateIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_WorkerReferralOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_referrals_api_v1_worker_referrals_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_WorkerReferralOut__"];
+                };
+            };
+        };
+    };
+    stream_api_v1_worker_referrals_stream_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_referral_api_v1_worker_referrals__referral_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                referral_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_WorkerReferralOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

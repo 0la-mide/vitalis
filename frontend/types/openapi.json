@@ -1564,6 +1564,334 @@
           }
         }
       }
+    },
+    "/api/v1/worker/triage": {
+      "post": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Start",
+        "description": "Creates the walk-in patient and a triage report labelled as done on their behalf.",
+        "operationId": "start_api_v1_worker_triage_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkerTriageIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_WorkerTriageStartOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/triage/{report_id}/taps": {
+      "post": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Taps",
+        "operationId": "taps_api_v1_worker_triage__report_id__taps_post",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Report Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TapsIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_TriageOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/triage/{report_id}": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Get Triage",
+        "operationId": "get_triage_api_v1_worker_triage__report_id__get",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Report Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_TriageOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/patients/{patient_id}/vitals": {
+      "post": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Add Vitals",
+        "description": "Records vitals (units fixed per kind) and re-runs the red-flag rules immediately.",
+        "operationId": "add_vitals_api_v1_worker_patients__patient_id__vitals_post",
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Patient Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VitalsIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_TriageOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/triage/{report_id}/referral": {
+      "post": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Refer",
+        "operationId": "refer_api_v1_worker_triage__report_id__referral_post",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Report Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReferralCreateIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_WorkerReferralOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/referrals": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "My Referrals",
+        "operationId": "my_referrals_api_v1_worker_referrals_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_WorkerReferralOut__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/referrals/stream": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Stream",
+        "operationId": "stream_api_v1_worker_referrals_stream_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/worker/referrals/{referral_id}": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Get Referral",
+        "operationId": "get_referral_api_v1_worker_referrals__referral_id__get",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_WorkerReferralOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2205,6 +2533,50 @@
         ],
         "title": "Envelope[VerificationOut]"
       },
+      "Envelope_WorkerReferralOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WorkerReferralOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[WorkerReferralOut]"
+      },
+      "Envelope_WorkerTriageStartOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WorkerTriageStartOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[WorkerTriageStartOut]"
+      },
       "Envelope_dict_": {
         "properties": {
           "data": {
@@ -2410,6 +2782,32 @@
           "data"
         ],
         "title": "Envelope[list[VerificationOut]]"
+      },
+      "Envelope_list_WorkerReferralOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/WorkerReferralOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[WorkerReferralOut]]"
       },
       "ExcludedCard": {
         "properties": {
@@ -4685,6 +5083,45 @@
         ],
         "title": "VerificationOut"
       },
+      "VitalIn": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "systolic_bp",
+              "diastolic_bp",
+              "pulse",
+              "temp_c",
+              "spo2",
+              "resp_rate",
+              "weight_kg"
+            ],
+            "title": "Kind"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "value"
+        ],
+        "title": "VitalIn"
+      },
       "VitalLine": {
         "properties": {
           "kind": {
@@ -4718,6 +5155,314 @@
           "measured_at"
         ],
         "title": "VitalLine"
+      },
+      "VitalsIn": {
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Report Id"
+          },
+          "readings": {
+            "items": {
+              "$ref": "#/components/schemas/VitalIn"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Readings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "report_id",
+          "readings"
+        ],
+        "title": "VitalsIn"
+      },
+      "WorkerReferralOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "report_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Report Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "facility_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Facility Id"
+          },
+          "facility_name": {
+            "type": "string",
+            "title": "Facility Name"
+          },
+          "facility_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility Phone"
+          },
+          "facility_lat": {
+            "type": "number",
+            "title": "Facility Lat"
+          },
+          "facility_lng": {
+            "type": "number",
+            "title": "Facility Lng"
+          },
+          "care_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Type"
+          },
+          "care_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Care Label"
+          },
+          "red_flag": {
+            "type": "boolean",
+            "title": "Red Flag"
+          },
+          "red_flag_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Red Flag Message"
+          },
+          "distance_km": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Distance Km"
+          },
+          "eta_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eta Minutes"
+          },
+          "decision_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision Reason"
+          },
+          "next_referral_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Referral Id"
+          },
+          "previous_facility_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Facility Name"
+          },
+          "directions_url": {
+            "type": "string",
+            "title": "Directions Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "accepted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Accepted At"
+          },
+          "declined_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Declined At"
+          },
+          "arrived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Arrived At"
+          },
+          "overdue_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overdue At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "report_id",
+          "status",
+          "vitalis_id",
+          "facility_id",
+          "facility_name",
+          "facility_phone",
+          "facility_lat",
+          "facility_lng",
+          "care_type",
+          "care_label",
+          "red_flag",
+          "red_flag_message",
+          "distance_km",
+          "eta_minutes",
+          "decision_reason",
+          "next_referral_id",
+          "previous_facility_name",
+          "directions_url",
+          "created_at",
+          "accepted_at",
+          "declined_at",
+          "arrived_at",
+          "overdue_at"
+        ],
+        "title": "WorkerReferralOut"
+      },
+      "WorkerTriageIn": {
+        "properties": {
+          "taps": {
+            "items": {
+              "$ref": "#/components/schemas/Tap"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Taps"
+          },
+          "family_phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "pattern": "^\\+?[0-9 ]{7,20}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Phone"
+          }
+        },
+        "type": "object",
+        "title": "WorkerTriageIn"
+      },
+      "WorkerTriageStartOut": {
+        "properties": {
+          "triage": {
+            "$ref": "#/components/schemas/TriageOut"
+          },
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "recovery_code": {
+            "type": "string",
+            "title": "Recovery Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "triage",
+          "patient_id",
+          "vitalis_id",
+          "recovery_code"
+        ],
+        "title": "WorkerTriageStartOut",
+        "description": "Recovery code is returned once, for the slip handed to the family. No device key: the worker never holds it."
       },
       "app__schemas__referral__DecisionIn": {
         "properties": {

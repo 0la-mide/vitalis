@@ -144,7 +144,9 @@ async def incoming(user: User = Depends(any_staff), db: AsyncSession = Depends(g
 
 
 @router.get("/stream")
-async def stream(user: User = Depends(any_staff)):
+async def stream(user: User = Depends(any_staff), db: AsyncSession = Depends(get_db)):
+    # Release the DB connection before streaming: a long-lived stream must not hold a transaction (and its locks).
+    await db.close()
     return EventSourceResponse(broker.subscribe(f"facility:{user.facility_id}"), ping=None, headers=SSE_HEADERS)
 
 

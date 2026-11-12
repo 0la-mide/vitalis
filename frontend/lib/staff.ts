@@ -11,6 +11,7 @@ export const HOSPITAL_ROLES = ["facility_admin", "receptionist", "nurse", "docto
 export function homeFor(me: MeOut): string {
   if (me.status !== "approved") return "/auth/status";
   if (me.role === "network_admin") return "/admin";
+  if (me.role === "worker") return "/worker";
   if (HOSPITAL_ROLES.includes(me.role) && me.facility?.status === "approved") return "/hospital";
   return "/auth/status";
 }
@@ -22,6 +23,17 @@ export function useRequireNetworkAdmin() {
   useEffect(() => {
     if (q.error instanceof ApiError && q.error.status === 401) router.replace("/auth/login");
     if (q.data && (q.data.role !== "network_admin" || q.data.status !== "approved")) router.replace(homeFor(q.data));
+  }, [q.data, q.error, router]);
+  return q;
+}
+
+/** Frontline worker pages: approved workers only. */
+export function useRequireWorker() {
+  const router = useRouter();
+  const q = useMe();
+  useEffect(() => {
+    if (q.error instanceof ApiError && q.error.status === 401) router.replace("/auth/login");
+    if (q.data && (q.data.role !== "worker" || q.data.status !== "approved")) router.replace(homeFor(q.data));
   }, [q.data, q.error, router]);
   return q;
 }

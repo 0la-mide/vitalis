@@ -63,7 +63,10 @@ export default function StatusPage() {
         {me.status === "approved" && !facilityPending && me.role === "network_admin" ? (
           <Button className="mt-3" onClick={() => router.push("/admin")}>Open admin</Button>
         ) : null}
-        {me.status === "approved" && !facilityPending && !HOSPITAL_ROLES.includes(me.role) && me.role !== "network_admin" ? (
+        {me.status === "approved" && me.role === "worker" ? (
+          <Button className="mt-3" onClick={() => router.push("/worker")}>Open worker app</Button>
+        ) : null}
+        {me.status === "approved" && !facilityPending && !HOSPITAL_ROLES.includes(me.role) && !["network_admin", "worker"].includes(me.role) ? (
           <p className="mt-3 rounded-lg bg-mint p-2 text-sm">
             The {ROLE_LABEL[me.role]?.toLowerCase()} workspace is coming in the next build phase.
           </p>

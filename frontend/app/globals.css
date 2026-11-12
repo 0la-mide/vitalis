@@ -118,3 +118,22 @@ body {
 .body-region[data-active="true"] {
   fill: var(--primary);
 }
+
+/* Worker recovery slip: print only the slip. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-slip,
+  .print-slip * {
+    visibility: visible;
+  }
+  .print-slip {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    border-color: #000;
+    color: #000;
+    background: #fff;
+  }
+}

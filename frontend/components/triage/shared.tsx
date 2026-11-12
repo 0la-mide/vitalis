@@ -162,7 +162,7 @@ export function DevTimer() {
   const end = state.stoppedAt ?? now;
   const secs = ((end - state.startedAt) / 1000).toFixed(1);
   return (
-    <div className="pointer-events-none fixed right-2 top-2 z-50 rounded-lg bg-black/75 px-2 py-1 font-mono text-xs text-white">
+    <div className="pointer-events-none fixed bottom-24 right-2 z-50 rounded-lg bg-black/75 px-2 py-1 font-mono text-xs text-white">
       {state.taps} taps · {secs}s{state.stoppedAt ? " ✓" : ""}
     </div>
   );

@@ -181,6 +181,18 @@ async def evaluate(db: AsyncSession, r: TriageReport, *, call_model: bool = True
     # 2. Disease model (skipped once a red flag has fired: we stop asking and act).
     predictions: list[dict] = []
     model_ok = False
+    if not call_model and st.symptoms and not rf.fired:
+        # Re-evaluations without a model call (vitals, reads) keep the latest successful prediction.
+        last = (
+            await db.execute(
+                select(ModelPrediction)
+                .where(ModelPrediction.report_id == r.id, ModelPrediction.ok.is_(True))
+                .order_by(ModelPrediction.created_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        if last and last.output:
+            predictions = last.output.get("predictions", [])
     if call_model and st.symptoms and not rf.fired:
         res = await model_client.predict(st)
         model_ok = res.ok

@@ -26,11 +26,15 @@ in real time.
   document, validated by magic bytes, 5 MB max, private storage). Network admin approves / rejects / suspends facilities
   and workers; facility admins approve their own staff. Rejected applicants resubmit. Status page for anyone not
   approved.
+- **Frontline worker app (`/worker`):** chemists / CHEWs / midwives triage a walk-in "on behalf of patient" with the same
+  tap flow, add vitals (BP, pulse, temperature, SpO₂, respiratory rate, weight) that re-run the red-flag rules
+  immediately, refer, follow "My referrals" live (accepted / declined with reason / arrived / overdue, with SMS on
+  overdue), and hand the family a printable recovery slip.
 - **Network admin:** verification queue with documents, audit log viewer with filters, network counts (no patient names).
 - **Platform:** Argon2 + JWT in httpOnly cookies, CSRF double-submit, role + facility scoping, audit events, rate limits,
   security headers, response envelope, structured logs with request IDs. PWA with Serwist and an offline page.
 
-Not built yet (next phases): frontline worker app, encounters
+Not built yet (next phases): encounters
 (reception → nursing → doctor → lab), doctor AI drafts, records + QR sharing, web push, full i18n text.
 
 ## Run it locally (no Docker needed)

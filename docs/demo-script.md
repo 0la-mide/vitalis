@@ -22,6 +22,18 @@ Setup (2 minutes before): `make demo-reset`, `make dev`. Open two windows:
    VITALIS ID to show at reception. Timer stops.
 8. **Show the VITALIS card** at the bottom: ID + one-time recovery code.
 
+## The chemist down the street (< 1 minute)
+
+1. Sign in as `chemist1@vitalis.demo` (Mama Tola) → **New walk-in**. Optional family phone for alerts.
+2. Tap **Something else → Adult → Male → Whole body → Hot body / fever → Next → Bad → 2–3 days**.
+3. The **Vitals** panel opens on the results: enter temperature 38.6 and pulse 104 → **Save vitals**.
+   *Point out:* try systolic 84 instead — the low-BP red flag fires instantly and the screen turns into an emergency.
+4. **Send to this hospital** → the referral page shows live status and the **recovery slip** to hand over (Print).
+5. Accept on the hospital side: the chemist's page flips to "Accepted — on the way". The hospital card shows "via
+   Mama Tola" and the chemist's vitals.
+
+Simulated with a 1.5 s pause per action: 10 taps + 2 vitals + send in about 19 s.
+
 ## Talking points
 
 - *Safety rules before models:* stop the model (`Ctrl-C` on the model process) and repeat — the red flag still fires.
