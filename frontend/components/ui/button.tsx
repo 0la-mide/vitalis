@@ -2,16 +2,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-// shadcn/ui-style button with VITALIS tokens. Minimum 56px for patient-facing sizes.
+// shadcn/ui-style button in the team's "Ward" format. Minimum 56px for patient-facing sizes.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none select-none",
+  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-150 disabled:opacity-50 disabled:pointer-events-none select-none",
   {
     variants: {
       variant: {
         primary: "bg-primary text-primary-foreground hover:bg-primary-strong",
-        outline: "border-2 border-border bg-card text-foreground hover:bg-muted",
+        outline: "border border-[#cdd4d1] bg-card text-foreground hover:bg-muted dark:border-border",
         ghost: "text-foreground hover:bg-muted",
         emergency: "bg-emergency text-white hover:opacity-90",
+        calm: "bg-calm text-calm-foreground hover:bg-calm-strong",
         mint: "bg-mint text-foreground hover:bg-mint-strong",
       },
       size: {

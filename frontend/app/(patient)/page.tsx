@@ -8,6 +8,7 @@ import { TaxIcon } from "@/components/triage/icons";
 import { DevTimer, LangPicker, SpeakButton, useLabel, useTaxonomy } from "@/components/triage/shared";
 import { useT } from "@/lib/i18n";
 import { useTriage } from "@/lib/triage-store";
+import { Logo } from "@/components/staff/StaffShell";
 
 export default function Home() {
   const t = useT();
@@ -31,9 +32,9 @@ export default function Home() {
     );
   }, [reset, setLocation]);
 
-  const startEmergency = (code: string, next: string) => {
+  const startEmergency = (code: string, next: string, context?: Record<string, unknown>) => {
     const step = next === "emergency" ? "emergency" : next === "who_child" ? "who_child" : "body";
-    void begin([{ kind: "emergency", code }], step);
+    void begin([{ kind: "emergency", code }], step, { context });
     router.push("/triage");
   };
 
@@ -41,11 +42,7 @@ export default function Home() {
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pb-6">
       <DevTimer />
       <header className="flex items-center justify-between py-4">
-        <div className="flex items-center gap-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/icon-192.png" alt="" className="h-9 w-9 rounded-lg" />
-          <span className="text-xl font-extrabold tracking-tight text-primary">{t("app.name")}</span>
-        </div>
+        <Logo subtitle={t("app.tagline")} />
         <LangPicker />
       </header>
 
@@ -59,10 +56,10 @@ export default function Home() {
           <button
             key={e.code}
             type="button"
-            onClick={() => startEmergency(e.code, e.next)}
+            onClick={() => startEmergency(e.code, e.next, e.context as Record<string, unknown>)}
             className="flex min-h-32 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-border bg-card p-3 text-center text-lg font-semibold leading-tight shadow-sm active:scale-[0.98] active:bg-mint"
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emergency-soft text-emergency">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-calm-soft text-calm">
               <TaxIcon name={e.icon} className="h-8 w-8" />
             </span>
             {label(e.labels)}

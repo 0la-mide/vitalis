@@ -2087,6 +2087,11 @@ export interface components {
              */
             child_only: boolean;
             /**
+             * Not Pregnant
+             * @default false
+             */
+            not_pregnant: boolean;
+            /**
              * Emergency Only
              * @default false
              */

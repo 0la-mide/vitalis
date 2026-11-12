@@ -33,9 +33,9 @@ export default function WorkerHome() {
   }, [reset, setLocation]);
 
   const familyPhone = /^\+?[0-9 ]{7,20}$/.test(phone.trim()) ? phone.trim() : undefined;
-  const start = (code: string | null, next: string) => {
+  const start = (code: string | null, next: string, context?: Record<string, unknown>) => {
     const step = next === "emergency" ? "emergency" : next === "who_child" ? "who_child" : next === "who" ? "who" : "body";
-    void begin(code ? [{ kind: "emergency", code }] : [], step, { familyPhone });
+    void begin(code ? [{ kind: "emergency", code }] : [], step, { familyPhone, context });
     router.push("/worker/triage");
   };
 
@@ -55,7 +55,7 @@ export default function WorkerHome() {
       </label>
       <div className="grid grid-cols-2 gap-2">
         {(tax?.emergencies ?? []).map((e) => (
-          <button key={e.code} type="button" onClick={() => start(e.code, e.next)}
+          <button key={e.code} type="button" onClick={() => start(e.code, e.next, e.context as Record<string, unknown>)}
             className="flex min-h-24 flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-border bg-card p-2 text-center font-semibold leading-tight active:bg-mint">
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-emergency-soft text-emergency">
               <TaxIcon name={e.icon} className="h-6 w-6" />

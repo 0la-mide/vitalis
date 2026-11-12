@@ -2,7 +2,7 @@
 
 // Shared tap-to-triage flow: the family on their own phone, or a frontline worker on their behalf.
 
-import { ArrowRight, Phone, Siren } from "lucide-react";
+import { Phone, Siren } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -78,7 +78,8 @@ export function TriageFlow({ mode }: { mode: Mode }) {
     }
   }, [s.reportId, s.busy, router, home]);
 
-  const ctx = (s.result?.context ?? {}) as { age_group?: string; sex?: string; pregnant?: boolean };
+  // Taps update the server after a short debounce; merge what was just tapped so the right body shows at once.
+  const ctx = { ...(s.result?.context ?? {}), ...s.localCtx } as { age_group?: string; sex?: string; pregnant?: boolean };
   const regionLabels = useMemo(
     () => Object.fromEntries((tax?.regions ?? []).map((r) => [r.code, label(r.labels)])),
     [tax, label],
@@ -126,10 +127,8 @@ export function TriageFlow({ mode }: { mode: Mode }) {
                   key={w.code}
                   icon={<TaxIcon name={w.icon} className="h-10 w-10 text-primary" />}
                   onClick={() =>
-                    tapAndGo(
-                      [{ kind: "context", ...(w.context as object), who: w.code }],
-                      w.code === "child" ? "who_child" : w.code === "pregnant" ? "body" : "sex",
-                    )
+                    // Who + sex in one tap: Man / Woman / Pregnant woman / Child / Older man / Older woman.
+                    tapAndGo([{ kind: "context", ...(w.context as object), who: w.code }], w.code === "child" ? "who_child" : "body")
                   }
                 >
                   {label(w.labels)}
@@ -154,7 +153,7 @@ export function TriageFlow({ mode }: { mode: Mode }) {
                       s.setRegion("whole_body");
                       s.go("symptoms");
                     } else {
-                      tapAndGo([{ kind: "context", ...(w.context as object) }], "sex");
+                      tapAndGo([{ kind: "context", ...(w.context as object) }], "body");
                     }
                   }}
                 >
@@ -251,17 +250,15 @@ export function TriageFlow({ mode }: { mode: Mode }) {
             ctx={ctx}
             selected={s.selected}
             onToggle={(code) => {
+              // One tap per answer: picking what they see or feel moves straight on.
               s.countTap();
-              s.toggleSymptom(code, s.region);
+              if (!s.selected.includes(code)) s.toggleSymptom(code, s.region);
+              s.go("severity");
             }}
             onBack={s.back}
             onMore={() => {
               setView("front");
               s.go("body");
-            }}
-            onNext={() => {
-              s.countTap();
-              s.go("severity");
             }}
           />
         );
@@ -331,7 +328,6 @@ function SymptomsStep({
   onToggle,
   onBack,
   onMore,
-  onNext,
 }: {
   tax: Taxonomy;
   region: string | null;
@@ -340,7 +336,6 @@ function SymptomsStep({
   onToggle: (code: string) => void;
   onBack: () => void;
   onMore: () => void;
-  onNext: () => void;
 }) {
   const t = useT();
   const label = useLabel();
@@ -351,6 +346,7 @@ function SymptomsStep({
       sym.regions.includes(region) &&
       !sym.emergency_only &&
       (!sym.pregnant_only || ctx.pregnant) &&
+      (!sym.not_pregnant || !ctx.pregnant) &&
       (!sym.female_only || ctx.sex === "female" || ctx.pregnant) &&
       (!sym.child_only || isChild),
   );
@@ -383,12 +379,9 @@ function SymptomsStep({
           );
         })}
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <Button variant="outline" size="lg" onClick={onMore}>
+      <div className="mt-4">
+        <Button variant="outline" size="lg" className="w-full" onClick={onMore}>
           {t("symptoms.other_place")}
-        </Button>
-        <Button size="lg" onClick={onNext} disabled={!selected.length}>
-          {t("symptoms.done")} <ArrowRight className="h-5 w-5" />
         </Button>
       </div>
     </>
@@ -410,7 +403,8 @@ function EmergencyStep({
   const top = result?.hospitals.top ?? [];
   return (
     <div className="space-y-3 py-3">
-      <div className="rounded-2xl bg-emergency p-4 text-white" role="alert">
+      {/* Calm, not alarming: deep blue-teal surface, one clear instruction; red only as a small signal. */}
+      <div className="rounded-2xl border-l-4 border-emergency bg-calm p-4 text-calm-foreground" role="alert">
         <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide">
           <Siren className="h-5 w-5" aria-hidden /> {t("emergency.title")}
         </div>

@@ -119,6 +119,7 @@ class TaxSymptom(BaseModel):
     pregnant_only: bool = False
     female_only: bool = False
     child_only: bool = False
+    not_pregnant: bool = False
     emergency_only: bool = False
 
 

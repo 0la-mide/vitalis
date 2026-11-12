@@ -475,6 +475,30 @@
     {
       "code": "who_elderly",
       "text_en": "Elderly"
+    },
+    {
+      "code": "who_man",
+      "text_en": "Man"
+    },
+    {
+      "code": "who_woman",
+      "text_en": "Woman"
+    },
+    {
+      "code": "who_teen_girl",
+      "text_en": "Teenage girl"
+    },
+    {
+      "code": "who_teen_boy",
+      "text_en": "Teenage boy"
+    },
+    {
+      "code": "who_elderly_man",
+      "text_en": "Older man"
+    },
+    {
+      "code": "who_elderly_woman",
+      "text_en": "Older woman"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-12.1",
+  "version": "2026-11-12.2",
   "needs_clinical_review": true,
   "languages": [
     "en",
@@ -549,7 +549,8 @@
         "ig": ""
       },
       "audio": "sym_abdominal_swelling",
-      "model_code": "ABDOMINAL_DISTENSION"
+      "model_code": "ABDOMINAL_DISTENSION",
+      "not_pregnant": true
     },
     {
       "code": "VOMITING",
@@ -1348,19 +1349,54 @@
   ],
   "who": [
     {
-      "code": "adult",
+      "code": "man",
       "icon": "adult",
       "labels": {
-        "en": "Adult",
+        "en": "Man",
         "pcm": "",
         "yo": "",
         "ha": "",
         "ig": ""
       },
-      "audio": "who_adult",
+      "audio": "who_man",
       "context": {
         "age_group": "adult",
+        "sex": "male",
         "pregnant": false
+      }
+    },
+    {
+      "code": "woman",
+      "icon": "adult",
+      "labels": {
+        "en": "Woman",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "who_woman",
+      "context": {
+        "age_group": "adult",
+        "sex": "female",
+        "pregnant": false
+      }
+    },
+    {
+      "code": "pregnant",
+      "icon": "pregnant",
+      "labels": {
+        "en": "Pregnant woman",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "who_pregnant",
+      "context": {
+        "age_group": "adult",
+        "sex": "female",
+        "pregnant": true
       }
     },
     {
@@ -1407,51 +1443,68 @@
           }
         },
         {
-          "code": "teen",
+          "code": "teen_girl",
           "labels": {
-            "en": "Teenager",
+            "en": "Teenage girl",
             "pcm": "",
             "yo": "",
             "ha": "",
             "ig": ""
           },
-          "audio": "who_teen",
+          "audio": "who_teen_girl",
           "context": {
-            "age_group": "teen"
+            "age_group": "teen",
+            "sex": "female"
+          }
+        },
+        {
+          "code": "teen_boy",
+          "labels": {
+            "en": "Teenage boy",
+            "pcm": "",
+            "yo": "",
+            "ha": "",
+            "ig": ""
+          },
+          "audio": "who_teen_boy",
+          "context": {
+            "age_group": "teen",
+            "sex": "male"
           }
         }
       ]
     },
     {
-      "code": "pregnant",
-      "icon": "pregnant",
+      "code": "elderly_man",
+      "icon": "elderly",
       "labels": {
-        "en": "Pregnant woman",
+        "en": "Older man",
         "pcm": "",
         "yo": "",
         "ha": "",
         "ig": ""
       },
-      "audio": "who_pregnant",
+      "audio": "who_elderly_man",
       "context": {
-        "age_group": "adult",
-        "sex": "female",
-        "pregnant": true
+        "age_group": "elderly",
+        "sex": "male",
+        "pregnant": false
       }
     },
     {
-      "code": "elderly",
+      "code": "elderly_woman",
       "icon": "elderly",
       "labels": {
-        "en": "Elderly",
+        "en": "Older woman",
         "pcm": "",
         "yo": "",
         "ha": "",
         "ig": ""
       },
-      "audio": "who_elderly",
+      "audio": "who_elderly_woman",
       "context": {
         "age_group": "elderly",
+        "sex": "female",
         "pregnant": false
       }
     }

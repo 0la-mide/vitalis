@@ -26,6 +26,7 @@ type State = {
   walkIn: WalkIn | null;
   reportId: string | null;
   entry: string | null;
+  localCtx: Record<string, unknown>;
   result: TriageOut | null;
   step: Step;
   history: Step[];
@@ -43,7 +44,7 @@ type State = {
   go: (s: Step) => void;
   back: () => void;
   countTap: () => void;
-  begin: (taps: Tap[], next: Step, opts?: { familyPhone?: string }) => Promise<TriageOut | null>;
+  begin: (taps: Tap[], next: Step, opts?: { familyPhone?: string; context?: Record<string, unknown> }) => Promise<TriageOut | null>;
   tap: (taps: Tap[]) => void;
   flush: () => Promise<TriageOut | null>;
   setRegion: (r: string | null) => void;
@@ -85,6 +86,7 @@ export const useTriage = create<State>((set, get) => ({
   walkIn: null,
   reportId: null,
   entry: null,
+  localCtx: {},
   result: null,
   step: "who",
   history: [],
@@ -104,7 +106,7 @@ export const useTriage = create<State>((set, get) => ({
   },
   reset: (mode = "patient") => {
     queue = [];
-    set({ mode, walkIn: null, reportId: null, entry: null, result: null, step: "who", history: [], region: null, selected: [], error: null,
+    set({ mode, walkIn: null, localCtx: {}, reportId: null, entry: null, result: null, step: "who", history: [], region: null, selected: [], error: null,
           tapCount: 0, startedAt: null });
   },
   setLocation: (location) => {
@@ -128,7 +130,7 @@ export const useTriage = create<State>((set, get) => ({
   begin: async (taps, next, opts) => {
     get().countTap();
     const entry = taps.find((t) => t.kind === "emergency")?.code ?? "other";
-    set({ busy: true, error: null, step: next, history: [], entry, selected: [], region: null });
+    set({ busy: true, error: null, step: next, history: [], entry, selected: [], region: null, localCtx: { ...(opts?.context ?? {}) } });
     try {
       if (get().mode === "worker") {
         const body: Record<string, unknown> = { taps: [...locationTap(get().location), ...taps] };
@@ -165,6 +167,14 @@ export const useTriage = create<State>((set, get) => ({
   },
 
   tap: (taps) => {
+    const ctxTaps = taps.filter((t) => t.kind === "context");
+    if (ctxTaps.length) {
+      const merged = { ...get().localCtx };
+      for (const t of ctxTaps) {
+        for (const k of ["age_group", "sex", "pregnant", "who"] as const) if (t[k] !== undefined && t[k] !== null) merged[k] = t[k];
+      }
+      set({ localCtx: merged });
+    }
     queue.push(...taps);
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => void get().flush(), DEBOUNCE_MS);

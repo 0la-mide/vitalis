@@ -65,7 +65,8 @@ Window 1 = family (phone or narrow window). Window 2 = `doctor.central@…`, Win
 
 1. [ ] Family: open `/`, tap **Pregnancy problem**.
    *Expect:* body map; bottom bar says "8 nearby · 8 can handle this".
-2. [ ] Tap **Private parts / groin**.
+2. [ ] Tap **Private parts / groin** (on the figure or the button). The figure is a **pregnant** woman. Also try
+   **Upper belly**: there is **no "Swollen belly"** card for a pregnant woman.
    *Expect:* bar drops to **4 can handle this**.
 3. [ ] Tap **Heavy bleeding**.
    *Expect:* red **"This is an emergency"** screen immediately, Call 112 button, "Nearby hospitals have been alerted",
@@ -80,7 +81,7 @@ Window 1 = family (phone or narrow window). Window 2 = `doctor.central@…`, Win
 7. [ ] Window 3 (Sapon): **Accept**.
    *Expect:* family sees **"Go now. They are ready for you."**, minutes away, Directions, Call hospital, what to bring,
    VITALIS ID, and the recovery slip.
-8. [ ] (Dev only) the small counter at the bottom right shows taps and seconds. Target: **≤ 5 taps, ≤ 15 s**.
+8. [ ] Open the app as `/?timer=1` to show the small tap/second counter. Target: **≤ 5 taps, ≤ 15 s**.
 
 ### B. Safety rules don't need the AI
 
@@ -91,8 +92,8 @@ Window 1 = family (phone or narrow window). Window 2 = `doctor.central@…`, Win
 
 ### C. Non-urgent path (taps only, no typing)
 
-1. [ ] Family: **Something else → Adult → Male → Whole body → Hot body / fever → Next → Bad → 2–3 days**.
-   *Expect:* "See a chemist or clinic", a map, hospitals with **Confirmed / Stale / Unknown** freshness labels. **No
+1. [ ] Family: **Something else → Man → Whole body → Hot body / fever → Bad → 2–3 days**.
+   *Expect:* each symptom card moves on with **one tap** (no "Next"). "See a chemist or clinic", a map, hospitals with **Confirmed / Stale / Unknown** freshness labels. **No
    disease names anywhere** on the family's screens.
 2. [ ] Try the **speaker** buttons (English voice) and the **language picker** (other languages fall back to English
    for now — translations aren't filled in yet).
@@ -101,7 +102,7 @@ Window 1 = family (phone or narrow window). Window 2 = `doctor.central@…`, Win
 
 Sign in as `chemist1@vitalis.demo` → you land on **New walk-in**.
 
-1. [ ] **Something else → Adult → Male → Whole body → Hot body / fever → Next → Bad → 2–3 days.**
+1. [ ] **Something else → Man → Whole body → Hot body / fever → Bad → 2–3 days.**
    *Expect:* "On behalf of patient · VT-…" bar at the top; the **Vitals** form opens on the results.
 2. [ ] Enter temperature **38.6**, pulse **104** → **Save vitals**. *Expect:* chips with the saved readings; care type
    stays the same.

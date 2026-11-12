@@ -80,7 +80,7 @@ export default function ReferralPage() {
     status === "accepted" || status === "arrived" || status === "completed"
       ? "bg-primary text-primary-foreground"
       : status === "overdue" || (status === "declined" && !ref.next_referral_id)
-        ? "bg-emergency text-white"
+        ? "bg-calm text-calm-foreground"
         : "bg-mint text-foreground";
 
   return (
@@ -137,7 +137,7 @@ export default function ReferralPage() {
       {(status === "declined" && !ref.next_referral_id) || status === "overdue" ? (
         <a
           href="tel:112"
-          className="flex min-h-16 items-center justify-center rounded-2xl bg-emergency text-xl font-bold text-white"
+          className="flex min-h-16 items-center justify-center rounded-2xl border-2 border-emergency bg-card text-xl font-bold text-emergency"
         >
           {t("emergency.call")}
         </a>

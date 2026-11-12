@@ -55,7 +55,7 @@ export function HospitalCardView({
         <div className="mt-3 flex gap-2">
           <Button
             size={primary ? "xl" : "lg"}
-            variant={emergency && primary ? "emergency" : "primary"}
+            variant={emergency && primary ? "calm" : "primary"}
             className="flex-1"
             onClick={onRequest}
             disabled={requesting}

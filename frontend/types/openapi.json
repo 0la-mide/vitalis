@@ -5969,6 +5969,11 @@
             "title": "Child Only",
             "default": false
           },
+          "not_pregnant": {
+            "type": "boolean",
+            "title": "Not Pregnant",
+            "default": false
+          },
           "emergency_only": {
             "type": "boolean",
             "title": "Emergency Only",

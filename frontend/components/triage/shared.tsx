@@ -55,6 +55,7 @@ export function LangPicker() {
         value={lang}
         onChange={(e) => setLang(e.target.value as Lang)}
         className="bg-transparent outline-none"
+        suppressHydrationWarning
       >
         {LANGS.map((l) => (
           <option key={l.code} value={l.code}>
@@ -142,7 +143,13 @@ export function DevTimer() {
   });
   const [now, setNow] = useState(0);
   useEffect(() => {
-    if (process.env.NODE_ENV === "production" && !location.search.includes("timer=1")) return;
+    // Only when measuring: open the app with ?timer=1 (remembered for this tab).
+    try {
+      if (location.search.includes("timer=1")) sessionStorage.setItem("vitalis-show-timer", "1");
+      if (!sessionStorage.getItem("vitalis-show-timer")) return;
+    } catch {
+      return;
+    }
     const read = () => {
       try {
         const raw = sessionStorage.getItem("vitalis-timer");

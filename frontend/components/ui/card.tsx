@@ -2,15 +2,17 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-2xl border border-border bg-card p-4 shadow-sm", className)} {...props} />;
+  return <div className={cn("rounded-lg border border-border bg-card p-4", className)} {...props} />;
 }
 
+// Ward badges: soft fill + inset ring; colour carries meaning, text always says it too.
 const BADGE_TONES = {
-  neutral: "bg-muted text-muted-foreground",
-  ok: "bg-mint text-primary-strong",
-  warn: "bg-warning-soft text-warning",
-  danger: "bg-emergency-soft text-emergency",
-  info: "bg-primary text-primary-foreground",
+  neutral: "bg-muted text-muted-foreground ring-border",
+  ok: "bg-mint text-primary-strong ring-mint-strong",
+  warn: "bg-warning-soft text-warning ring-warning/20",
+  danger: "bg-emergency-soft text-emergency ring-emergency/20",
+  info: "bg-info-soft text-info ring-info/20",
+  ai: "bg-ai-soft text-ai ring-ai/20",
 } as const;
 
 export function Badge({
@@ -21,7 +23,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap",
+        "inline-flex h-6 items-center gap-1 rounded-md px-2 text-xs font-semibold whitespace-nowrap ring-1 ring-inset",
         BADGE_TONES[tone],
         className,
       )}

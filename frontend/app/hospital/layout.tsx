@@ -1,76 +1,23 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { api } from "@/lib/api";
-import { ROLE_LABEL, useRequireHospitalStaff } from "@/lib/staff";
-import { cn } from "@/lib/utils";
-
-const NAV = [
-  { href: "/hospital", label: "Incoming" },
-  { href: "/hospital/patients", label: "Patients" },
-  { href: "/hospital/availability", label: "Availability" },
-];
+import { BedDouble, ClipboardList, FlaskConical, Inbox, ShieldCheck, ToggleRight } from "lucide-react";
+import { StaffShell, type NavItem } from "@/components/staff/StaffShell";
+import { useRequireHospitalStaff } from "@/lib/staff";
 
 export default function HospitalLayout({ children }: { children: React.ReactNode }) {
   const { data: me } = useRequireHospitalStaff();
-  const path = usePathname();
-  const router = useRouter();
-  const qc = useQueryClient();
   const ready = me && me.status === "approved" && me.facility?.status === "approved";
-
+  const role = me?.role ?? "";
+  const nav: NavItem[] = [
+    { href: "/hospital", label: "Incoming referrals", icon: <Inbox />, exact: true },
+    { href: "/hospital/patients", label: "Patients in the facility", icon: <BedDouble /> },
+    ...(role === "lab" ? [{ href: "/hospital/lab", label: "Lab & imaging worklist", icon: <FlaskConical /> }] : []),
+    { href: "/hospital/availability", label: "Service availability", icon: <ToggleRight /> },
+    ...(role === "facility_admin" ? [{ href: "/hospital/staff", label: "Staff approvals", icon: <ShieldCheck /> }] : []),
+  ];
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-muted">
-      <header className="sticky top-0 z-30 border-b border-border bg-card">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/icon-192.png" alt="" className="h-8 w-8 rounded-lg" />
-          <div className="min-w-0 flex-1">
-            <div className="truncate font-bold">{me?.facility?.name ?? "VITALIS"}</div>
-            <div className="truncate text-xs text-muted-foreground">
-              {me ? `${me.full_name} · ${ROLE_LABEL[me.role] ?? me.role}` : ""}
-            </div>
-          </div>
-          <nav className="flex flex-wrap gap-1">
-            {[
-              ...NAV.slice(0, 2),
-              ...(me?.role === "lab" ? [{ href: "/hospital/lab", label: "Lab" }] : []),
-              ...NAV.slice(2),
-              ...(me?.role === "facility_admin" ? [{ href: "/hospital/staff", label: "Staff" }] : []),
-            ].map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className={cn(
-                  "rounded-lg px-3 py-2 text-sm font-semibold",
-                  (n.href === "/hospital" ? path === n.href : path.startsWith(n.href))
-                    ? "bg-mint text-primary-strong"
-                    : "hover:bg-muted",
-                )}
-              >
-                {n.label}
-              </Link>
-            ))}
-          </nav>
-          <button
-            type="button"
-            aria-label="Sign out"
-            className="rounded-lg p-2 hover:bg-muted"
-            onClick={async () => {
-              await api("/auth/logout", { method: "POST" }).catch(() => {});
-              qc.clear();
-              router.replace("/auth/login");
-            }}
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-4">
-        {ready ? children : <p className="text-muted-foreground">Loading…</p>}
-      </main>
-    </div>
+    <StaffShell nav={nav} user={me} title={me?.facility?.name} showJourney>
+      {ready ? children : <p className="text-muted-foreground"><ClipboardList className="mr-2 inline h-4 w-4" />Loading…</p>}
+    </StaffShell>
   );
 }
