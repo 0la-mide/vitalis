@@ -5,7 +5,10 @@ import { ArrowDown, ArrowRight, ArrowUp, CircleAlert, FileSignature, FlaskConica
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { AIPanel } from "@/components/hospital/AIPanel";
+import { PrescribeCard, RecordCard } from "@/components/hospital/RecordAndPrescribe";
 import { useFacilityStream } from "@/components/hospital/useFacilityStream";
+import { useMe } from "@/lib/staff";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { inputCls } from "@/components/ui/field";
@@ -31,6 +34,8 @@ export default function EncounterPage() {
   const qc = useQueryClient();
   const key = ["encounter", id];
   const { data: e, error } = useQuery({ queryKey: key, queryFn: () => api<Enc>(`/hospital/encounters/${id}`) });
+  const { data: me } = useMe();
+  const isDoctor = me?.role === "doctor";
   useFacilityStream([key, ["encounters"]]);
   const [err, setErr] = useState<string | null>(null);
 
@@ -80,9 +85,15 @@ export default function EncounterPage() {
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <div className="space-y-4">
           {e.referral ? <ReferralCard r={e.referral} /> : null}
+          <RecordCard encounterId={e.id} canAdd={!closed && (me?.role === "nurse" || isDoctor)} />
           <VitalsCard e={e} mutate={mutate} busy={m.isPending} />
+          {isDoctor && !closed ? (
+            <AIPanel encounterId={e.id} canOrder={e.allowed.order_tests}
+              onOrdered={() => void qc.invalidateQueries({ queryKey: key })} />
+          ) : null}
           <NotesCard e={e} mutate={mutate} busy={m.isPending} />
           <OrdersCard e={e} mutate={mutate} busy={m.isPending} />
+          {isDoctor && !closed ? <PrescribeCard encounterId={e.id} /> : null}
         </div>
         <Timeline e={e} />
       </div>

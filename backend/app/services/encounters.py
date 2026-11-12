@@ -193,16 +193,44 @@ async def place_orders(db: AsyncSession, enc: Encounter, actor: User, items: lis
     return created
 
 
-async def enter_result(db: AsyncSession, order: InvestigationOrder, actor: User, text: str, abnormal: bool) -> None:
+def flag_values(test_code: str, values: dict | None) -> tuple[dict | None, bool]:
+    """Adds H/L flags from the catalogue's reference ranges. Returns (values, any_abnormal)."""
+    if not values:
+        return None, False
+    params = {p["name"]: p for p in investigations().get(test_code, {}).get("params", [])}
+    out, abnormal = {}, False
+    for name, v in values.items():
+        val, unit = v.get("value"), v.get("unit") or params.get(name, {}).get("unit")
+        flag = None
+        p = params.get(name)
+        if p and isinstance(val, (int, float)):
+            if p.get("hi") is not None and val > p["hi"]:
+                flag = "H"
+            elif p.get("lo") is not None and val < p["lo"]:
+                flag = "L"
+        if p and p.get("choices") and str(val).lower().startswith("pos"):
+            flag = "POS"
+        abnormal = abnormal or flag is not None
+        out[name] = {"value": val, "unit": unit, "flag": flag}
+    return out, abnormal
+
+
+async def enter_result(db: AsyncSession, order: InvestigationOrder, actor: User, text: str, abnormal: bool,
+                       values: dict | None = None) -> None:
     if order.status not in ("ordered", "resulted"):
         raise AppError(409, "invalid_state", f"Order is {order.status}")
-    if not text.strip():
+    flagged, auto_abnormal = flag_values(order.test_code, values)
+    text = text.strip() or ", ".join(f"{k} {v['value']}{(' ' + v['unit']) if v.get('unit') else ''}"
+                                      + (f" ({v['flag']})" if v.get("flag") else "") for k, v in (flagged or {}).items())
+    if not text:
         raise AppError(422, "validation_error", "Result is empty")
+    abnormal = abnormal or auto_abnormal
     res = (await db.execute(select(LabResult).where(LabResult.order_id == order.id))).scalar_one_or_none()
     if res:
-        res.result_text, res.abnormal, res.entered_by, res.entered_at = text.strip(), abnormal, actor.id, utcnow()
+        res.result_text, res.values, res.abnormal = text, flagged, abnormal
+        res.entered_by, res.entered_at = actor.id, utcnow()
     else:
-        db.add(LabResult(order_id=order.id, result_text=text.strip(), abnormal=abnormal, entered_by=actor.id))
+        db.add(LabResult(order_id=order.id, result_text=text, values=flagged, abnormal=abnormal, entered_by=actor.id))
     order.status = "resulted"
     enc = await db.get(Encounter, order.encounter_id)
     await log(db, enc, actor, "result", f"Result entered: {order.test_name}")

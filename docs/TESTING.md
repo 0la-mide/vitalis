@@ -132,6 +132,17 @@ Use a referral to **Sapon** (from A or D). Sign in as each Sapon role in turn (o
 7. [ ] **Patients → Register walk-in** (reception): fill complaint → Register → slip with VITALIS ID + recovery code.
    Tick **Emergency** on another one → it goes straight to the **Doctor** column.
 
+### E2. Doctor AI and safe prescribing
+
+1. [ ] `doctor.central@…` → **Patients** → **Mrs. Folake Adewale (demo)** → **Run VITALIS AI**.
+   *Expect:* BP red flag; "Uncontrolled stage 2 hypertension" and "Type 2 diabetes (probable new diagnosis)"; two
+   model cards (diabetes Moderate, heart High); **Do not give Hydrochlorothiazide** citing Ogun Teaching Hospital; no
+   doses anywhere in the AI's suggestions.
+2. [ ] **Prescribe** Hydrochlorothiazide → **Check safety** → blocked. Lisinopril 10 mg once daily → prescribed.
+3. [ ] **Reject** needs a reason; **Accept and draft note** adds the text to your draft note.
+4. [ ] `lab.central@…` → **Lab**: tests like HbA1c / Lipid profile show number fields with reference ranges and flag
+   high/low automatically.
+
 ### F. Registration and verification
 
 1. [ ] Sign out → **Register** → **Frontline worker**: fill it in, attach any small **PDF/JPG/PNG** (≤ 5 MB) → Submit.

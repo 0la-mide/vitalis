@@ -76,8 +76,43 @@ class LabResult(IdMixin, Base):
     order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("investigation_orders.id", ondelete="CASCADE"),
                                                 unique=True)
     result_text: Mapped[str] = mapped_column(Text)
+    # Structured values for tests that have them: {"Glucose (fasting)": {"value": 126, "unit": "mg/dL", "flag": "H"}}
+    values: Mapped[dict | None] = mapped_column(JSON)
     abnormal: Mapped[bool] = mapped_column(default=False)
     entered_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     entered_at: Mapped[datetime] = mapped_column(default=utcnow)
     verified_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
     verified_at: Mapped[datetime | None]
+
+
+class Prescription(IdMixin, TimestampMixin, Base):
+    """Written by the doctor. Always safety-checked; a conflict needs an explicit, audited override."""
+
+    __tablename__ = "prescriptions"
+
+    encounter_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("encounters.id", ondelete="CASCADE"), index=True)
+    patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id", ondelete="CASCADE"), index=True)
+    prescribed_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    drug: Mapped[str] = mapped_column(String(120))
+    dose: Mapped[str] = mapped_column(String(120))  # e.g. "10 mg once daily for 30 days"
+    status: Mapped[str] = mapped_column(String(12), default="active")  # active | cancelled
+    safety: Mapped[dict] = mapped_column(JSON, default=dict)
+    override_reason: Mapped[str | None] = mapped_column(Text)
+
+
+class AIDraft(IdMixin, TimestampMixin, Base):
+    """One doctor-AI run: inputs, engine output, optional LLM narrative, and what the doctor did with it."""
+
+    __tablename__ = "ai_drafts"
+
+    encounter_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("encounters.id", ondelete="CASCADE"), index=True)
+    requested_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    engine_version: Mapped[str] = mapped_column(String(120))
+    model_versions: Mapped[list] = mapped_column(JSON, default=list)
+    narrative_provider: Mapped[str] = mapped_column(String(24))  # gemini | groq | canned
+    inputs: Mapped[dict] = mapped_column(JSON)
+    output: Mapped[dict] = mapped_column(JSON)
+    action: Mapped[str] = mapped_column(String(12), default="pending")  # pending | accepted | edited | rejected
+    action_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
+    action_at: Mapped[datetime | None]
+    rationale: Mapped[str | None] = mapped_column(Text)

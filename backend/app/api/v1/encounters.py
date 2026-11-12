@@ -114,7 +114,8 @@ async def _order_rows(db: AsyncSession, orders: list[InvestigationOrder]) -> lis
         rows.append(OrderRow(
             id=o.id, category=o.category, test_code=o.test_code, test_name=o.test_name, priority=o.priority,
             clinical_note=o.clinical_note, status=o.status, ordered_by=name(o.ordered_by), created_at=o.created_at,
-            result_text=r.result_text if r else None, abnormal=r.abnormal if r else None,
+            result_text=r.result_text if r else None, values=r.values if r else None,
+            abnormal=r.abnormal if r else None,
             entered_by=name(r.entered_by) if r else None, entered_at=r.entered_at if r else None,
             verified_by=name(r.verified_by) if r and r.verified_by else None,
             verified_at=r.verified_at if r else None,
@@ -221,8 +222,7 @@ async def list_encounters(
 
 @router.get("/tests", response_model=Envelope[list[TestOption]])
 async def test_catalogue(_: User = Depends(any_staff)):
-    return ok([TestOption(code=t["code"], name=t["name"], category=t["category"])
-               for t in esvc.investigations().values()])
+    return ok([TestOption.model_validate(t) for t in esvc.investigations().values()])
 
 
 # ---------- reception ----------
@@ -349,7 +349,8 @@ async def _scoped_order(db: AsyncSession, order_id: uuid.UUID, user: User) -> In
 async def result(order_id: uuid.UUID, body: ResultIn, user: User = Depends(lab_only),
                  db: AsyncSession = Depends(get_db)):
     o = await _scoped_order(db, order_id, user)
-    await esvc.enter_result(db, o, user, body.result_text, body.abnormal)
+    values = {k: v.model_dump() for k, v in (body.values or {}).items()} or None
+    await esvc.enter_result(db, o, user, body.result_text, body.abnormal, values)
     await db.commit()
     enc = await db.get(Encounter, o.encounter_id)
     esvc.publish(enc)

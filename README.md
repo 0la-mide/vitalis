@@ -34,11 +34,15 @@ in real time.
   nursing vitals beside the chemist's with trend arrows, urgent flags and corrections that keep the original; doctor
   notes (draft → sign → amend), lab/radiology orders; lab queue with result entry and separate verification;
   disposition and completion; full timeline with every handoff, time and staff name; walk-in registration.
+- **Doctor AI (from the team's NCS repo):** VITALIS AI ranks possible conditions with cited evidence, raises red flags,
+  shows trends, runs the **team's trained diabetes and heart models** (bands, measured vs assumed inputs), and screens
+  treatments against allergies/medicines recorded at other hospitals. Safety-checked prescribing with audited override.
+  Accept/edit/reject AI drafts; optional Gemini/Groq narrative with a canned fallback.
 - **Network admin:** verification queue with documents, audit log viewer with filters, network counts (no patient names).
 - **Platform:** Argon2 + JWT in httpOnly cookies, CSRF double-submit, role + facility scoping, audit events, rate limits,
   security headers, response envelope, structured logs with request IDs. PWA with Serwist and an offline page.
 
-Not built yet (next phases): doctor view of model output and AI drafts, records + QR sharing, web push, full i18n text.
+Not built yet (next phases): records + QR sharing, web push, full i18n text.
 
 ## Run it locally (no Docker needed)
 

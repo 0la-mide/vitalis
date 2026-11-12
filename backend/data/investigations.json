@@ -1,22 +1,211 @@
 {
-  "version": "inv-2026-11-12.1",
+  "version": "inv-2026-11-12.2",
   "needs_clinical_review": true,
-  "note": "Orderable tests for the demo. A catalogue, not clinical advice: facilities should load their own list.",
+  "note": "Orderable tests for the demo. A catalogue, not clinical advice: facilities should load their own list. Reference ranges are typical adult values for flagging only; each lab should use its own.",
   "tests": [
-    {"code": "FBC", "name": "Full blood count", "category": "lab"},
-    {"code": "HB", "name": "Haemoglobin / PCV", "category": "lab"},
-    {"code": "GXM", "name": "Blood group and crossmatch", "category": "lab"},
-    {"code": "MP_RDT", "name": "Malaria RDT", "category": "lab"},
-    {"code": "MP_FILM", "name": "Malaria parasite film", "category": "lab"},
-    {"code": "URINALYSIS", "name": "Urinalysis", "category": "lab"},
-    {"code": "RBS", "name": "Random blood sugar", "category": "lab"},
-    {"code": "E_U_CR", "name": "Electrolytes, urea, creatinine", "category": "lab"},
-    {"code": "CLOTTING", "name": "Clotting profile", "category": "lab"},
-    {"code": "WIDAL", "name": "Widal test", "category": "lab"},
-    {"code": "USS_OBS", "name": "Obstetric ultrasound", "category": "radiology"},
-    {"code": "USS_ABD", "name": "Abdominal ultrasound", "category": "radiology"},
-    {"code": "CXR", "name": "Chest X-ray", "category": "radiology"},
-    {"code": "XR_LIMB", "name": "Limb X-ray", "category": "radiology"},
-    {"code": "ECG", "name": "ECG", "category": "radiology"}
+    {
+      "code": "FBC",
+      "name": "Full blood count",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Haemoglobin",
+          "unit": "g/dL",
+          "lo": 11.5,
+          "hi": 16.5
+        },
+        {
+          "name": "WBC",
+          "unit": "x10^9/L",
+          "lo": 4,
+          "hi": 11
+        },
+        {
+          "name": "Platelets",
+          "unit": "x10^9/L",
+          "lo": 150,
+          "hi": 400
+        }
+      ]
+    },
+    {
+      "code": "HB",
+      "name": "Haemoglobin / PCV",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Haemoglobin",
+          "unit": "g/dL",
+          "lo": 11.5,
+          "hi": 16.5
+        }
+      ]
+    },
+    {
+      "code": "GXM",
+      "name": "Blood group and crossmatch",
+      "category": "lab"
+    },
+    {
+      "code": "MP_RDT",
+      "name": "Malaria RDT",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Malaria RDT",
+          "unit": "",
+          "choices": [
+            "Negative",
+            "Positive"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "MP_FILM",
+      "name": "Malaria parasite film",
+      "category": "lab"
+    },
+    {
+      "code": "URINALYSIS",
+      "name": "Urinalysis",
+      "category": "lab"
+    },
+    {
+      "code": "RBS",
+      "name": "Random blood sugar",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Random blood glucose",
+          "unit": "mg/dL",
+          "lo": 70,
+          "hi": 140
+        }
+      ]
+    },
+    {
+      "code": "E_U_CR",
+      "name": "Electrolytes, urea, creatinine",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Sodium",
+          "unit": "mmol/L",
+          "lo": 135,
+          "hi": 145
+        },
+        {
+          "name": "Potassium",
+          "unit": "mmol/L",
+          "lo": 3.5,
+          "hi": 5.1
+        },
+        {
+          "name": "Urea",
+          "unit": "mmol/L",
+          "lo": 2.5,
+          "hi": 7.8
+        },
+        {
+          "name": "Creatinine",
+          "unit": "µmol/L",
+          "lo": 45,
+          "hi": 110
+        }
+      ]
+    },
+    {
+      "code": "CLOTTING",
+      "name": "Clotting profile",
+      "category": "lab"
+    },
+    {
+      "code": "WIDAL",
+      "name": "Widal test",
+      "category": "lab"
+    },
+    {
+      "code": "USS_OBS",
+      "name": "Obstetric ultrasound",
+      "category": "radiology"
+    },
+    {
+      "code": "USS_ABD",
+      "name": "Abdominal ultrasound",
+      "category": "radiology"
+    },
+    {
+      "code": "CXR",
+      "name": "Chest X-ray",
+      "category": "radiology"
+    },
+    {
+      "code": "XR_LIMB",
+      "name": "Limb X-ray",
+      "category": "radiology"
+    },
+    {
+      "code": "ECG",
+      "name": "ECG",
+      "category": "radiology"
+    },
+    {
+      "code": "FBS",
+      "name": "Fasting blood glucose",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Fasting blood glucose",
+          "unit": "mg/dL",
+          "lo": 70,
+          "hi": 100
+        }
+      ]
+    },
+    {
+      "code": "HBA1C",
+      "name": "HbA1c",
+      "category": "lab",
+      "params": [
+        {
+          "name": "HbA1c",
+          "unit": "%",
+          "lo": 4,
+          "hi": 5.7
+        }
+      ]
+    },
+    {
+      "code": "LIPIDS",
+      "name": "Lipid profile",
+      "category": "lab",
+      "params": [
+        {
+          "name": "Total cholesterol",
+          "unit": "mg/dL",
+          "lo": null,
+          "hi": 200
+        },
+        {
+          "name": "LDL cholesterol",
+          "unit": "mg/dL",
+          "lo": null,
+          "hi": 130
+        },
+        {
+          "name": "HDL cholesterol",
+          "unit": "mg/dL",
+          "lo": 40,
+          "hi": null
+        },
+        {
+          "name": "Triglycerides",
+          "unit": "mg/dL",
+          "lo": null,
+          "hi": 150
+        }
+      ]
+    }
   ]
 }

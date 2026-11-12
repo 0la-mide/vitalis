@@ -18,8 +18,14 @@ from app.core.db import Base, sessionmaker, utcnow
 from app.core.security import hash_password
 from app.engines.triage.data import care_types
 from app.models import (
+    ClinicalNote,
+    Encounter,
+    EncounterEvent,
     Facility,
     FacilityService,
+    InvestigationOrder,
+    LabResult,
+    PatientHistoryEntry,
     Service,
     TriageReport,
     User,
@@ -27,7 +33,7 @@ from app.models import (
     Vital,
     WorkerProfile,
 )
-from app.models.enums import Availability, Role, TriageStatus, VerificationStatus
+from app.models.enums import Availability, EncounterState, Role, TriageStatus, VerificationStatus
 from app.services.patients import create_patient
 from app.services.uploads import store_bytes, upload_dir
 
@@ -248,6 +254,8 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
             db.add(Vital(patient_id=adebayo.id, report_id=old.id, source="worker", kind=kind, value=value, unit=unit,
                          measured_at=t))
 
+
+        await seed_folake(db, now)
         await db.commit()
 
     if not write_logins:
@@ -264,6 +272,81 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
     lines += [f"- **{f.name}**: {f.demo_role}" for f in FACILITIES if f.demo_role]
     out.write_text("\n".join(lines) + "\n")
     return out
+
+
+
+
+async def seed_folake(db, now) -> None:
+    """Mrs. Folake Adewale (demo), 54: the doctor-AI story at Abeokuta Central.
+
+    Known hypertension on amlodipine, BP climbing across three earlier visits, fasting glucose rising, mother with
+    type 2 diabetes, and a sulfonamide allergy recorded at a DIFFERENT hospital. Today: headache, blurred vision,
+    thirst, frequent urination; BP 174/108, glucose 236. VITALIS AI should flag the BP, suggest probable new type 2
+    diabetes (with the team's model), and warn against hydrochlorothiazide because of that allergy.
+    """
+    from datetime import date
+
+    central = (await db.execute(select(Facility).where(Facility.name == FACILITIES[1].name))).scalar_one()
+    teaching = (await db.execute(select(Facility).where(Facility.name == FACILITIES[3].name))).scalar_one()
+    staff = {u.role: u for u in (await db.execute(select(User).where(User.facility_id == central.id))).scalars()}
+    nurse, doctor, lab = staff[Role.nurse], staff[Role.doctor], staff[Role.lab]
+
+    p, _key, _rec = await create_patient(db, phone="+2348000000054", age_group="adult", sex="female",
+                                         display_name="Mrs. Folake Adewale (demo)")
+    p.date_of_birth = date(1972, 3, 14)
+    H = PatientHistoryEntry
+    db.add_all([
+        H(patient_id=p.id, kind="condition", text="Hypertension", facility_id=central.id, recorded_by=doctor.id,
+          recorded_at=now - timedelta(days=600)),
+        H(patient_id=p.id, kind="medication", text="Amlodipine", detail="5 mg once daily", facility_id=central.id,
+          recorded_by=doctor.id, recorded_at=now - timedelta(days=600)),
+        H(patient_id=p.id, kind="allergy", text="Sulfonamides (Septrin)", detail="Rash and facial swelling",
+          facility_id=teaching.id, recorded_at=now - timedelta(days=210)),
+        H(patient_id=p.id, kind="family", text="Type 2 diabetes", detail="Mother", onset_age=50, facility_id=central.id,
+          recorded_at=now - timedelta(days=600)),
+        H(patient_id=p.id, kind="family", text="Stroke", detail="Father", onset_age=63, facility_id=central.id,
+          recorded_at=now - timedelta(days=600)),
+    ])
+
+    async def visit(days_ago: int, sbp: float, dbp: float, fbs: float | None, state=EncounterState.completed,
+                    complaint="Routine BP review"):
+        at = now - timedelta(days=days_ago)
+        e = Encounter(facility_id=central.id, patient_id=p.id, state=state, chief_complaint=complaint,
+                      created_by=nurse.id, created_at=at, updated_at=at,
+                      completed_at=at + timedelta(hours=2) if state == EncounterState.completed else None)
+        db.add(e)
+        await db.flush()
+        db.add(EncounterEvent(encounter_id=e.id, at=at, actor_id=nurse.id, kind="state", summary="Walk-in registered",
+                              to_state="registered"))
+        for kind, val, unit in [("systolic_bp", sbp, "mmHg"), ("diastolic_bp", dbp, "mmHg"), ("weight_kg", 82, "kg"),
+                                ("height_cm", 162, "cm")]:
+            db.add(Vital(patient_id=p.id, encounter_id=e.id, source="nurse", kind=kind, value=val, unit=unit,
+                         measured_at=at, entered_by=nurse.id))
+        if fbs is not None:
+            o = InvestigationOrder(encounter_id=e.id, facility_id=central.id, ordered_by=doctor.id, category="lab",
+                                   test_code="FBS", test_name="Fasting blood glucose", status="verified", created_at=at)
+            db.add(o)
+            await db.flush()
+            db.add(LabResult(order_id=o.id, result_text=f"Fasting blood glucose {fbs:g} mg/dL",
+                             values={"Fasting blood glucose": {"value": fbs, "unit": "mg/dL", "flag": "H"}},
+                             abnormal=True, entered_by=lab.id, entered_at=at, verified_by=lab.id, verified_at=at))
+        if state == EncounterState.completed:
+            db.add(ClinicalNote(encounter_id=e.id, author_id=doctor.id, status="signed", body=(
+                f"BP {sbp:g}/{dbp:g}. Hypertension on amlodipine 5 mg. Advised salt reduction. Review in 3 months."),
+                created_at=at, signed_at=at))
+        return e
+
+    await visit(400, 148, 92, None)
+    await visit(190, 152, 94, 104)
+    await visit(60, 156, 96, 112)
+    today = await visit(0, 174, 108, None, state=EncounterState.awaiting_doctor,
+                        complaint="Headache and blurred vision; excessive thirst and frequent urination for about a week")
+    for kind, val, unit in [("pulse", 92, "bpm"), ("temp_c", 36.9, "°C"), ("spo2", 97, "%"), ("weight_kg", 84, "kg"),
+                            ("blood_glucose", 236, "mg/dL")]:
+        db.add(Vital(patient_id=p.id, encounter_id=today.id, source="nurse", kind=kind, value=val, unit=unit,
+                     measured_at=now, entered_by=nurse.id))
+    db.add(EncounterEvent(encounter_id=today.id, at=now, actor_id=nurse.id, kind="state", from_state="awaiting_nursing",
+                          to_state="awaiting_doctor", summary="Waiting for nurse → Waiting for doctor"))
 
 
 if __name__ == "__main__":

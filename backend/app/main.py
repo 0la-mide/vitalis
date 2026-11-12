@@ -14,6 +14,7 @@ def build_router() -> APIRouter:
     from app.api.v1 import (
         admin,
         auth,
+        clinical,
         encounters,
         facilities,
         health,
@@ -26,7 +27,7 @@ def build_router() -> APIRouter:
     )
 
     api = APIRouter(prefix="/api/v1")
-    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, encounters, admin, worker):
+    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, encounters, clinical, admin, worker):
         api.include_router(module.router)
     return api
 
@@ -38,6 +39,12 @@ async def lifespan(app: FastAPI):
     tasks = []
     if get_settings().env != "test":
         tasks.append(start_overdue_loop())
+        # Load the team's models in the background so the first doctor request is fast.
+        import asyncio
+
+        from app.engines.ncs_models.adapter import warm_up
+
+        tasks.append(asyncio.create_task(asyncio.to_thread(warm_up)))
     yield
     for t in tasks:
         t.cancel()

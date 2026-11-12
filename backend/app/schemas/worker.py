@@ -6,7 +6,9 @@ from pydantic import BaseModel, Field
 
 from app.schemas.triage import Tap, TriageOut
 
-VitalKind = Literal["systolic_bp", "diastolic_bp", "pulse", "temp_c", "spo2", "resp_rate", "weight_kg"]
+VitalKind = Literal[
+    "systolic_bp", "diastolic_bp", "pulse", "temp_c", "spo2", "resp_rate", "weight_kg", "height_cm", "blood_glucose"
+]
 
 # Plausible measurement ranges (input validation only, NOT clinical thresholds — those live in red_flags.json).
 VITAL_RANGES: dict[str, tuple[float, float, str]] = {
@@ -17,6 +19,8 @@ VITAL_RANGES: dict[str, tuple[float, float, str]] = {
     "spo2": (50, 100, "%"),
     "resp_rate": (4, 80, "/min"),
     "weight_kg": (0.5, 300, "kg"),
+    "height_cm": (40, 230, "cm"),
+    "blood_glucose": (20, 600, "mg/dL"),
 }
 
 

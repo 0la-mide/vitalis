@@ -1,0 +1,139 @@
+{
+  "version": "meds-2026-11-12.1",
+  "needs_clinical_review": true,
+  "source": "Ported from the VITALIS team's NCS repo (medication_safety.py). Decision support only.",
+  "allergy_cross_reactivity": {
+    "penicillin": [
+      "amoxicillin",
+      "ampicillin",
+      "augmentin",
+      "co-amoxiclav",
+      "piperacillin",
+      "cloxacillin"
+    ],
+    "sulfa": [
+      "co-trimoxazole",
+      "bactrim",
+      "septrin",
+      "sulfamethoxazole",
+      "sulfadoxine",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "bendroflumethiazide",
+      "indapamide",
+      "furosemide"
+    ],
+    "sulfonamide": [
+      "co-trimoxazole",
+      "bactrim",
+      "septrin",
+      "sulfamethoxazole",
+      "sulfadoxine",
+      "hydrochlorothiazide",
+      "chlorthalidone",
+      "bendroflumethiazide",
+      "indapamide",
+      "furosemide"
+    ],
+    "co-trimoxazole": [
+      "sulfamethoxazole",
+      "septrin",
+      "bactrim"
+    ],
+    "aspirin": [
+      "ibuprofen",
+      "diclofenac",
+      "naproxen",
+      "ketorolac",
+      "indomethacin"
+    ],
+    "nsaid": [
+      "aspirin",
+      "ibuprofen",
+      "diclofenac",
+      "naproxen",
+      "piroxicam"
+    ]
+  },
+  "interactions": [
+    {
+      "a": "ciprofloxacin",
+      "b": "artemether-lumefantrine",
+      "severity": "major",
+      "detail": "Additive QT prolongation and arrhythmia risk. Avoid together."
+    },
+    {
+      "a": "warfarin",
+      "b": "aspirin",
+      "severity": "major",
+      "detail": "Greatly increased risk of serious bleeding."
+    },
+    {
+      "a": "lisinopril",
+      "b": "spironolactone",
+      "severity": "moderate",
+      "detail": "Risk of severe hyperkalaemia; monitor potassium."
+    },
+    {
+      "a": "amlodipine",
+      "b": "simvastatin",
+      "severity": "moderate",
+      "detail": "Amlodipine raises simvastatin levels (myopathy). Limit simvastatin dose or prefer atorvastatin."
+    },
+    {
+      "a": "lisinopril",
+      "b": "potassium",
+      "severity": "moderate",
+      "detail": "ACE inhibitor plus potassium raises hyperkalaemia risk."
+    },
+    {
+      "a": "metformin",
+      "b": "radiocontrast",
+      "severity": "major",
+      "detail": "Contrast-induced kidney injury and lactic acidosis risk. Withhold metformin around contrast."
+    }
+  ],
+  "condition_contraindications": [
+    {
+      "conditions": [
+        "peptic ulcer",
+        "gastric ulcer"
+      ],
+      "drugs": [
+        "aspirin",
+        "ibuprofen",
+        "diclofenac",
+        "piroxicam",
+        "naproxen"
+      ],
+      "warning": "NSAIDs risk gastric bleeding and perforation."
+    },
+    {
+      "conditions": [
+        "chronic kidney disease",
+        "renal impairment"
+      ],
+      "drugs": [
+        "metformin",
+        "gentamicin"
+      ],
+      "warning": "Renal clearance concern: adjust dose or choose another agent."
+    },
+    {
+      "conditions": [
+        "pregnan"
+      ],
+      "drugs": [
+        "lisinopril",
+        "enalapril",
+        "ramipril",
+        "losartan",
+        "telmisartan",
+        "warfarin",
+        "misoprostol",
+        "isotretinoin"
+      ],
+      "warning": "Not used in pregnancy (fetal harm)."
+    }
+  ]
+}

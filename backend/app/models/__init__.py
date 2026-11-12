@@ -1,10 +1,19 @@
 from app.models.care import FacilityAlert, ModelPrediction, Referral, SymptomTap, TriageReport, Vital
-from app.models.encounter import ClinicalNote, Encounter, EncounterEvent, InvestigationOrder, LabResult
+from app.models.encounter import (
+    AIDraft,
+    ClinicalNote,
+    Encounter,
+    EncounterEvent,
+    InvestigationOrder,
+    LabResult,
+    Prescription,
+)
 from app.models.facility import Facility, FacilityService, Service
-from app.models.people import AuditEvent, Patient, PushSubscription, User, WorkerProfile
+from app.models.people import AuditEvent, Patient, PatientHistoryEntry, PushSubscription, User, WorkerProfile
 from app.models.verification import Upload, Verification
 
 __all__ = [
+    "AIDraft",
     "AuditEvent",
     "ClinicalNote",
     "Encounter",
@@ -16,6 +25,8 @@ __all__ = [
     "LabResult",
     "ModelPrediction",
     "Patient",
+    "PatientHistoryEntry",
+    "Prescription",
     "PushSubscription",
     "Referral",
     "Service",

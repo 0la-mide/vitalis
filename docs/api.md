@@ -86,6 +86,21 @@ Documents: PDF/JPG/PNG by **magic bytes**, max 5 MB, random file names in `UPLOA
 States: `registered → awaiting_nursing → awaiting_doctor → awaiting_investigation → results_ready →
 awaiting_disposition → completed | cancelled`. Emergency (red flag or ticked at registration) skips to the doctor.
 
+## Doctor tools (facility-scoped)
+
+| Method | Path | Roles |
+|---|---|---|
+| GET | `/hospital/encounters/{id}/record` | any hospital role — allergies, conditions, medicines, family history (each with source hospital + date) and this visit's prescriptions; audited |
+| POST | `/hospital/encounters/{id}/history` | nurse, doctor — `{kind: allergy|condition|medication|family, text, detail?, onset_age?}` |
+| POST | `/hospital/encounters/{id}/ai-draft` | doctor — runs VITALIS AI (rules + the team's ML models + medication safety + narrative); stored as an AI draft |
+| GET | `/hospital/encounters/{id}/ai-draft` | doctor — latest draft |
+| PATCH | `/hospital/ai-drafts/{id}` | doctor — `{action: accepted|edited|rejected, rationale}`; accept puts the draft into the doctor's draft note; reject needs a reason |
+| POST | `/hospital/encounters/{id}/prescriptions/check` | doctor — `{drug}` → `{verdict: ok|caution|avoid, alerts[]}` |
+| POST | `/hospital/encounters/{id}/prescriptions` | doctor — `{drug, dose, override_reason?}`; a conflict returns 409 `safety_conflict` unless an override reason is given (audited) |
+
+Lab results accept structured values: `POST /hospital/orders/{id}/result {values: {"HbA1c": {"value": 7.4, "unit": "%"}}}`;
+H/L/POS flags come from the test catalogue's reference ranges.
+
 ## Frontline worker (role `worker`, approved; scoped to the worker's own reports)
 
 | Method | Path | Notes |

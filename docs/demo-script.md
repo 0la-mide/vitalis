@@ -46,6 +46,23 @@ Simulated with a 1.5 s pause per action: 10 taps + 2 vitals + send in about 19 s
 5. Doctor → **Decide disposition** (e.g. admitted) → receptionist → **Complete encounter**. The timeline shows every
    handoff with time and name; the chemist's referral shows "Completed".
 
+## The doctor and VITALIS AI (Folake, from the team's NCS demo)
+
+1. `doctor.central@vitalis.demo` → **Patients** → open **Mrs. Folake Adewale (demo)** in the Doctor column (54, headache,
+   blurred vision, thirst, frequent urination; BP 174/108, glucose 236).
+2. Point at **Patient record**: hypertension on amlodipine, and an allergy to **sulfonamides recorded at Ogun Teaching
+   Hospital** 7 months ago.
+3. **Run VITALIS AI** and let the steps reveal. Read the three wins:
+   - Red flag: markedly raised BP with blurred vision.
+   - Uncontrolled stage 2 hypertension (BP 148 → 152 → 156 → 174 across visits) and **probable new type 2 diabetes**,
+     with the **team's diabetes model** (Moderate band) and **heart model** (High band) showing which inputs were
+     measured vs assumed.
+   - **"Do not give Hydrochlorothiazide"**: the usual next BP drug, but it cross-reacts with the allergy recorded at
+     another hospital.
+4. **Prescribe**: type *Hydrochlorothiazide* → **Check safety** → blocked (override needs a reason, audited). Type
+   *Lisinopril*, dose *10 mg once daily* → **Prescribe**. It joins her record as a current medicine.
+5. **Accept and draft note** → the AI text lands in the doctor's draft note; nothing is recorded until they sign.
+
 ## Talking points
 
 - *Safety rules before models:* stop the model (`Ctrl-C` on the model process) and repeat — the red flag still fires.
@@ -54,6 +71,9 @@ Simulated with a 1.5 s pause per action: 10 taps + 2 vitals + send in about 19 s
 - *A referral is not accepted until the hospital says so* — and not finished until reception confirms arrival.
 - *Overdue:* if she does not arrive by ETA + 30 min, the referral turns overdue and the family gets an SMS (console in
   dev).
+- *AI that can't hallucinate a value:* every piece of evidence cites its source (visit, lab or other hospital) and
+  the AI never gives doses. External LLMs are off by default; with `ALLOW_EXTERNAL_LLM=true` Gemini/Groq only rephrase
+  the summary, and any output containing a dose is rejected.
 - *Verification:* sign in as `facilityadmin.asero@vitalis.demo` — pending facility, status page only, never matched.
   Then as `admin@vitalis.demo`: **Verifications** shows Asero and a pending chemist with their (synthetic) licence
   PDFs; approve Asero and it appears in matching immediately. **Audit log** shows every decision and document view.

@@ -1716,6 +1716,345 @@
         }
       }
     },
+    "/api/v1/hospital/encounters/{encounter_id}/record": {
+      "get": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Record",
+        "operationId": "record_api_v1_hospital_encounters__encounter_id__record_get",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_RecordOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/history": {
+      "post": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Add History",
+        "operationId": "add_history_api_v1_hospital_encounters__encounter_id__history_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_RecordOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/prescriptions/check": {
+      "post": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Check Safety",
+        "operationId": "check_safety_api_v1_hospital_encounters__encounter_id__prescriptions_check_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SafetyIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/prescriptions": {
+      "post": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Prescribe",
+        "operationId": "prescribe_api_v1_hospital_encounters__encounter_id__prescriptions_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrescribeIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_RecordOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/encounters/{encounter_id}/ai-draft": {
+      "post": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Run Ai",
+        "operationId": "run_ai_api_v1_hospital_encounters__encounter_id__ai_draft_post",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DraftOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Latest Ai",
+        "operationId": "latest_ai_api_v1_hospital_encounters__encounter_id__ai_draft_get",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Union_DraftOut__NoneType__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospital/ai-drafts/{draft_id}": {
+      "patch": {
+        "tags": [
+          "clinical"
+        ],
+        "summary": "Decide Ai",
+        "operationId": "decide_ai_api_v1_hospital_ai_drafts__draft_id__patch",
+        "parameters": [
+          {
+            "name": "draft_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Draft Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftDecisionIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DraftOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/verifications": {
       "get": {
         "tags": [
@@ -2876,6 +3215,84 @@
         ],
         "title": "DecisionOut"
       },
+      "DraftDecisionIn": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "edited",
+              "rejected"
+            ],
+            "title": "Action"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rationale"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "DraftDecisionIn"
+      },
+      "DraftOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rationale"
+          },
+          "narrative_provider": {
+            "type": "string",
+            "title": "Narrative Provider"
+          },
+          "output": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Output"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "action",
+          "rationale",
+          "narrative_provider",
+          "output"
+        ],
+        "title": "DraftOut"
+      },
       "EncounterListItem": {
         "properties": {
           "id": {
@@ -3161,6 +3578,28 @@
         ],
         "title": "Envelope[DecisionOut]"
       },
+      "Envelope_DraftOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DraftOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[DraftOut]"
+      },
       "Envelope_EncounterOut_": {
         "properties": {
           "data": {
@@ -3315,6 +3754,28 @@
         ],
         "title": "Envelope[PatientKeysOut]"
       },
+      "Envelope_RecordOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/RecordOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[RecordOut]"
+      },
       "Envelope_ReferralPatientOut_": {
         "properties": {
           "data": {
@@ -3402,6 +3863,35 @@
           "data"
         ],
         "title": "Envelope[TriageOut]"
+      },
+      "Envelope_Union_DraftOut__NoneType__": {
+        "properties": {
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DraftOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[Union[DraftOut, NoneType]]"
       },
       "Envelope_VerificationOut_": {
         "properties": {
@@ -3974,6 +4464,121 @@
           "version"
         ],
         "title": "Health"
+      },
+      "HistoryIn": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "allergy",
+              "condition",
+              "medication",
+              "family"
+            ],
+            "title": "Kind"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Text"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "onset_age": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 120.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Age"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "text"
+        ],
+        "title": "HistoryIn"
+      },
+      "HistoryRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "onset_age": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Age"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "recorded_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Recorded At"
+          },
+          "here": {
+            "type": "boolean",
+            "title": "Here"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "text",
+          "detail",
+          "onset_age",
+          "source",
+          "recorded_at",
+          "here"
+        ],
+        "title": "HistoryRow"
       },
       "HospitalCard": {
         "properties": {
@@ -4762,6 +5367,18 @@
             ],
             "title": "Result Text"
           },
+          "values": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Values"
+          },
           "abnormal": {
             "anyOf": [
               {
@@ -4942,6 +5559,129 @@
         },
         "type": "object",
         "title": "PatientStartIn"
+      },
+      "PrescribeIn": {
+        "properties": {
+          "drug": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Drug"
+          },
+          "dose": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Dose"
+          },
+          "override_reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "drug",
+          "dose"
+        ],
+        "title": "PrescribeIn"
+      },
+      "PrescriptionRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "drug": {
+            "type": "string",
+            "title": "Drug"
+          },
+          "dose": {
+            "type": "string",
+            "title": "Dose"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "safety": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Safety"
+          },
+          "override_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Override Reason"
+          },
+          "prescribed_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prescribed By"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "drug",
+          "dose",
+          "status",
+          "safety",
+          "override_reason",
+          "prescribed_by",
+          "created_at"
+        ],
+        "title": "PrescriptionRow"
+      },
+      "RecordOut": {
+        "properties": {
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/HistoryRow"
+            },
+            "type": "array",
+            "title": "History"
+          },
+          "prescriptions": {
+            "items": {
+              "$ref": "#/components/schemas/PrescriptionRow"
+            },
+            "type": "array",
+            "title": "Prescriptions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "history",
+          "prescriptions"
+        ],
+        "title": "RecordOut"
       },
       "RedFlagOut": {
         "properties": {
@@ -5275,8 +6015,22 @@
           "result_text": {
             "type": "string",
             "maxLength": 5000,
-            "minLength": 1,
-            "title": "Result Text"
+            "title": "Result Text",
+            "default": ""
+          },
+          "values": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/ResultValueIn"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Values"
           },
           "abnormal": {
             "type": "boolean",
@@ -5285,10 +6039,54 @@
           }
         },
         "type": "object",
-        "required": [
-          "result_text"
-        ],
         "title": "ResultIn"
+      },
+      "ResultValueIn": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Value"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "ResultValueIn"
+      },
+      "SafetyIn": {
+        "properties": {
+          "drug": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Drug"
+          }
+        },
+        "type": "object",
+        "required": [
+          "drug"
+        ],
+        "title": "SafetyIn"
       },
       "ServicePatchIn": {
         "properties": {
@@ -6142,6 +6940,14 @@
           "category": {
             "type": "string",
             "title": "Category"
+          },
+          "params": {
+            "items": {
+              "$ref": "#/components/schemas/TestParam"
+            },
+            "type": "array",
+            "title": "Params",
+            "default": []
           }
         },
         "type": "object",
@@ -6151,6 +6957,60 @@
           "category"
         ],
         "title": "TestOption"
+      },
+      "TestParam": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "lo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lo"
+          },
+          "hi": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hi"
+          },
+          "choices": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choices"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "unit"
+        ],
+        "title": "TestParam"
       },
       "TimelineRow": {
         "properties": {
@@ -6654,7 +7514,9 @@
               "temp_c",
               "spo2",
               "resp_rate",
-              "weight_kg"
+              "weight_kg",
+              "height_cm",
+              "blood_glucose"
             ],
             "title": "Kind"
           },

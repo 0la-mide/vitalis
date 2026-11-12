@@ -738,6 +738,109 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hospital/encounters/{encounter_id}/record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Record */
+        get: operations["record_api_v1_hospital_encounters__encounter_id__record_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add History */
+        post: operations["add_history_api_v1_hospital_encounters__encounter_id__history_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/prescriptions/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check Safety */
+        post: operations["check_safety_api_v1_hospital_encounters__encounter_id__prescriptions_check_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/prescriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Prescribe */
+        post: operations["prescribe_api_v1_hospital_encounters__encounter_id__prescriptions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/encounters/{encounter_id}/ai-draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Latest Ai */
+        get: operations["latest_ai_api_v1_hospital_encounters__encounter_id__ai_draft_get"];
+        put?: never;
+        /** Run Ai */
+        post: operations["run_ai_api_v1_hospital_encounters__encounter_id__ai_draft_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/ai-drafts/{draft_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Decide Ai */
+        patch: operations["decide_ai_api_v1_hospital_ai_drafts__draft_id__patch"];
+        trace?: never;
+    };
     "/api/v1/admin/verifications": {
         parameters: {
             query?: never;
@@ -1112,6 +1215,39 @@ export interface components {
             /** Encounter Id */
             encounter_id?: string | null;
         };
+        /** DraftDecisionIn */
+        DraftDecisionIn: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "accepted" | "edited" | "rejected";
+            /** Rationale */
+            rationale?: string | null;
+        };
+        /** DraftOut */
+        DraftOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Action */
+            action: string;
+            /** Rationale */
+            rationale: string | null;
+            /** Narrative Provider */
+            narrative_provider: string;
+            /** Output */
+            output: {
+                [key: string]: unknown;
+            };
+        };
         /** EncounterListItem */
         EncounterListItem: {
             /**
@@ -1197,6 +1333,11 @@ export interface components {
             data: components["schemas"]["DecisionOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[DraftOut] */
+        Envelope_DraftOut_: {
+            data: components["schemas"]["DraftOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[EncounterOut] */
         Envelope_EncounterOut_: {
             data: components["schemas"]["EncounterOut"];
@@ -1232,6 +1373,11 @@ export interface components {
             data: components["schemas"]["PatientKeysOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[RecordOut] */
+        Envelope_RecordOut_: {
+            data: components["schemas"]["RecordOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[ReferralPatientOut] */
         Envelope_ReferralPatientOut_: {
             data: components["schemas"]["ReferralPatientOut"];
@@ -1250,6 +1396,11 @@ export interface components {
         /** Envelope[TriageOut] */
         Envelope_TriageOut_: {
             data: components["schemas"]["TriageOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[Union[DraftOut, NoneType]] */
+        Envelope_Union_DraftOut__NoneType__: {
+            data: components["schemas"]["DraftOut"] | null;
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[VerificationOut] */
@@ -1417,6 +1568,45 @@ export interface components {
             database: string;
             /** Version */
             version: string;
+        };
+        /** HistoryIn */
+        HistoryIn: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "allergy" | "condition" | "medication" | "family";
+            /** Text */
+            text: string;
+            /** Detail */
+            detail?: string | null;
+            /** Onset Age */
+            onset_age?: number | null;
+        };
+        /** HistoryRow */
+        HistoryRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Text */
+            text: string;
+            /** Detail */
+            detail: string | null;
+            /** Onset Age */
+            onset_age: number | null;
+            /** Source */
+            source: string;
+            /**
+             * Recorded At
+             * Format: date-time
+             */
+            recorded_at: string;
+            /** Here */
+            here: boolean;
         };
         /** HospitalCard */
         HospitalCard: {
@@ -1688,6 +1878,10 @@ export interface components {
             created_at: string;
             /** Result Text */
             result_text?: string | null;
+            /** Values */
+            values?: {
+                [key: string]: unknown;
+            } | null;
             /** Abnormal */
             abnormal?: boolean | null;
             /** Entered By */
@@ -1738,6 +1932,49 @@ export interface components {
         PatientStartIn: {
             /** Phone */
             phone?: string | null;
+        };
+        /** PrescribeIn */
+        PrescribeIn: {
+            /** Drug */
+            drug: string;
+            /** Dose */
+            dose: string;
+            /** Override Reason */
+            override_reason?: string | null;
+        };
+        /** PrescriptionRow */
+        PrescriptionRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Drug */
+            drug: string;
+            /** Dose */
+            dose: string;
+            /** Status */
+            status: string;
+            /** Safety */
+            safety: {
+                [key: string]: unknown;
+            };
+            /** Override Reason */
+            override_reason: string | null;
+            /** Prescribed By */
+            prescribed_by: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** RecordOut */
+        RecordOut: {
+            /** History */
+            history: components["schemas"]["HistoryRow"][];
+            /** Prescriptions */
+            prescriptions: components["schemas"]["PrescriptionRow"][];
         };
         /** RedFlagOut */
         RedFlagOut: {
@@ -1843,13 +2080,32 @@ export interface components {
         };
         /** ResultIn */
         ResultIn: {
-            /** Result Text */
+            /**
+             * Result Text
+             * @default
+             */
             result_text: string;
+            /** Values */
+            values?: {
+                [key: string]: components["schemas"]["ResultValueIn"];
+            } | null;
             /**
              * Abnormal
              * @default false
              */
             abnormal: boolean;
+        };
+        /** ResultValueIn */
+        ResultValueIn: {
+            /** Value */
+            value: number | string;
+            /** Unit */
+            unit?: string | null;
+        };
+        /** SafetyIn */
+        SafetyIn: {
+            /** Drug */
+            drug: string;
         };
         /** ServicePatchIn */
         ServicePatchIn: {
@@ -2147,6 +2403,24 @@ export interface components {
             name: string;
             /** Category */
             category: string;
+            /**
+             * Params
+             * @default []
+             */
+            params: components["schemas"]["TestParam"][];
+        };
+        /** TestParam */
+        TestParam: {
+            /** Name */
+            name: string;
+            /** Unit */
+            unit: string;
+            /** Lo */
+            lo?: number | null;
+            /** Hi */
+            hi?: number | null;
+            /** Choices */
+            choices?: string[] | null;
         };
         /** TimelineRow */
         TimelineRow: {
@@ -2298,7 +2572,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "systolic_bp" | "diastolic_bp" | "pulse" | "temp_c" | "spo2" | "resp_rate" | "weight_kg";
+            kind: "systolic_bp" | "diastolic_bp" | "pulse" | "temp_c" | "spo2" | "resp_rate" | "weight_kg" | "height_cm" | "blood_glucose";
             /** Value */
             value: number;
             /** Measured At */
@@ -3773,6 +4047,239 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_OrderRow_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    record_api_v1_hospital_encounters__encounter_id__record_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RecordOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_history_api_v1_hospital_encounters__encounter_id__history_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HistoryIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RecordOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_safety_api_v1_hospital_encounters__encounter_id__prescriptions_check_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SafetyIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    prescribe_api_v1_hospital_encounters__encounter_id__prescriptions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrescribeIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RecordOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    latest_ai_api_v1_hospital_encounters__encounter_id__ai_draft_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Union_DraftOut__NoneType__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_ai_api_v1_hospital_encounters__encounter_id__ai_draft_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_DraftOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decide_ai_api_v1_hospital_ai_drafts__draft_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                draft_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DraftDecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_DraftOut_"];
                 };
             };
             /** @description Validation Error */

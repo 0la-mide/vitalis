@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     overdue_grace_minutes: int = 30
     overdue_check_seconds: int = 60
 
+    # The team's trained risk models (diabetes, heart). Off => clinical rules only.
+    enable_ncs_models: bool = True
+    ncs_model_dir: str = ""
+
     # LLM (doctor summaries only; Phase 7)
     allow_external_llm: bool = False
     gemini_api_key: str = ""

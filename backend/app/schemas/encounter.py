@@ -68,6 +68,7 @@ class OrderRow(BaseModel):
     ordered_by: str | None
     created_at: datetime
     result_text: str | None = None
+    values: dict | None = None
     abnormal: bool | None = None
     entered_by: str | None = None
     entered_at: datetime | None = None
@@ -155,8 +156,14 @@ class OrdersIn(BaseModel):
     items: list[OrderItemIn] = Field(min_length=1, max_length=15)
 
 
+class ResultValueIn(BaseModel):
+    value: float | str
+    unit: str | None = Field(default=None, max_length=24)
+
+
 class ResultIn(BaseModel):
-    result_text: str = Field(min_length=1, max_length=5000)
+    result_text: str = Field(default="", max_length=5000)
+    values: dict[str, ResultValueIn] | None = None  # structured parameters, e.g. {"HbA1c": {"value": 7.4, "unit": "%"}}
     abnormal: bool = False
 
 
@@ -168,7 +175,16 @@ class LabQueueItem(BaseModel):
     patient: IncomingPatient
 
 
+class TestParam(BaseModel):
+    name: str
+    unit: str
+    lo: float | None = None
+    hi: float | None = None
+    choices: list[str] | None = None
+
+
 class TestOption(BaseModel):
     code: str
     name: str
     category: str
+    params: list[TestParam] = []

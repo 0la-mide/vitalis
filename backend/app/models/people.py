@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import JSON, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -56,6 +56,7 @@ class Patient(IdMixin, TimestampMixin, Base):
     age_group: Mapped[str | None] = mapped_column(String(16))
     sex: Mapped[str | None] = mapped_column(String(8))
     pregnant: Mapped[bool] = mapped_column(default=False)
+    date_of_birth: Mapped[date | None]
     created_by_worker_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
 
 
@@ -81,3 +82,22 @@ class PushSubscription(IdMixin, TimestampMixin, Base):
     endpoint: Mapped[str] = mapped_column(Text, unique=True)
     p256dh: Mapped[str] = mapped_column(String(255))
     auth: Mapped[str] = mapped_column(String(255))
+
+
+class PatientHistoryEntry(IdMixin, Base):
+    """The patient's record across the network: allergies, conditions, medicines, family history.
+
+    Each entry keeps where it was recorded, so the doctor AI can say "recorded at <hospital>, <date>".
+    """
+
+    __tablename__ = "patient_history"
+
+    patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id", ondelete="CASCADE"), index=True)
+    kind: Mapped[str] = mapped_column(String(16), index=True)  # allergy | condition | medication | family
+    text: Mapped[str] = mapped_column(String(200))  # e.g. "Sulfonamides (Septrin)", "Hypertension", "Amlodipine 5 mg"
+    detail: Mapped[str | None] = mapped_column(String(200))  # reaction / relationship / dose
+    onset_age: Mapped[int | None]  # family history
+    active: Mapped[bool] = mapped_column(default=True)
+    recorded_at: Mapped[datetime] = mapped_column(default=utcnow)
+    facility_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("facilities.id", ondelete="SET NULL"))
+    recorded_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
