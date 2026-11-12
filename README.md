@@ -20,11 +20,17 @@ in real time.
 - **Referrals:** heads-up to the top 3 hospitals when a red flag fires, live SSE on both sides, decline (reason
   required) → next hospital offered automatically, accept → "Go now" with directions and what to bring, arrival
   confirmation, overdue job with SMS (console provider in dev).
-- **Hospital screens:** live incoming queue, accept / decline / ready / arrived by role, one-tap service availability.
+- **Hospital screens:** live incoming queue, accept / decline / ready / arrived by role, one-tap service availability,
+  and staff approvals for the facility admin.
+- **Registration + verification:** facilities, hospital staff and frontline workers self-register (licence number +
+  document, validated by magic bytes, 5 MB max, private storage). Network admin approves / rejects / suspends facilities
+  and workers; facility admins approve their own staff. Rejected applicants resubmit. Status page for anyone not
+  approved.
+- **Network admin:** verification queue with documents, audit log viewer with filters, network counts (no patient names).
 - **Platform:** Argon2 + JWT in httpOnly cookies, CSRF double-submit, role + facility scoping, audit events, rate limits,
   security headers, response envelope, structured logs with request IDs. PWA with Serwist and an offline page.
 
-Not built yet (next phases): self-registration + verification queues and admin screens, frontline worker app, encounters
+Not built yet (next phases): frontline worker app, encounters
 (reception → nursing → doctor → lab), doctor AI drafts, records + QR sharing, web push, full i18n text.
 
 ## Run it locally (no Docker needed)

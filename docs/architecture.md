@@ -49,6 +49,15 @@ double-submit (`vt_csrf` cookie echoed as `X-CSRF-Token`) on all staff mutations
 checks role, approved account and approved facility; every hospital query is filtered by `user.facility_id`, and
 cross-facility IDs return 404. Pending / rejected / suspended accounts can only call `/auth/me`.
 
+## Registration and verification
+
+Self-registration creates `pending` accounts plus a `verifications` row (subject `facility`, `worker` or `staff`) with
+the submitted licence details and document upload ids. The **network admin** reviews facilities and workers; each
+**facility admin** reviews staff at their own facility. Decisions: `pending → approved | rejected`,
+`approved → suspended`, `suspended → approved`. Approving or suspending a facility applies to its facility-admin account
+too; a suspended facility drops out of matching and its staff lose work screens. Rejected applicants resubmit, which
+creates a new `pending` verification linked to the old one. Every decision and document view is audited.
+
 ## Referral state machine
 
 `pending → accepted | declined | more_info | cancelled`, `more_info → accepted | declined | cancelled`,

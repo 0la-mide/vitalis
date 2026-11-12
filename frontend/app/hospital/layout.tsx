@@ -33,7 +33,7 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
             </div>
           </div>
           <nav className="flex gap-1">
-            {NAV.map((n) => (
+            {[...NAV, ...(me?.role === "facility_admin" ? [{ href: "/hospital/staff", label: "Staff" }] : [])].map((n) => (
               <Link
                 key={n.href}
                 href={n.href}

@@ -92,6 +92,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/register/facilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Facilities For Registration
+         * @description Verified facilities that staff can register under.
+         */
+        get: operations["facilities_for_registration_api_v1_auth_register_facilities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register/options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Registration Options */
+        get: operations["registration_options_api_v1_auth_register_options_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register/facility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register Facility */
+        post: operations["register_facility_api_v1_auth_register_facility_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register/staff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register Staff */
+        post: operations["register_staff_api_v1_auth_register_staff_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register/worker": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register Worker */
+        post: operations["register_worker_api_v1_auth_register_worker_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/resubmit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resubmit
+         * @description A rejected applicant corrects their details and goes back into the queue.
+         */
+        post: operations["resubmit_api_v1_auth_resubmit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/patients/start": {
         parameters: {
             query?: never;
@@ -408,24 +516,244 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hospital/staff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Staff */
+        get: operations["staff_api_v1_hospital_staff_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/hospital/staff/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Decide Staff */
+        patch: operations["decide_staff_api_v1_hospital_staff__user_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/verifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Verifications
+         * @description Facilities and frontline workers. Hospital staff are verified by their own facility admin.
+         */
+        get: operations["list_verifications_api_v1_admin_verifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/verifications/{verification_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Verification */
+        get: operations["get_verification_api_v1_admin_verifications__verification_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Decide Verification */
+        patch: operations["decide_verification_api_v1_admin_verifications__verification_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/admin/documents/{upload_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Document */
+        get: operations["get_document_api_v1_admin_documents__upload_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Audit Log */
+        get: operations["audit_log_api_v1_admin_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Metrics */
+        get: operations["metrics_api_v1_admin_metrics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AuditOut */
+        AuditOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Action */
+            action: string;
+            /** Actor Type */
+            actor_type: string;
+            /** Actor Id */
+            actor_id: string | null;
+            /** Actor Name */
+            actor_name: string | null;
+            /** Subject Type */
+            subject_type: string | null;
+            /** Subject Id */
+            subject_id: string | null;
+            /** Facility Id */
+            facility_id: string | null;
+            /** Facility Name */
+            facility_name: string | null;
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            } | null;
+            /** Request Id */
+            request_id: string | null;
+        };
         /**
          * Availability
          * @enum {string}
          */
         Availability: "available" | "limited" | "unavailable" | "unknown";
-        /** DecisionIn */
-        DecisionIn: {
+        /** Body_register_facility_api_v1_auth_register_facility_post */
+        Body_register_facility_api_v1_auth_register_facility_post: {
+            /** Facility Name */
+            facility_name: string;
             /**
-             * Action
+             * Facility Type
              * @enum {string}
              */
-            action: "accept" | "decline" | "more_info";
-            /** Reason */
-            reason?: string | null;
+            facility_type: "teaching" | "general" | "specialist" | "clinic" | "phc";
+            /** Lga */
+            lga: string;
+            /** Address */
+            address: string;
+            /** Facility Phone */
+            facility_phone: string;
+            /** Lat */
+            lat: number;
+            /** Lng */
+            lng: number;
+            /** Facility Licence Number */
+            facility_licence_number: string;
+            /**
+             * Services
+             * @default
+             */
+            services: string;
+            /** Full Name */
+            full_name: string;
+            /** Email */
+            email: string;
+            /** Password */
+            password: string;
+            /** Phone */
+            phone?: string | null;
+            /** Document */
+            document: string;
+        };
+        /** Body_register_worker_api_v1_auth_register_worker_post */
+        Body_register_worker_api_v1_auth_register_worker_post: {
+            /** Full Name */
+            full_name: string;
+            /** Email */
+            email: string;
+            /** Password */
+            password: string;
+            /** Phone */
+            phone?: string | null;
+            /**
+             * Worker Type
+             * @enum {string}
+             */
+            worker_type: "chemist" | "pharmacist" | "chew" | "midwife";
+            /** Licence Number */
+            licence_number: string;
+            /** Business Name */
+            business_name?: string | null;
+            /** Lga */
+            lga: string;
+            /** Lat */
+            lat?: number | null;
+            /** Lng */
+            lng?: number | null;
+            /** Document */
+            document: string;
+        };
+        /** Body_resubmit_api_v1_auth_resubmit_post */
+        Body_resubmit_api_v1_auth_resubmit_post: {
+            /** Licence Number */
+            licence_number?: string | null;
+            /** Document */
+            document?: string | null;
         };
         /** DecisionOut */
         DecisionOut: {
@@ -459,6 +787,11 @@ export interface components {
             data: components["schemas"]["MeOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[Metrics] */
+        Envelope_Metrics_: {
+            data: components["schemas"]["Metrics"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[PatientKeysOut] */
         Envelope_PatientKeysOut_: {
             data: components["schemas"]["PatientKeysOut"];
@@ -467,6 +800,11 @@ export interface components {
         /** Envelope[ReferralPatientOut] */
         Envelope_ReferralPatientOut_: {
             data: components["schemas"]["ReferralPatientOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[RegisteredOut] */
+        Envelope_RegisteredOut_: {
+            data: components["schemas"]["RegisteredOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[Taxonomy] */
@@ -479,12 +817,29 @@ export interface components {
             data: components["schemas"]["TriageOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[VerificationOut] */
+        Envelope_VerificationOut_: {
+            data: components["schemas"]["VerificationOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[dict] */
         Envelope_dict_: {
             /** Data */
             data: {
                 [key: string]: unknown;
             };
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[AuditOut]] */
+        Envelope_list_AuditOut__: {
+            /** Data */
+            data: components["schemas"]["AuditOut"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[FacilityOption]] */
+        Envelope_list_FacilityOption__: {
+            /** Data */
+            data: components["schemas"]["FacilityOption"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[list[HospitalCard]] */
@@ -503,6 +858,18 @@ export interface components {
         Envelope_list_ServiceRow__: {
             /** Data */
             data: components["schemas"]["ServiceRow"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[StaffRow]] */
+        Envelope_list_StaffRow__: {
+            /** Data */
+            data: components["schemas"]["StaffRow"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[VerificationOut]] */
+        Envelope_list_VerificationOut__: {
+            /** Data */
+            data: components["schemas"]["VerificationOut"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** ExcludedCard */
@@ -530,6 +897,18 @@ export interface components {
             name: string;
             /** Status */
             status: string;
+        };
+        /** FacilityOption */
+        FacilityOption: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Lga */
+            lga: string;
         };
         /** FacilityPublic */
         FacilityPublic: {
@@ -716,6 +1095,33 @@ export interface components {
             /** Csrf Token */
             csrf_token?: string | null;
         };
+        /** Metrics */
+        Metrics: {
+            /** Triage Reports */
+            triage_reports: number;
+            /** Red Flags */
+            red_flags: number;
+            /** Referrals */
+            referrals: number;
+            /** Referrals Accepted */
+            referrals_accepted: number;
+            /** Referrals Declined */
+            referrals_declined: number;
+            /** Median Acceptance Seconds */
+            median_acceptance_seconds: number | null;
+            /** Arrival Rate */
+            arrival_rate: number | null;
+            /** Overdue Now */
+            overdue_now: number;
+            /** Facilities Approved */
+            facilities_approved: number;
+            /** Facilities Pending */
+            facilities_pending: number;
+            /** Workers Approved */
+            workers_approved: number;
+            /** Workers Pending */
+            workers_pending: number;
+        };
         /** PageMeta */
         PageMeta: {
             /** Total */
@@ -814,6 +1220,20 @@ export interface components {
             /** Overdue At */
             overdue_at: string | null;
         };
+        /** RegisteredOut */
+        RegisteredOut: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Status */
+            status: string;
+            /** Facility Id */
+            facility_id?: string | null;
+            /** Message */
+            message: string;
+        };
         /** ServicePatchIn */
         ServicePatchIn: {
             availability_status: components["schemas"]["Availability"];
@@ -837,6 +1257,66 @@ export interface components {
             last_confirmed_at: string | null;
             /** Freshness */
             freshness: string;
+        };
+        /** StaffDecisionIn */
+        StaffDecisionIn: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "approve" | "reject" | "suspend";
+            /** Reason */
+            reason?: string | null;
+        };
+        /** StaffRegisterIn */
+        StaffRegisterIn: {
+            /** Full Name */
+            full_name: string;
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
+            /** Phone */
+            phone?: string | null;
+            /**
+             * Facility Id
+             * Format: uuid
+             */
+            facility_id: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "receptionist" | "nurse" | "doctor" | "lab";
+            /** Licence Number */
+            licence_number: string;
+        };
+        /** StaffRow */
+        StaffRow: {
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Full Name */
+            full_name: string;
+            /** Email */
+            email: string;
+            /** Role */
+            role: string;
+            /** Status */
+            status: string;
+            /** Status Reason */
+            status_reason: string | null;
+            /** Licence Number */
+            licence_number: string | null;
+            /** Created At */
+            created_at: string;
+            /** Verification Id */
+            verification_id: string | null;
         };
         /** SymptomLine */
         SymptomLine: {
@@ -1076,6 +1556,20 @@ export interface components {
             /** Taps */
             taps?: components["schemas"]["Tap"][];
         };
+        /** UploadOut */
+        UploadOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Original Name */
+            original_name: string;
+            /** Content Type */
+            content_type: string;
+            /** Size Bytes */
+            size_bytes: number;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -1088,6 +1582,54 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /** VerificationOut */
+        VerificationOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Subject Type
+             * @enum {string}
+             */
+            subject_type: "facility" | "worker" | "staff";
+            /** Status */
+            status: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Decided At */
+            decided_at: string | null;
+            /** Reason */
+            reason: string | null;
+            /** Reviewer Name */
+            reviewer_name: string | null;
+            /** User Id */
+            user_id: string | null;
+            /** User Name */
+            user_name: string | null;
+            /** User Email */
+            user_email: string | null;
+            /** User Role */
+            user_role: string | null;
+            /** Facility Id */
+            facility_id: string | null;
+            /** Facility Name */
+            facility_name: string | null;
+            /** Facility Lga */
+            facility_lga: string | null;
+            /** Facility Type */
+            facility_type: string | null;
+            /** Details */
+            details: {
+                [key: string]: unknown;
+            };
+            /** Documents */
+            documents: components["schemas"]["UploadOut"][];
         };
         /** VitalLine */
         VitalLine: {
@@ -1104,6 +1646,26 @@ export interface components {
              * Format: date-time
              */
             measured_at: string;
+        };
+        /** DecisionIn */
+        app__schemas__referral__DecisionIn: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "accept" | "decline" | "more_info";
+            /** Reason */
+            reason?: string | null;
+        };
+        /** DecisionIn */
+        app__schemas__registration__DecisionIn: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "approve" | "reject" | "suspend";
+            /** Reason */
+            reason?: string | null;
         };
     };
     responses: never;
@@ -1223,6 +1785,178 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_MeOut_"];
+                };
+            };
+        };
+    };
+    facilities_for_registration_api_v1_auth_register_facilities_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_FacilityOption__"];
+                };
+            };
+        };
+    };
+    registration_options_api_v1_auth_register_options_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
+                };
+            };
+        };
+    };
+    register_facility_api_v1_auth_register_facility_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_register_facility_api_v1_auth_register_facility_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RegisteredOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    register_staff_api_v1_auth_register_staff_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StaffRegisterIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RegisteredOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    register_worker_api_v1_auth_register_worker_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_register_worker_api_v1_auth_register_worker_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RegisteredOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resubmit_api_v1_auth_resubmit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_resubmit_api_v1_auth_resubmit_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_RegisteredOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -1624,7 +2358,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DecisionIn"];
+                "application/json": components["schemas"]["app__schemas__referral__DecisionIn"];
             };
         };
         responses: {
@@ -1781,6 +2515,249 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    staff_api_v1_hospital_staff_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_StaffRow__"];
+                };
+            };
+        };
+    };
+    decide_staff_api_v1_hospital_staff__user_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StaffDecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_StaffRow__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_verifications_api_v1_admin_verifications_get: {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected" | "suspended" | "all";
+                kind?: "facility" | "worker" | "all";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_VerificationOut__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_verification_api_v1_admin_verifications__verification_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                verification_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_VerificationOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decide_verification_api_v1_admin_verifications__verification_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                verification_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["app__schemas__registration__DecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_VerificationOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_document_api_v1_admin_documents__upload_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                upload_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_log_api_v1_admin_audit_get: {
+        parameters: {
+            query?: {
+                action?: string | null;
+                actor_id?: string | null;
+                facility_id?: string | null;
+                since?: string | null;
+                until?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_AuditOut__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    metrics_api_v1_admin_metrics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Metrics_"];
                 };
             };
         };

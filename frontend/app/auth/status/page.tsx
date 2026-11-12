@@ -4,6 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
+import { useState } from "react";
+import { Field, inputCls } from "@/components/ui/field";
 import { api } from "@/lib/api";
 import { HOSPITAL_ROLES, ROLE_LABEL, useMe } from "@/lib/staff";
 
@@ -57,7 +59,11 @@ export default function StatusPage() {
           {facilityPending ? "Your facility is waiting for verification by the VITALIS network admin." : STATUS_COPY[me.status]}
         </p>
         {me.status_reason ? <p className="mt-2 rounded-lg bg-muted p-2 text-sm">Reason: {me.status_reason}</p> : null}
-        {me.status === "approved" && !facilityPending && !HOSPITAL_ROLES.includes(me.role) ? (
+        {me.status === "rejected" ? <Resubmit role={me.role} onDone={() => qc.invalidateQueries({ queryKey: ["me"] })} /> : null}
+        {me.status === "approved" && !facilityPending && me.role === "network_admin" ? (
+          <Button className="mt-3" onClick={() => router.push("/admin")}>Open admin</Button>
+        ) : null}
+        {me.status === "approved" && !facilityPending && !HOSPITAL_ROLES.includes(me.role) && me.role !== "network_admin" ? (
           <p className="mt-3 rounded-lg bg-mint p-2 text-sm">
             The {ROLE_LABEL[me.role]?.toLowerCase()} workspace is coming in the next build phase.
           </p>
@@ -72,5 +78,45 @@ export default function StatusPage() {
         </div>
       </Card>
     </main>
+  );
+}
+
+function Resubmit({ role, onDone }: { role: string; onDone: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const needsDoc = role === "worker" || role === "facility_admin";
+  return (
+    <form
+      className="mt-4 grid gap-3 rounded-xl bg-muted p-3"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        const fd = new FormData(e.currentTarget);
+        if (!fd.get("licence_number")) fd.delete("licence_number");
+        const doc = fd.get("document");
+        if (doc instanceof File && !doc.size) fd.delete("document");
+        try {
+          await api("/auth/resubmit", { form: fd });
+          onDone();
+        } catch (err) {
+          setError((err as Error).message);
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <h2 className="font-bold">Correct and resubmit</h2>
+      <Field label="Licence number (if it changed)">
+        <input name="licence_number" className={inputCls} />
+      </Field>
+      {needsDoc ? (
+        <Field label="New licence document" hint="PDF, JPG or PNG, up to 5 MB">
+          <input name="document" type="file" required accept=".pdf,.jpg,.jpeg,.png" className="text-sm" />
+        </Field>
+      ) : null}
+      {error ? <p className="text-sm text-emergency">{error}</p> : null}
+      <Button type="submit" disabled={busy}>{busy ? "Sending…" : "Resubmit for review"}</Button>
+    </form>
   );
 }

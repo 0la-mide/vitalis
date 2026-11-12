@@ -26,7 +26,29 @@ generates `frontend/types/api.ts` (`make types`).
 ## Auth (staff, workers, admins)
 
 `POST /auth/login` · `POST /auth/refresh` · `POST /auth/logout` · `GET /auth/me` (works for pending users).
-Registration endpoints (`/auth/register/{facility|staff|worker}`) come with the verification queues.
+
+## Registration (public, rate limited) — everything starts `pending`
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/auth/register/options` | LGAs, services, facility/worker types, staff roles |
+| GET | `/auth/register/facilities` | verified facilities staff can join |
+| POST | `/auth/register/facility` | multipart: facility fields + admin account + `document`; 5/hour/IP |
+| POST | `/auth/register/staff` | JSON: `facility_id` (must be verified), `role` (receptionist/nurse/doctor/lab), `licence_number`; 10/hour |
+| POST | `/auth/register/worker` | multipart: `worker_type`, `licence_number`, `lga`, `document`; 5/hour |
+| POST | `/auth/resubmit` | signed in, status `rejected`: new `document` (facility/worker) and/or `licence_number` → `pending` |
+
+Documents: PDF/JPG/PNG by **magic bytes**, max 5 MB, random file names in `UPLOAD_DIR` (outside the web root).
+
+## Network admin (role `network_admin`)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/admin/verifications?status=&kind=&limit=&offset=` | facilities + workers, paginated (`meta`) |
+| GET/PATCH | `/admin/verifications/{id}` | `{decision: approve|reject|suspend, reason}`; reason required for reject/suspend; approve also reinstates a suspension |
+| GET | `/admin/documents/{upload_id}` | served inline with `CSP: sandbox`; also open to a facility admin for their own staff's documents; audited |
+| GET | `/admin/audit?action=&actor_id=&facility_id=&since=&until=` | `action` is a prefix match (e.g. `verification.`) |
+| GET | `/admin/metrics` | counts only: triage, red flags, referrals, median acceptance time, arrival rate, overdue, pending queues |
 
 ## Hospital (cookie auth + `X-CSRF-Token` on mutations; scoped to the user's facility)
 
@@ -40,6 +62,8 @@ Registration endpoints (`/auth/register/{facility|staff|worker}`) come with the 
 | POST | `/hospital/alerts/{id}/ready` | doctor, nurse, facility_admin |
 | GET | `/hospital/services` | any hospital role |
 | PATCH | `/hospital/services/{id}` | any hospital role — `{availability_status}` stamps `last_confirmed_at` |
+| GET | `/hospital/staff` | facility_admin — staff at their facility incl. pending |
+| PATCH | `/hospital/staff/{user_id}` | facility_admin — `{decision: approve|reject|suspend, reason}`; other facilities' staff → 404 |
 
 ## Public
 

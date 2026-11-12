@@ -66,6 +66,7 @@ export default function IncomingPage() {
     () =>
       subscribe("/hospital/stream", (e) => {
         if (e.event === "ready") setLive(true);
+        else if (e.event === "error") setLive(false);
         else void qc.invalidateQueries({ queryKey: ["incoming"] });
       }),
     [qc],

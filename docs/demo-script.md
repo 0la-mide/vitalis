@@ -31,3 +31,7 @@ Setup (2 minutes before): `make demo-reset`, `make dev`. Open two windows:
 - *Overdue:* if she does not arrive by ETA + 30 min, the referral turns overdue and the family gets an SMS (console in
   dev).
 - *Verification:* sign in as `facilityadmin.asero@vitalis.demo` — pending facility, status page only, never matched.
+  Then as `admin@vitalis.demo`: **Verifications** shows Asero and a pending chemist with their (synthetic) licence
+  PDFs; approve Asero and it appears in matching immediately. **Audit log** shows every decision and document view.
+- *Staff join their hospital:* register at `/auth/register` → Hospital staff; sign in as
+  `facilityadmin.central@vitalis.demo` → **Staff** to approve (a pending nurse is already waiting).

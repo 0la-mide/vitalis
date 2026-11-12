@@ -16,6 +16,7 @@ export function subscribe(
   let stopped = false;
   let ctrl: AbortController | null = null;
   let backoff = 1000;
+  let refreshed = false;
 
   const run = async () => {
     while (!stopped) {
@@ -27,8 +28,25 @@ export function subscribe(
           if (key) headers["X-Patient-Key"] = key;
         }
         const res = await fetch(`/api/v1${path}`, { headers, signal: ctrl.signal, credentials: "same-origin" });
+        // Staff access tokens are short-lived: refresh once, then reconnect.
+        if (res.status === 401 && !opts.patient && !refreshed) {
+          refreshed = true;
+          const csrf = document.cookie.match(/(?:^|; )vt_csrf=([^;]*)/)?.[1];
+          const r = await fetch("/api/v1/auth/refresh", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: csrf ? { "X-CSRF-Token": decodeURIComponent(csrf) } : {},
+          });
+          if (r.ok) continue;
+        }
+        // Auth or not-found errors will not fix themselves: stop instead of hammering the server.
+        if (res.status >= 400 && res.status < 500) {
+          onEvent({ event: "error", data: { status: res.status } });
+          return;
+        }
         if (!res.ok || !res.body) throw new Error(`SSE ${res.status}`);
         backoff = 1000;
+        refreshed = false;
         const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
         let buf = "";
         for (;;) {

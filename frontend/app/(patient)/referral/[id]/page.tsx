@@ -24,7 +24,8 @@ export default function ReferralPage() {
   const { data: ref, error } = useQuery({
     queryKey: ["referral", id],
     queryFn: () => api<ReferralPatientOut>(`/referrals/${id}`, { patient: true }),
-    refetchInterval: 10000, // safety net if the live stream drops
+    refetchInterval: (q) => (q.state.error ? false : 10000), // safety net if the live stream drops
+    retry: false,
   });
 
   // Live updates: any event on this triage report refetches the referral.
@@ -32,7 +33,7 @@ export default function ReferralPage() {
     return subscribe(
       `/referrals/${id}/stream`,
       (e) => {
-        if (e.event !== "ready") void qc.invalidateQueries({ queryKey: ["referral", id] });
+        if (e.event !== "ready" && e.event !== "error") void qc.invalidateQueries({ queryKey: ["referral", id] });
       },
       { patient: true },
     );
@@ -48,7 +49,12 @@ export default function ReferralPage() {
   }, [ref, router]);
 
   if (error) {
-    return <main className="p-6 text-center">{(error as Error).message}</main>;
+    return (
+      <main className="mx-auto max-w-md space-y-4 p-6 text-center">
+        <p>{(error as Error).message}</p>
+        <Link href="/" className="inline-block rounded-xl bg-primary px-4 py-3 font-semibold text-primary-foreground">VITALIS</Link>
+      </main>
+    );
   }
   if (!ref) {
     return <main className="p-6 text-center text-muted-foreground">{t("common.loading")}</main>;

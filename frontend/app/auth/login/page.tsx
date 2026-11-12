@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api, type MeOut } from "@/lib/api";
-import { HOSPITAL_ROLES } from "@/lib/staff";
+import { homeFor } from "@/lib/staff";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,8 +24,7 @@ export default function LoginPage() {
     try {
       const me = await api<MeOut>("/auth/login", { body: { email, password } });
       qc.setQueryData(["me"], me);
-      const ok = me.status === "approved" && (me.facility?.status ?? "approved") === "approved";
-      router.push(ok && HOSPITAL_ROLES.includes(me.role) ? "/hospital" : "/auth/status");
+      router.push(homeFor(me));
     } catch (err) {
       setError((err as Error).message);
       setBusy(false);
@@ -70,7 +69,10 @@ export default function LoginPage() {
           </Button>
         </form>
       </Card>
-      <p className="mt-4 text-center text-sm text-muted-foreground">
+      <p className="mt-4 text-center text-sm">
+        New hospital, staff member or chemist? <Link href="/auth/register" className="font-semibold text-primary underline">Register</Link>
+      </p>
+      <p className="mt-2 text-center text-sm text-muted-foreground">
         Patients never need an account. <Link href="/" className="underline">Go to VITALIS</Link>
       </p>
     </main>

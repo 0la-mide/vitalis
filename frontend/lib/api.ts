@@ -27,16 +27,19 @@ function readCookie(name: string): string | null {
   return m ? decodeURIComponent(m[1]) : null;
 }
 
-type Opts = { method?: string; body?: unknown; patient?: boolean; signal?: AbortSignal };
+type Opts = { method?: string; body?: unknown; form?: FormData; patient?: boolean; signal?: AbortSignal };
+type Retry = Opts & { _retried?: boolean };
+export type Page<T> = { data: T; meta: Schemas["PageMeta"] | null };
 
-export async function api<T>(path: string, opts: Opts = {}): Promise<T> {
+async function request<T>(path: string, opts: Retry = {}): Promise<Page<T>> {
   const headers: Record<string, string> = { Accept: "application/json" };
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
   if (opts.patient) {
     const key = await getDeviceKey();
     if (key) headers["X-Patient-Key"] = key;
   }
-  const method = opts.method ?? (opts.body !== undefined ? "POST" : "GET");
+  const hasBody = opts.body !== undefined || opts.form !== undefined;
+  const method = opts.method ?? (hasBody ? "POST" : "GET");
   if (method !== "GET") {
     const csrf = readCookie("vt_csrf");
     if (csrf) headers["X-CSRF-Token"] = csrf;
@@ -45,23 +48,36 @@ export async function api<T>(path: string, opts: Opts = {}): Promise<T> {
     method,
     headers,
     credentials: "same-origin",
-    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+    body: opts.form ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined),
     signal: opts.signal,
   });
   // Staff access tokens are short-lived: refresh once and retry.
-  if (res.status === 401 && !opts.patient && !path.startsWith("/auth/") && !(opts as { _retried?: boolean })._retried) {
+  if (res.status === 401 && !opts.patient && !path.startsWith("/auth/") && !opts._retried) {
     const csrf = readCookie("vt_csrf");
     const r = await fetch("/api/v1/auth/refresh", {
       method: "POST",
       credentials: "same-origin",
       headers: csrf ? { "X-CSRF-Token": csrf } : {},
     });
-    if (r.ok) return api<T>(path, { ...opts, _retried: true } as Opts);
+    if (r.ok) return request<T>(path, { ...opts, _retried: true });
   }
   const json = await res.json().catch(() => null);
   if (!res.ok) {
     const err = json?.error ?? {};
-    throw new ApiError(res.status, err.code ?? "error", err.message ?? res.statusText, err.details);
+    let message: string = err.message ?? res.statusText;
+    if (err.code === "validation_error" && Array.isArray(err.details) && err.details[0]) {
+      const d = err.details[0] as { loc?: unknown[]; msg?: string };
+      message = `${String(d.loc?.[d.loc.length - 1] ?? "field").replace(/_/g, " ")}: ${d.msg}`;
+    }
+    throw new ApiError(res.status, err.code ?? "error", message, err.details);
   }
-  return json.data as T;
+  return { data: json.data as T, meta: json.meta ?? null };
+}
+
+export async function api<T>(path: string, opts: Opts = {}): Promise<T> {
+  return (await request<T>(path, opts)).data;
+}
+
+export function apiPage<T>(path: string, opts: Opts = {}): Promise<Page<T>> {
+  return request<T>(path, opts);
 }

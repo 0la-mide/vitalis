@@ -7,6 +7,25 @@ import { api, ApiError, type MeOut } from "@/lib/api";
 
 export const HOSPITAL_ROLES = ["facility_admin", "receptionist", "nurse", "doctor", "lab"];
 
+/** Where a signed-in account should land. */
+export function homeFor(me: MeOut): string {
+  if (me.status !== "approved") return "/auth/status";
+  if (me.role === "network_admin") return "/admin";
+  if (HOSPITAL_ROLES.includes(me.role) && me.facility?.status === "approved") return "/hospital";
+  return "/auth/status";
+}
+
+/** Network admin pages: redirect anyone else. */
+export function useRequireNetworkAdmin() {
+  const router = useRouter();
+  const q = useMe();
+  useEffect(() => {
+    if (q.error instanceof ApiError && q.error.status === 401) router.replace("/auth/login");
+    if (q.data && (q.data.role !== "network_admin" || q.data.status !== "approved")) router.replace(homeFor(q.data));
+  }, [q.data, q.error, router]);
+  return q;
+}
+
 export function useMe() {
   return useQuery({
     queryKey: ["me"],
