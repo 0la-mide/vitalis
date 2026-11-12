@@ -118,6 +118,11 @@ body {
 .body-region[data-active="true"] {
   fill: var(--primary);
 }
+/* Full-body regions: light dividers so the figure reads as one body, not a stack of boxes. */
+.body-region-soft {
+  stroke: var(--mint-strong);
+  stroke-width: 1;
+}
 
 /* Worker recovery slip: print only the slip. */
 @media print {

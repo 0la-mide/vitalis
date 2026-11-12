@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { BodyMap, type BodyView } from "@/components/body-map/BodyMap";
+import { bodyFor } from "@/components/body-map/geometry";
 import { Face } from "@/components/triage/Faces";
 import { ExcludedList, HospitalCardView } from "@/components/triage/HospitalList";
 import { TaxIcon } from "@/components/triage/icons";
@@ -205,10 +206,12 @@ export function TriageFlow({ mode }: { mode: Mode }) {
             ) : null}
             <BodyMap
               view={view}
+              type={bodyFor(ctx)}
               active={s.region}
               labels={regionLabels}
               onSelect={(region) => {
-                if (region === "head" && view !== "head") {
+                // Only the front of the head zooms into face, eyes, ears and mouth.
+                if (region === "head" && view === "front") {
                   setView("head");
                   return;
                 }
