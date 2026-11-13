@@ -46,7 +46,7 @@ services:
       model: { condition: service_healthy }
     expose: ["8000"]
     volumes:
-      - uploads:/app/var/uploads
+      - backend-var:/app/var
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=5)"]
       interval: 30s
@@ -94,7 +94,7 @@ services:
 
 volumes:
   pgdata:
-  uploads:
+  backend-var:
 
 networks:
   internal:
