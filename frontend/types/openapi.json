@@ -3193,6 +3193,110 @@
           }
         }
       }
+    },
+    "/api/v1/demo/accounts": {
+      "get": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Accounts",
+        "operationId": "accounts_api_v1_demo_accounts_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DemoAccounts_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/login": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Demo Login",
+        "operationId": "demo_login_api_v1_demo_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoLoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MeOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/patient": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Demo Patient",
+        "description": "Opens a demo patient's record on this phone. Rotates the device key only (the recovery code stays).",
+        "operationId": "demo_patient_api_v1_demo_patient_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoPatientIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DemoPatientOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3836,6 +3940,138 @@
         ],
         "title": "DecisionOut"
       },
+      "DemoAccounts": {
+        "properties": {
+          "staff": {
+            "items": {
+              "$ref": "#/components/schemas/DemoStaff"
+            },
+            "type": "array",
+            "title": "Staff"
+          },
+          "patients": {
+            "items": {
+              "$ref": "#/components/schemas/DemoPatient"
+            },
+            "type": "array",
+            "title": "Patients"
+          }
+        },
+        "type": "object",
+        "required": [
+          "staff",
+          "patients"
+        ],
+        "title": "DemoAccounts"
+      },
+      "DemoLoginIn": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "DemoLoginIn"
+      },
+      "DemoPatient": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id",
+          "name"
+        ],
+        "title": "DemoPatient"
+      },
+      "DemoPatientIn": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id"
+        ],
+        "title": "DemoPatientIn"
+      },
+      "DemoPatientOut": {
+        "properties": {
+          "patient_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Patient Id"
+          },
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "device_key": {
+            "type": "string",
+            "title": "Device Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "patient_id",
+          "vitalis_id",
+          "device_key"
+        ],
+        "title": "DemoPatientOut"
+      },
+      "DemoStaff": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "facility": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "name",
+          "role",
+          "status",
+          "facility"
+        ],
+        "title": "DemoStaff"
+      },
       "DraftDecisionIn": {
         "properties": {
           "action": {
@@ -4270,6 +4506,50 @@
           "data"
         ],
         "title": "Envelope[DecisionOut]"
+      },
+      "Envelope_DemoAccounts_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DemoAccounts"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[DemoAccounts]"
+      },
+      "Envelope_DemoPatientOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DemoPatientOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[DemoPatientOut]"
       },
       "Envelope_DraftOut_": {
         "properties": {

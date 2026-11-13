@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RecoverySlip } from "@/components/triage/RecoverySlip";
 import { Logo } from "@/components/staff/StaffShell";
+import { DemoPatients } from "@/components/auth/DemoAccounts";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { inputCls } from "@/components/ui/field";
@@ -294,6 +295,7 @@ function NoCard({ onRestored }: { onRestored: () => void }) {
         }
       }}>Open my record</Button>
       {msg ? <p className="text-sm text-emergency">{msg}</p> : null}
+      <DemoPatients onOpened={onRestored} />
     </Card>
   );
 }

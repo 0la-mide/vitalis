@@ -1265,6 +1265,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/demo/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Accounts */
+        get: operations["accounts_api_v1_demo_accounts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Demo Login */
+        post: operations["demo_login_api_v1_demo_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/patient": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Demo Patient
+         * @description Opens a demo patient's record on this phone. Rotates the device key only (the recovery code stays).
+         */
+        post: operations["demo_patient_api_v1_demo_patient_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1485,6 +1539,55 @@ export interface components {
             /** Encounter Id */
             encounter_id?: string | null;
         };
+        /** DemoAccounts */
+        DemoAccounts: {
+            /** Staff */
+            staff: components["schemas"]["DemoStaff"][];
+            /** Patients */
+            patients: components["schemas"]["DemoPatient"][];
+        };
+        /** DemoLoginIn */
+        DemoLoginIn: {
+            /** Email */
+            email: string;
+        };
+        /** DemoPatient */
+        DemoPatient: {
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** Name */
+            name: string;
+        };
+        /** DemoPatientIn */
+        DemoPatientIn: {
+            /** Vitalis Id */
+            vitalis_id: string;
+        };
+        /** DemoPatientOut */
+        DemoPatientOut: {
+            /**
+             * Patient Id
+             * Format: uuid
+             */
+            patient_id: string;
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** Device Key */
+            device_key: string;
+        };
+        /** DemoStaff */
+        DemoStaff: {
+            /** Email */
+            email: string;
+            /** Name */
+            name: string;
+            /** Role */
+            role: string;
+            /** Status */
+            status: string;
+            /** Facility */
+            facility: string | null;
+        };
         /** DraftDecisionIn */
         DraftDecisionIn: {
             /**
@@ -1621,6 +1724,16 @@ export interface components {
         /** Envelope[DecisionOut] */
         Envelope_DecisionOut_: {
             data: components["schemas"]["DecisionOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[DemoAccounts] */
+        Envelope_DemoAccounts_: {
+            data: components["schemas"]["DemoAccounts"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[DemoPatientOut] */
+        Envelope_DemoPatientOut_: {
+            data: components["schemas"]["DemoPatientOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[DraftOut] */
@@ -5473,6 +5586,92 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_NetworkRecord_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    accounts_api_v1_demo_accounts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_DemoAccounts_"];
+                };
+            };
+        };
+    };
+    demo_login_api_v1_demo_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemoLoginIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_MeOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    demo_patient_api_v1_demo_patient_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemoPatientIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_DemoPatientOut_"];
                 };
             };
             /** @description Validation Error */

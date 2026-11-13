@@ -17,7 +17,8 @@ Open **http://localhost:3000**.
 
 | Useful command | What it does |
 |---|---|
-| `make logins` | Shows every demo account and the shared password |
+| `make logins` | Shows every demo account and the shared password (also as `backend/var/DEMO_LOGINS.pdf`) |
+| Demo accounts | On the sign-in page: pick a hospital and tap a role, no password. On `/card`: open a demo patient's phone in one tap. On by default locally; on a server set `DEMO_LOGINS=true` |
 | `make demo-reset` | Wipes everything and reseeds in ~1 s. **Do this before each test round.** It also creates a new password, so run `make logins` again |
 | `make overdue-now` | Makes every accepted referral look 3 hours old, so the overdue alert fires within a minute |
 | `make test` | Runs the 79 automated backend tests |
@@ -137,7 +138,8 @@ Use a referral to **Sapon** (from A or D). Sign in as each Sapon role in turn (o
 
 ### E2. Doctor AI and safe prescribing
 
-1. [ ] `doctor.central@…` → **Patients** → **Mrs. Folake Adewale (demo)** → **Run VITALIS AI**.
+1. [ ] `doctor.central@…` → **Patients** → the visit in the Doctor column (headache, blurred vision, thirst) →
+   **Run VITALIS AI**.
    *Expect:* BP red flag; "Uncontrolled stage 2 hypertension" and "Type 2 diabetes (probable new diagnosis)"; two
    model cards (diabetes Moderate, heart High); **Do not give Hydrochlorothiazide** citing Ogun Teaching Hospital; no
    doses anywhere in the AI's suggestions.
@@ -148,7 +150,8 @@ Use a referral to **Sapon** (from A or D). Sign in as each Sapon role in turn (o
 
 ### E3. Shared record and QR consent (2 windows)
 
-Patient window: `/card` → **Restore** with Folake's VITALIS ID and recovery code (`make logins`).
+Patient window: `/card` → **Mrs. Folake Adewale** under *Demo: open a patient's phone* (or restore with her VITALIS ID
+and recovery code from `make logins`).
 1. [ ] Doctor on Folake's visit: **Records from other hospitals** is locked ("2 visit(s) at other hospitals… private").
    Allergy from Ogun Teaching still shows. **Ask the patient to share** → "Waiting for the patient…".
 2. [ ] Patient: a banner "Abeokuta Central Hospital wants to see your health record" → **Allow**.

@@ -48,7 +48,8 @@ Simulated with a 1.5 s pause per action: 10 taps + 2 vitals + send in about 19 s
 
 ## The doctor and VITALIS AI (Folake, from the team's NCS demo)
 
-1. `doctor.central@vitalis.demo` → **Patients** → open **Mrs. Folake Adewale (demo)** in the Doctor column (54, headache,
+1. Sign in as **Doctor** (Demo accounts on the sign-in page, Abeokuta Central) → **Patients** → open the visit in the
+   Doctor column (54, headache,
    blurred vision, thirst, frequent urination; BP 174/108, glucose 236).
 2. Point at **Patient record**: hypertension on amlodipine, and an allergy to **sulfonamides recorded at Ogun Teaching
    Hospital** 7 months ago.

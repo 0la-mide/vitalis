@@ -92,7 +92,10 @@ when the database is already running, pulls, rebuilds, migrates and keeps the na
 `./deploy/deploy.sh --reset-demo` wipes and reseeds the synthetic demo data.
 
 The internal Nginx gateway serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal
-only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebuilds.
+only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebuilds, and `DEMO_LOGINS=true` for the
+one-tap demo accounts on the sign-in page (synthetic data only: anyone with the URL can then sign in as any demo role).
+The seed writes `var/DEMO_LOGINS.pdf` inside the backend container; copy it out with
+`docker compose -f deploy/docker-compose.yml --env-file .env cp backend:/app/var/DEMO_LOGINS.pdf .`
 
 ## Data protection
 

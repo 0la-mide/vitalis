@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DemoAccounts } from "@/components/auth/DemoAccounts";
 import { api, type MeOut } from "@/lib/api";
 import { homeFor } from "@/lib/staff";
 
@@ -17,6 +18,12 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Back to where they came from (e.g. a patient's QR link), but only within this app.
+  const goOn = (me: MeOut) => {
+    const next = new URLSearchParams(window.location.search).get("next");
+    router.push(next && next.startsWith("/") && !next.startsWith("//") ? next : homeFor(me));
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -24,9 +31,7 @@ export default function LoginPage() {
     try {
       const me = await api<MeOut>("/auth/login", { body: { email, password } });
       qc.setQueryData(["me"], me);
-      // Back to where they came from (e.g. a patient's QR link), but only within this app.
-      const next = new URLSearchParams(window.location.search).get("next");
-      router.push(next && next.startsWith("/") && !next.startsWith("//") ? next : homeFor(me));
+      goOn(me);
     } catch (err) {
       setError((err as Error).message);
       setBusy(false);
@@ -71,6 +76,7 @@ export default function LoginPage() {
           </Button>
         </form>
       </Card>
+      <DemoAccounts onSignedIn={goOn} />
       <p className="mt-4 text-center text-sm">
         New hospital, staff member or chemist? <Link href="/auth/register" className="font-semibold text-primary underline">Register</Link>
       </p>
