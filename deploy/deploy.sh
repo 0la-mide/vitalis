@@ -33,6 +33,9 @@ for _ in $(seq 1 60); do
 done
 [ "${ready:-}" = 1 ] || { echo "Backend did not come up:"; "${COMPOSE[@]}" logs --tail 50 backend; exit 1; }
 
+# nginx may still point at the old containers' addresses; reload it once the new ones are up.
+"${COMPOSE[@]}" up -d --force-recreate --no-deps nginx
+
 users=$("${COMPOSE[@]}" exec -T postgres psql -U vitalis -d vitalis -tAc "select count(*) from users" | tr -d '[:space:]')
 if [ "${1:-}" = "--reset-demo" ] || [ "$users" = "0" ]; then
   echo "Seeding synthetic demo data…"
