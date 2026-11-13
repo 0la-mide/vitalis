@@ -80,7 +80,8 @@ services:
       - ./nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
-      interval: 30s
+      # Traefik routes only to a healthy container: a short interval keeps the post-deploy 404 window to seconds.
+      interval: 5s
       timeout: 5s
       retries: 3
     networks: [internal]
