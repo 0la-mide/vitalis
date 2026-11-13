@@ -107,6 +107,7 @@ class TaxRegion(BaseModel):
     code: str
     view: str
     labels: dict[str, str]
+    labels_female: dict[str, str] | None = None  # e.g. "Chest & breasts" on a woman's body
     audio: str
 
 
@@ -118,6 +119,7 @@ class TaxSymptom(BaseModel):
     audio: str
     pregnant_only: bool = False
     female_only: bool = False
+    not_child: bool = False  # e.g. breast symptoms: women and teen girls only
     child_only: bool = False
     not_pregnant: bool = False
     emergency_only: bool = False

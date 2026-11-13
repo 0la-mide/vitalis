@@ -94,13 +94,15 @@ function Anatomy({ type, view, lm }: { type: BodyType; view: "front" | "back"; l
       ) : null}
       {type === "female" || type === "pregnant" ? (
         <>
+          {/* breasts: full outer and under curves, areola and nipple (fuller in pregnancy) */}
           {both(
             type === "pregnant"
-              ? `M69,${lm.chestTop + 36} Q70,${lm.chestTop + 66} 86,${lm.chestTop + 68} Q97,${lm.chestTop + 66} 99,${lm.chestTop + 54}`
-              : `M70,${lm.chestTop + 38} Q71,${lm.chestTop + 62} 86,${lm.chestTop + 63} Q96,${lm.chestTop + 62} 99,${lm.chestTop + 52}`,
+              ? `M73,${lm.chestTop + 25} C67,${lm.chestTop + 38} 67,${lm.chestTop + 60} 81,${lm.chestTop + 67} C90,${lm.chestTop + 71} 97,${lm.chestTop + 64} 99,${lm.chestTop + 53}`
+              : `M73,${lm.chestTop + 26} C68,${lm.chestTop + 38} 68,${lm.chestTop + 56} 81,${lm.chestTop + 63} C89,${lm.chestTop + 67} 96,${lm.chestTop + 61} 98,${lm.chestTop + 51}`,
             "breast",
           )}
-          {both(`M86,${lm.chestTop + 52} m-1.2,0 a1.2,1.2 0 1,0 2.4,0 a1.2,1.2 0 1,0 -2.4,0`, "nip")}
+          {both(`M84,${lm.chestTop + (type === "pregnant" ? 52 : 49)} m-${type === "pregnant" ? 4 : 3.2},0 a${type === "pregnant" ? 4 : 3.2},${type === "pregnant" ? 4 : 3.2} 0 1,0 ${type === "pregnant" ? 8 : 6.4},0 a${type === "pregnant" ? 4 : 3.2},${type === "pregnant" ? 4 : 3.2} 0 1,0 -${type === "pregnant" ? 8 : 6.4},0`, "areola")}
+          {both(`M84,${lm.chestTop + (type === "pregnant" ? 52 : 49)} m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0`, "nip")}
         </>
       ) : null}
 

@@ -2857,6 +2857,10 @@ export interface components {
             labels: {
                 [key: string]: string;
             };
+            /** Labels Female */
+            labels_female?: {
+                [key: string]: string;
+            } | null;
             /** Audio */
             audio: string;
         };
@@ -2895,6 +2899,11 @@ export interface components {
              * @default false
              */
             female_only: boolean;
+            /**
+             * Not Child
+             * @default false
+             */
+            not_child: boolean;
             /**
              * Child Only
              * @default false

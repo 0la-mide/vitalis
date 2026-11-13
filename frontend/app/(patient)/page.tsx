@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { CircleHelp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -43,7 +44,10 @@ export default function Home() {
       <DevTimer />
       <header className="flex items-center justify-between py-4">
         <Logo subtitle={t("app.tagline")} />
-        <LangPicker />
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <LangPicker />
+        </div>
       </header>
 
       <div className="flex items-center gap-3 pb-3">

@@ -80,9 +80,10 @@ export function TriageFlow({ mode }: { mode: Mode }) {
 
   // Taps update the server after a short debounce; merge what was just tapped so the right body shows at once.
   const ctx = { ...(s.result?.context ?? {}), ...s.localCtx } as { age_group?: string; sex?: string; pregnant?: boolean };
+  const isWoman = (ctx.sex === "female" || !!ctx.pregnant) && ctx.age_group !== "under5" && ctx.age_group !== "child";
   const regionLabels = useMemo(
-    () => Object.fromEntries((tax?.regions ?? []).map((r) => [r.code, label(r.labels)])),
-    [tax, label],
+    () => Object.fromEntries((tax?.regions ?? []).map((r) => [r.code, label((isWoman && r.labels_female) || r.labels)])),
+    [tax, label, isWoman],
   );
 
   const tapAndGo = (taps: Parameters<typeof s.tap>[0], next: typeof s.step) => {
@@ -348,13 +349,15 @@ function SymptomsStep({
       (!sym.pregnant_only || ctx.pregnant) &&
       (!sym.not_pregnant || !ctx.pregnant) &&
       (!sym.female_only || ctx.sex === "female" || ctx.pregnant) &&
-      (!sym.child_only || isChild),
+      (!sym.child_only || isChild) &&
+      (!sym.not_child || !isChild),
   );
   // Seizure is a whole-body danger sign worth showing for children.
   const extra =
     region === "whole_body" && isChild ? tax.symptoms.filter((x) => x.code === "SEIZURE" || x.code === "UNCONSCIOUS") : [];
   const all = [...cards, ...extra.filter((e) => !cards.some((c) => c.code === e.code))];
-  const regionName = label(tax.regions.find((r) => r.code === region)?.labels);
+  const reg = tax.regions.find((r) => r.code === region);
+  const regionName = label(((ctx.sex === "female" || ctx.pregnant) && !isChild && reg?.labels_female) || reg?.labels);
   return (
     <>
       <StepHeader title={t("symptoms.title")} audio="symptoms_title" onBack={onBack} />

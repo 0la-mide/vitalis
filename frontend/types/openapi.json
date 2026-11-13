@@ -8085,6 +8085,20 @@
             "type": "object",
             "title": "Labels"
           },
+          "labels_female": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Labels Female"
+          },
           "audio": {
             "type": "string",
             "title": "Audio"
@@ -8161,6 +8175,11 @@
           "female_only": {
             "type": "boolean",
             "title": "Female Only",
+            "default": false
+          },
+          "not_child": {
+            "type": "boolean",
+            "title": "Not Child",
             "default": false
           },
           "child_only": {

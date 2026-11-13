@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
@@ -107,6 +108,7 @@ export function StaffShell({
                   {ROLE_LABEL[user.role] ?? user.role}{user.facility ? ` · ${user.facility.name}` : ""}
                 </div>
               </div>
+              <ThemeToggle className="size-8" />
               <button type="button" aria-label="Sign out" onClick={signOut} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted">
                 <LogOut className="size-[18px]" />
               </button>
@@ -121,6 +123,7 @@ export function StaffShell({
           <div className="flex items-center gap-3 px-4 py-2">
             <Logo subtitle={title ?? user?.facility?.name ?? "VITALIS"} />
             <div className="flex-1" />
+            <ThemeToggle />
             <button type="button" aria-label="Sign out" onClick={signOut} className="rounded-md p-2 hover:bg-muted"><LogOut className="h-5 w-5" /></button>
           </div>
           <nav className="flex gap-1 overflow-x-auto px-3 pb-2">

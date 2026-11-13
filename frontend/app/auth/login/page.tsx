@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,8 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-4 py-10">
+    <main className="relative mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-4 py-10">
+      <ThemeToggle className="absolute right-2 top-2" />
       <div className="mb-6 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icons/icon-192.png" alt="" className="mx-auto h-12 w-12 rounded-xl" />

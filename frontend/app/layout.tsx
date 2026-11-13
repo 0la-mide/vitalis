@@ -23,10 +23,16 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const THEME_SCRIPT = `try{var t=localStorage.getItem("vitalis-theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // suppressHydrationWarning: browser extensions (password managers etc.) add attributes before React loads.
     <html lang="en" className={`${plex.variable} ${plexMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Before first paint: the saved choice, else the phone's setting. Avoids a flash of the wrong theme. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Theme: <html data-theme="light|dark"> is set before first paint (layout.tsx) from the toggle or the phone's setting. */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 
 /* =====================================================================
    VITALIS colour system, based on the team's "Ward" design system (NCS frontend)
@@ -38,8 +41,37 @@
   --ring: #136d58;
 }
 
+:root[data-theme="dark"] {
+  --background: #0b1411;
+  --foreground: #e6ece9;
+  --muted: #14201c;
+  --muted-foreground: #a3b1ac;
+  --card: #101a17;
+  --border: #22302b;
+  --primary: #4a9c84;
+  --primary-strong: #7dbba6;
+  --primary-foreground: #06241d;
+  --mint: #12302a;
+  --mint-strong: #1b4238;
+  --calm: #1d5a6b;
+  --calm-strong: #164a58;
+  --calm-soft: #10292f;
+  --calm-foreground: #ffffff;
+  --emergency: #f97066;
+  --emergency-soft: #3a1513;
+  --warning: #fdb022;
+  --warning-soft: #33260b;
+  --info: #53a7ff;
+  --info-soft: #0f2238;
+  --ai: #a1a9d6;
+  --ai-soft: #1c2140;
+  --ring: #7dbba6;
+  color-scheme: dark;
+}
+
+/* No script yet (first paint before hydration, or JS off): follow the phone. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --background: #0b1411;
     --foreground: #e6ece9;
     --muted: #14201c;

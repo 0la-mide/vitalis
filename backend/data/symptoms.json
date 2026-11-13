@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-12.2",
+  "version": "2026-11-13.1",
   "needs_clinical_review": true,
   "languages": [
     "en",
@@ -92,7 +92,14 @@
         "ha": "",
         "ig": ""
       },
-      "audio": "region_chest"
+      "audio": "region_chest",
+      "labels_female": {
+        "en": "Chest & breasts",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      }
     },
     {
       "code": "upper_abdomen",
@@ -516,6 +523,78 @@
       },
       "audio": "sym_palpitations",
       "model_code": "PALPITATIONS"
+    },
+    {
+      "code": "BREAST_LUMP",
+      "regions": [
+        "chest"
+      ],
+      "icon": "swelling",
+      "labels": {
+        "en": "Lump in breast",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_breast_lump",
+      "model_code": "BREAST_LUMP",
+      "female_only": true,
+      "not_child": true
+    },
+    {
+      "code": "BREAST_PAIN",
+      "regions": [
+        "chest"
+      ],
+      "icon": "pain",
+      "labels": {
+        "en": "Breast pain",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_breast_pain",
+      "model_code": "BREAST_PAIN",
+      "female_only": true,
+      "not_child": true
+    },
+    {
+      "code": "BREAST_RED_HOT",
+      "regions": [
+        "chest"
+      ],
+      "icon": "fever",
+      "labels": {
+        "en": "Breast swollen, red or hot",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_breast_red_hot",
+      "model_code": "BREAST_RED_HOT",
+      "female_only": true,
+      "not_child": true
+    },
+    {
+      "code": "NIPPLE_DISCHARGE",
+      "regions": [
+        "chest"
+      ],
+      "icon": "discharge",
+      "labels": {
+        "en": "Fluid or blood from nipple",
+        "pcm": "",
+        "yo": "",
+        "ha": "",
+        "ig": ""
+      },
+      "audio": "sym_nipple_discharge",
+      "model_code": "NIPPLE_DISCHARGE",
+      "female_only": true,
+      "not_child": true
     },
     {
       "code": "ABDOMINAL_PAIN",
