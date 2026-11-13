@@ -7,7 +7,8 @@ FROM node:22-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED=1
+# Rewrites are fixed at build time; nginx sends /api to the backend directly, this is the fallback.
+ENV NEXT_TELEMETRY_DISABLED=1 API_ORIGIN=http://backend:8000
 RUN npm run build
 
 FROM node:22-alpine

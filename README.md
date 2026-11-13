@@ -78,13 +78,20 @@ docs/      architecture.md, api.md, demo-script.md
 
 ## Deploy (one VPS)
 
+First time, on an Ubuntu server with Docker and the domain's DNS pointing at it:
+
 ```bash
-cp .env.example .env   # fill in DOMAIN, CERTBOT_EMAIL, POSTGRES_PASSWORD, JWT_SECRET; ENV=prod
-./deploy/deploy.sh
+git clone <repo-url> vitalis && cd vitalis
+cp .env.example .env   # ENV=prod, DOMAIN, CERTBOT_EMAIL, POSTGRES_PASSWORD, JWT_SECRET, DEMO_PASSWORD
+./deploy/deploy.sh     # certificate, build, migrations, demo data (first run only)
 ```
 
-Nginx serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal only. The Docker files
-have not been run yet in this repo's development environment (Docker was not installed); test on the VPS first.
+Every update: push from your laptop, then on the server run `./deploy/deploy.sh` again. It pulls, rebuilds and migrates,
+and keeps the data. `./deploy/deploy.sh --reset-demo` wipes and reseeds the synthetic demo data.
+
+Nginx serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal only. Set
+`DEMO_PASSWORD` so demo logins survive rebuilds. Certificates last 90 days: renew with
+`docker compose -f deploy/docker-compose.yml stop nginx && sudo docker run --rm -p 80:80 -v /etc/letsencrypt:/etc/letsencrypt certbot/certbot renew && ./deploy/deploy.sh`.
 
 ## Data protection
 
