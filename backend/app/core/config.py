@@ -50,8 +50,8 @@ class Settings(BaseSettings):
     rate_limit_enabled: bool = True
 
     # One-tap sign-in to the seeded @vitalis.demo accounts and demo patients (synthetic data only).
-    # Unset: on in dev/test, off in prod. Set DEMO_LOGINS=true on a judging server.
-    demo_logins: bool | None = None
+    # On by default: this is a demo build. Set DEMO_LOGINS=false before any real pilot.
+    demo_logins: bool = True
 
     @property
     def is_prod(self) -> bool:
@@ -59,7 +59,7 @@ class Settings(BaseSettings):
 
     @property
     def demo_logins_enabled(self) -> bool:
-        return self.demo_logins if self.demo_logins is not None else not self.is_prod
+        return self.demo_logins
 
 
 @lru_cache

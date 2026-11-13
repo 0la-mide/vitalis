@@ -40,11 +40,8 @@ async def test_demo_patient_opens_record_without_rotating_recovery(client):
     assert (await client.post("/api/v1/demo/patient", json={"vitalis_id": other["vitalis_id"]})).status_code == 404
 
 
-async def test_demo_logins_off_in_prod_unless_enabled(client, monkeypatch):
+async def test_demo_logins_can_be_switched_off(client, monkeypatch):
     s = get_settings()
-    monkeypatch.setattr(s, "env", "prod")
-    monkeypatch.setattr(s, "demo_logins", None)
+    monkeypatch.setattr(s, "demo_logins", False)
     assert (await client.get("/api/v1/demo/accounts")).status_code == 404
     assert (await client.post("/api/v1/demo/login", json={"email": "admin@vitalis.demo"})).status_code == 404
-    monkeypatch.setattr(s, "demo_logins", True)
-    assert (await client.get("/api/v1/demo/accounts")).status_code == 200
