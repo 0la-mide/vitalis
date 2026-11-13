@@ -225,7 +225,7 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
         await db.flush()
         db.add(Verification(subject_type="staff", subject_user_id=nurse.id, subject_facility_id=central.id,
                             details={"licence_number": nurse.licence_number, "role": "nurse"}))
-        logins.append(("Central - pending nurse", nurse.email, "pending"))
+        logins.append(("Abeokuta Central Hospital (Demo) - pending nurse", nurse.email, "pending"))
 
         # Demo patients (synthetic). Recovery codes let a demo phone restore them.
         patients = []
@@ -271,6 +271,11 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
     lines += ["", "## Facility roles in the demo", ""]
     lines += [f"- **{f.name}**: {f.demo_role}" for f in FACILITIES if f.demo_role]
     out.write_text("\n".join(lines) + "\n")
+    from app.core.config import get_settings
+    from app.demo_pdf import write_logins_pdf
+    write_logins_pdf(out.with_suffix(".pdf"), password=password, base_url=get_settings().public_base_url,
+                     logins=logins, patients=[(d, p.vitalis_id, rc) for d, p, rc in patients],
+                     facility_roles=[(f.name, f.demo_role) for f in FACILITIES if f.demo_role])
     return out
 
 
