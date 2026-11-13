@@ -11,7 +11,7 @@ export default function HospitalLayout({ children }: { children: React.ReactNode
   const nav: NavItem[] = [
     { href: "/hospital", label: "Incoming referrals", icon: <Inbox />, exact: true },
     { href: "/hospital/patients", label: "Patients in the facility", icon: <BedDouble /> },
-    ...(role === "lab" ? [{ href: "/hospital/lab", label: "Lab & imaging worklist", icon: <FlaskConical /> }] : []),
+    ...(role === "lab" || role === "radiology" ? [{ href: "/hospital/lab", label: role === "lab" ? "Lab worklist" : "Radiology worklist", icon: <FlaskConical /> }] : []),
     { href: "/hospital/availability", label: "Service availability", icon: <ToggleRight /> },
     ...(role === "facility_admin" ? [{ href: "/hospital/staff", label: "Staff approvals", icon: <ShieldCheck /> }] : []),
   ];

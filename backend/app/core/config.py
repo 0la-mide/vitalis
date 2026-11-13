@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     # Web push (Phase 4 completion)
     vapid_public_key: str = ""
     vapid_private_key: str = ""
-    vapid_subject: str = "mailto:admin@example.org"
+    vapid_subject: str = ""  # mailto: or https:// contact for push services; empty = PUBLIC_BASE_URL
 
     # SMS: console (dev) | termii | bulksmsnigeria. Sender ID: 3-11 letters/digits, registered with the provider.
     sms_provider: str = "console"

@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from app.models.enums import WorkerType
 
-StaffRole = Literal["receptionist", "nurse", "doctor", "lab"]
+StaffRole = Literal["receptionist", "nurse", "doctor", "lab", "radiology"]
 
 
 class StaffRegisterIn(BaseModel):

@@ -32,7 +32,7 @@ const JOURNEY = [
   { roles: ["receptionist", "facility_admin"], label: "Reception", hint: "Referrals and check-in" },
   { roles: ["nurse"], label: "Nursing", hint: "Record vital signs" },
   { roles: ["doctor"], label: "Doctor", hint: "Review history, decide" },
-  { roles: ["lab"], label: "Lab & imaging", hint: "Results back to doctor" },
+  { roles: ["lab", "radiology"], label: "Lab & imaging", hint: "Results back to doctor" },
 ];
 
 /** Staff layout in the team's "Ward" format: sidebar on desktop, compact top bar on phones. */

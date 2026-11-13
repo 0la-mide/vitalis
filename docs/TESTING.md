@@ -161,6 +161,14 @@ and recovery code from `make logins`).
 4. [ ] Patient → **Share** → **Show my QR code** (10:00 countdown). Open the link on the doctor's device →
    "Record shared with your hospital" → straight to her visit. Open it again → "already used".
 
+### E4. Lab, radiology and alerts
+
+1. [ ] Doctor orders an FBC and an obstetric ultrasound. `lab.<hospital>@…` sees only the FBC: **Sample collected**
+   → result → **Verify**. `radiology.<hospital>@…` sees only the scan: report → **Verify**. Both verified → back to
+   the doctor.
+2. [ ] On the live site (HTTPS), tap **Get alerts on this phone** on a family referral page and on **Incoming**.
+   Accept the referral: the family phone gets "Hospital is ready" even with the app closed.
+
 ### F. Registration and verification
 
 1. [ ] Sign out → **Register** → **Frontline worker**: fill it in, attach any small **PDF/JPG/PNG** (≤ 5 MB) → Submit.

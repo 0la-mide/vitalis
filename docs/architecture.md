@@ -112,5 +112,4 @@ referral to the best-ranked facility not yet tried. The overdue job runs every m
 ## Known MVP limits
 
 - SSE broker is in-process: run **one** backend worker (the Dockerfile does). Swap for Postgres LISTEN/NOTIFY to scale.
-- Web Push (VAPID) subscriptions table exists; sending is the next step of Phase 4.
 - Docker images are written but were not built in the dev environment (no Docker installed there).

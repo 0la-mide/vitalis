@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertsButton } from "@/components/ui/AlertsButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Clock, Hospital, Loader2, Navigation, Phone, ShieldCheck, Siren } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -169,6 +170,7 @@ export default function ReferralPage() {
       <Link href="/" className="py-3 text-center text-sm text-muted-foreground underline-offset-4 hover:underline">
         VITALIS
       </Link>
+      {status !== "completed" && status !== "cancelled" ? <AlertsButton who="patient" className="self-center" /> : null}
     </main>
   );
 }

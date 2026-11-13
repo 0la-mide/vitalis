@@ -1620,6 +1620,49 @@
         }
       }
     },
+    "/api/v1/hospital/orders/{order_id}/collect": {
+      "post": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Collect",
+        "operationId": "collect_api_v1_hospital_orders__order_id__collect_post",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_OrderRow_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/hospital/orders/{order_id}/result": {
       "post": {
         "tags": [
@@ -6489,6 +6532,29 @@
             "format": "date-time",
             "title": "Created At"
           },
+          "collected_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collected By"
+          },
+          "collected_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collected At"
+          },
           "result_text": {
             "anyOf": [
               {
@@ -7522,7 +7588,8 @@
               "receptionist",
               "nurse",
               "doctor",
-              "lab"
+              "lab",
+              "radiology"
             ],
             "title": "Role"
           },

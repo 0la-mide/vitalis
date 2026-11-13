@@ -38,7 +38,8 @@ const LABEL: Record<string, string> = {
   receptionist: "Receptionist",
   nurse: "Nurse",
   doctor: "Doctor",
-  lab: "Lab / Radiology",
+  lab: "Lab",
+  radiology: "Radiology",
 };
 
 function DocInput() {

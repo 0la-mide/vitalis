@@ -704,6 +704,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hospital/orders/{order_id}/collect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Collect */
+        post: operations["collect_api_v1_hospital_orders__order_id__collect_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/hospital/orders/{order_id}/result": {
         parameters: {
             query?: never;
@@ -2323,6 +2340,10 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            /** Collected By */
+            collected_by?: string | null;
+            /** Collected At */
+            collected_at?: string | null;
             /** Result Text */
             result_text?: string | null;
             /** Values */
@@ -2684,7 +2705,7 @@ export interface components {
              * Role
              * @enum {string}
              */
-            role: "receptionist" | "nurse" | "doctor" | "lab";
+            role: "receptionist" | "nurse" | "doctor" | "lab" | "radiology";
             /** Licence Number */
             licence_number: string;
         };
@@ -4520,6 +4541,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_list_LabQueueItem__"];
+                };
+            };
+        };
+    };
+    collect_api_v1_hospital_orders__order_id__collect_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_OrderRow_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -7,11 +7,12 @@ class Role(StrEnum):
     receptionist = "receptionist"
     nurse = "nurse"
     doctor = "doctor"
-    lab = "lab"  # covers radiology
+    lab = "lab"
+    radiology = "radiology"
     worker = "worker"  # frontline: chemist/PPMV, pharmacist, CHEW, midwife
 
 
-HOSPITAL_ROLES = {Role.facility_admin, Role.receptionist, Role.nurse, Role.doctor, Role.lab}
+HOSPITAL_ROLES = {Role.facility_admin, Role.receptionist, Role.nurse, Role.doctor, Role.lab, Role.radiology}
 
 
 class VerificationStatus(StrEnum):

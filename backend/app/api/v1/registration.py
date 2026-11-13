@@ -83,7 +83,7 @@ async def registration_options():
             "services": [{"code": s["code"], "name": s["name"]} for s in care_types()["services"]],
             "facility_types": ["teaching", "general", "specialist", "clinic", "phc"],
             "worker_types": ["chemist", "pharmacist", "chew", "midwife"],
-            "staff_roles": ["receptionist", "nurse", "doctor", "lab"],
+            "staff_roles": ["receptionist", "nurse", "doctor", "lab", "radiology"],
         }
     )
 

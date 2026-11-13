@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertsButton } from "@/components/ui/AlertsButton";
 import { Radio } from "lucide-react";
 import { RecentReferrals, useWorkerReferrals } from "@/components/worker/referrals";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,7 @@ export default function MyReferralsPage() {
           <Radio className={cn("h-4 w-4", live && "vt-pulse")} aria-hidden /> {live ? "Live" : "Connecting…"}
         </span>
       </div>
+      <AlertsButton who="staff" />
       <RecentReferrals />
     </main>
   );

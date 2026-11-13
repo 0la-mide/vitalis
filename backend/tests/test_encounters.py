@@ -30,6 +30,7 @@ async def test_referral_arrival_to_completed(staff_client):
     nurse = await staff_client("nurse.sapon@vitalis.demo")
     doctor = await staff_client("doctor.sapon@vitalis.demo")
     lab = await staff_client("lab.sapon@vitalis.demo")
+    radiology = await staff_client("radiology.sapon@vitalis.demo")
 
     # Reception: arrival opens the encounter, pre-filled from the referral.
     arr = (await desk.post(f"/api/v1/hospital/referrals/{ref['id']}/arrived")).json()["data"]
@@ -70,19 +71,26 @@ async def test_referral_arrival_to_completed(staff_client):
         {"test_code": "FBC"}, {"test_code": "USS_OBS", "priority": "urgent"}]})).json()["data"]
     assert e["state"] == "awaiting_investigation" and len(e["orders"]) == 2
 
-    # Lab: queue, result, separate verify -> results_ready when all verified.
-    queue = (await lab.get("/api/v1/hospital/lab/queue")).json()["data"]
-    mine = [q for q in queue if q["encounter_id"] == eid]
-    assert len(mine) == 2 and mine[0]["order"]["priority"] == "urgent"
-    for q in mine:
-        oid = q["order"]["id"]
-        assert (await lab.post(f"/api/v1/hospital/orders/{oid}/verify")).status_code == 409  # result first
-        r = await lab.post(f"/api/v1/hospital/orders/{oid}/result", json={"result_text": "Within normal limits"})
+    # Each department sees only its own orders: the blood test goes to the lab, the scan to radiology.
+    lab_q = [q for q in (await lab.get("/api/v1/hospital/lab/queue")).json()["data"] if q["encounter_id"] == eid]
+    rad_q = [q for q in (await radiology.get("/api/v1/hospital/lab/queue")).json()["data"] if q["encounter_id"] == eid]
+    assert [q["order"]["test_code"] for q in lab_q] == ["FBC"]
+    assert [q["order"]["test_code"] for q in rad_q] == ["USS_OBS"] and rad_q[0]["order"]["priority"] == "urgent"
+    fbc, scan = lab_q[0]["order"]["id"], rad_q[0]["order"]["id"]
+    assert (await lab.post(f"/api/v1/hospital/orders/{scan}/result", json={"result_text": "x"})).status_code == 404
+    assert (await radiology.post(f"/api/v1/hospital/orders/{scan}/collect")).status_code == 409  # no sample for a scan
+
+    # Lab: sample collected -> result -> separate verify.
+    r = await lab.post(f"/api/v1/hospital/orders/{fbc}/collect")
+    assert r.json()["data"]["status"] == "collected" and r.json()["data"]["collected_by"]
+    assert (await lab.post(f"/api/v1/hospital/orders/{fbc}/verify")).status_code == 409  # result first
+    for c, oid in ((lab, fbc), (radiology, scan)):
+        r = await c.post(f"/api/v1/hospital/orders/{oid}/result", json={"result_text": "Within normal limits"})
         assert r.json()["data"]["status"] == "resulted"
     e = (await doctor.get(f"/api/v1/hospital/encounters/{eid}")).json()["data"]
     assert e["state"] == "awaiting_investigation"  # resulted but not verified yet
-    for q in mine:
-        await lab.post(f"/api/v1/hospital/orders/{q['order']['id']}/verify")
+    await lab.post(f"/api/v1/hospital/orders/{fbc}/verify")
+    await radiology.post(f"/api/v1/hospital/orders/{scan}/verify")
     e = (await doctor.get(f"/api/v1/hospital/encounters/{eid}")).json()["data"]
     assert e["state"] == "results_ready"
     assert all(o["status"] == "verified" and o["verified_by"] for o in e["orders"])

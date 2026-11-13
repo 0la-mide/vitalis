@@ -56,7 +56,9 @@ any_staff = require_hospital_staff()
 front_desk = require_hospital_staff(Role.receptionist, Role.nurse, Role.facility_admin)
 clinical = require_hospital_staff(Role.nurse, Role.doctor)
 doctor_only = require_hospital_staff(Role.doctor)
-lab_only = require_hospital_staff(Role.lab)
+lab_only = require_hospital_staff(Role.lab, Role.radiology)
+# Each department sees and handles only its own orders.
+DEPARTMENT = {Role.lab: "lab", Role.radiology: "radiology"}
 
 
 async def _scoped(db: AsyncSession, encounter_id: uuid.UUID, user: User) -> Encounter:
@@ -105,7 +107,7 @@ async def _order_rows(db: AsyncSession, orders: list[InvestigationOrder]) -> lis
         r.order_id: r
         for r in (await db.execute(select(LabResult).where(LabResult.order_id.in_([o.id for o in orders])))).scalars()
     } if orders else {}
-    people = await _names(db, {o.ordered_by for o in orders}
+    people = await _names(db, {o.ordered_by for o in orders} | {o.collected_by for o in orders if o.collected_by}
                           | {r.entered_by for r in results.values()} | {r.verified_by for r in results.values()})
     name = lambda i: people[i].full_name if i in people else None
     rows = []
@@ -114,6 +116,7 @@ async def _order_rows(db: AsyncSession, orders: list[InvestigationOrder]) -> lis
         rows.append(OrderRow(
             id=o.id, category=o.category, test_code=o.test_code, test_name=o.test_name, priority=o.priority,
             clinical_note=o.clinical_note, status=o.status, ordered_by=name(o.ordered_by), created_at=o.created_at,
+            collected_by=name(o.collected_by) if o.collected_by else None, collected_at=o.collected_at,
             result_text=r.result_text if r else None, values=r.values if r else None,
             abnormal=r.abnormal if r else None,
             entered_by=name(r.entered_by) if r else None, entered_at=r.entered_at if r else None,
@@ -205,7 +208,7 @@ async def list_encounters(
     counts = dict((await db.execute(
         select(InvestigationOrder.encounter_id, func.count()).where(
             InvestigationOrder.encounter_id.in_([e.id for e in rows]),
-            InvestigationOrder.status.in_(["ordered", "resulted"])).group_by(InvestigationOrder.encounter_id)
+            InvestigationOrder.status.in_(esvc.OPEN_ORDER)).group_by(InvestigationOrder.encounter_id)
     )).all()) if rows else {}
     out = []
     for e in rows:
@@ -323,7 +326,8 @@ async def order(encounter_id: uuid.UUID, body: OrdersIn, user: User = Depends(do
 async def lab_queue(user: User = Depends(lab_only), db: AsyncSession = Depends(get_db)):
     orders = (await db.execute(
         select(InvestigationOrder).where(InvestigationOrder.facility_id == user.facility_id,
-                                         InvestigationOrder.status.in_(["ordered", "resulted"]))
+                                         InvestigationOrder.category == DEPARTMENT[user.role],
+                                         InvestigationOrder.status.in_(esvc.OPEN_ORDER))
         .order_by(InvestigationOrder.priority.desc(), InvestigationOrder.created_at)
     )).scalars().all()
     rows = await _order_rows(db, list(orders))
@@ -342,7 +346,19 @@ async def _scoped_order(db: AsyncSession, order_id: uuid.UUID, user: User) -> In
     if not o:
         raise AppError(404, "not_found", "Not found")
     ensure_same_facility(user, o.facility_id)
+    if user.role in DEPARTMENT and o.category != DEPARTMENT[user.role]:
+        raise AppError(404, "not_found", "Not found")
     return o
+
+
+@router.post("/orders/{order_id}/collect", response_model=Envelope[OrderRow])
+async def collect(order_id: uuid.UUID, user: User = Depends(lab_only), db: AsyncSession = Depends(get_db)):
+    o = await _scoped_order(db, order_id, user)
+    await esvc.collect_sample(db, o, user)
+    await db.commit()
+    enc = await db.get(Encounter, o.encounter_id)
+    esvc.publish(enc)
+    return ok((await _order_rows(db, [o]))[0])
 
 
 @router.post("/orders/{order_id}/result", response_model=Envelope[OrderRow])

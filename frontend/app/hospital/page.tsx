@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertsButton } from "@/components/ui/AlertsButton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BellRing, CheckCircle2, Clock, Radio, Siren, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -95,6 +96,7 @@ export default function IncomingPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Incoming</h1>
+        <AlertsButton who="staff" className="ml-auto mr-3" />
         <span className={cn("inline-flex items-center gap-1.5 text-sm", live ? "text-primary" : "text-muted-foreground")}>
           <Radio className={cn("h-4 w-4", live && "vt-pulse")} aria-hidden /> {live ? "Live" : "Connecting…"}
         </span>

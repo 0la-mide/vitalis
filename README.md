@@ -45,7 +45,7 @@ in real time.
 - **Platform:** Argon2 + JWT in httpOnly cookies, CSRF double-submit, role + facility scoping, audit events, rate limits,
   security headers, response envelope, structured logs with request IDs. PWA with Serwist and an offline page.
 
-Not built yet (next phases): web push, full i18n text, in-app QR camera scanner.
+Not built yet: Pidgin, Yoruba, Hausa and Igbo text and audio (shown as "coming soon"), in-app QR camera scanner.
 
 ## Run it locally (no Docker needed)
 
@@ -96,6 +96,14 @@ only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebui
 (synthetic data only); set `DEMO_LOGINS=false` before a real pilot.
 Each deploy copies the demo logins PDF to `DEMO_LOGINS.pdf` in the repo folder on the server (gitignored); it is
 created whenever demo data is seeded (`--reset-demo`).
+
+## Alerts on the phone (web push)
+
+Families (on their referral page), chemists (My referrals) and hospital staff (Incoming) tap **Get alerts on this
+phone**. They then get a notification when a hospital accepts or declines, when a patient is overdue, and (hospital
+staff) when a new referral arrives, even with VITALIS closed. Keys are generated on first use and kept in the backend
+volume (`var/vapid.json`); set `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` to pin them. Needs HTTPS. On iPhone, the app must
+be added to the Home Screen first.
 
 ## SMS (families and chemists)
 

@@ -30,6 +30,8 @@ from app.models.enums import (
 )
 from app.realtime.broker import broker
 
+OPEN_ORDER = ("ordered", "collected", "resulted")  # orders still waiting on the lab or radiology
+
 ES = EncounterState
 STATE_LABEL = {
     ES.registered: "Registered",
@@ -217,7 +219,7 @@ def flag_values(test_code: str, values: dict | None) -> tuple[dict | None, bool]
 
 async def enter_result(db: AsyncSession, order: InvestigationOrder, actor: User, text: str, abnormal: bool,
                        values: dict | None = None) -> None:
-    if order.status not in ("ordered", "resulted"):
+    if order.status not in OPEN_ORDER:
         raise AppError(409, "invalid_state", f"Order is {order.status}")
     flagged, auto_abnormal = flag_values(order.test_code, values)
     text = text.strip() or ", ".join(f"{k} {v['value']}{(' ' + v['unit']) if v.get('unit') else ''}"
@@ -238,6 +240,19 @@ async def enter_result(db: AsyncSession, order: InvestigationOrder, actor: User,
                 facility_id=order.facility_id)
 
 
+async def collect_sample(db: AsyncSession, order: InvestigationOrder, actor: User) -> None:
+    """Lab only: the sample was taken from the patient. Radiology goes straight from ordered to the report."""
+    if order.category != "lab":
+        raise AppError(409, "invalid_state", "Only lab tests have a sample")
+    if order.status != "ordered":
+        raise AppError(409, "invalid_state", f"Order is {order.status}")
+    order.status, order.collected_at, order.collected_by = "collected", utcnow(), actor.id
+    enc = await db.get(Encounter, order.encounter_id)
+    await log(db, enc, actor, "collect", f"Sample collected: {order.test_name}")
+    await audit(db, "order.collect", actor_id=actor.id, subject_type="order", subject_id=order.id,
+                facility_id=order.facility_id)
+
+
 async def verify_result(db: AsyncSession, order: InvestigationOrder, actor: User) -> Encounter:
     """Verification is a separate action. When every order is verified the encounter goes back to the doctor."""
     if order.status != "resulted":
@@ -250,7 +265,7 @@ async def verify_result(db: AsyncSession, order: InvestigationOrder, actor: User
     await log(db, enc, actor, "verify", f"Result verified: {order.test_name}")
     await db.flush()
     pending = (await db.execute(select(InvestigationOrder.id).where(
-        InvestigationOrder.encounter_id == enc.id, InvestigationOrder.status.in_(["ordered", "resulted"])))).first()
+        InvestigationOrder.encounter_id == enc.id, InvestigationOrder.status.in_(OPEN_ORDER)))).first()
     if not pending and enc.state == ES.awaiting_investigation:
         await _move(db, enc, ES.results_ready, actor, "All results verified → back to doctor")
     await audit(db, "order.verify", actor_id=actor.id, subject_type="order", subject_id=order.id,

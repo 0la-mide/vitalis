@@ -400,7 +400,7 @@ function OrdersCard({ e, mutate, busy }: { e: Enc; mutate: Mutate; busy: boolean
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-medium">{o.test_name} {o.priority === "urgent" ? <Badge tone="danger">urgent</Badge> : null}</span>
                 <Badge tone={o.status === "verified" ? "ok" : o.status === "resulted" ? "warn" : "neutral"}>
-                  {o.status === "resulted" ? "awaiting verification" : o.status}
+                  {o.status === "resulted" ? "awaiting verification" : o.status === "collected" ? "sample collected" : o.status}
                 </Badge>
               </div>
               {o.status === "verified" && o.result_text ? (

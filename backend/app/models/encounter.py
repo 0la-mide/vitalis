@@ -67,7 +67,10 @@ class InvestigationOrder(IdMixin, TimestampMixin, Base):
     test_name: Mapped[str] = mapped_column(String(120))
     priority: Mapped[str] = mapped_column(String(12), default="routine")  # routine | urgent
     clinical_note: Mapped[str | None] = mapped_column(String(300))
-    status: Mapped[str] = mapped_column(String(12), default="ordered", index=True)  # ordered|resulted|verified|cancelled
+    # ordered -> collected (lab: sample taken) -> resulted -> verified | cancelled
+    status: Mapped[str] = mapped_column(String(12), default="ordered", index=True)
+    collected_at: Mapped[datetime | None]
+    collected_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
 
 
 class LabResult(IdMixin, Base):

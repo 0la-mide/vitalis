@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { api, ApiError, type MeOut } from "@/lib/api";
 
-export const HOSPITAL_ROLES = ["facility_admin", "receptionist", "nurse", "doctor", "lab"];
+export const HOSPITAL_ROLES = ["facility_admin", "receptionist", "nurse", "doctor", "lab", "radiology"];
 
 /** Where a signed-in account should land. */
 export function homeFor(me: MeOut): string {
   if (me.status !== "approved") return "/auth/status";
   if (me.role === "network_admin") return "/admin";
   if (me.role === "worker") return "/worker";
-  if (me.role === "lab" && me.facility?.status === "approved") return "/hospital/lab";
+  if (["lab", "radiology"].includes(me.role) && me.facility?.status === "approved") return "/hospital/lab";
   if (["nurse", "doctor"].includes(me.role) && me.facility?.status === "approved") return "/hospital/patients";
   if (HOSPITAL_ROLES.includes(me.role) && me.facility?.status === "approved") return "/hospital";
   return "/auth/status";
@@ -69,6 +69,7 @@ export const ROLE_LABEL: Record<string, string> = {
   receptionist: "Receptionist",
   nurse: "Nurse",
   doctor: "Doctor",
-  lab: "Lab / Radiology",
+  lab: "Lab",
+  radiology: "Radiology",
   worker: "Frontline worker",
 };

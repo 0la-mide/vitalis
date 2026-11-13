@@ -67,6 +67,8 @@ class OrderRow(BaseModel):
     status: str
     ordered_by: str | None
     created_at: datetime
+    collected_by: str | None = None
+    collected_at: datetime | None = None
     result_text: str | None = None
     values: dict | None = None
     abnormal: bool | None = None

@@ -24,7 +24,7 @@ type Condition = {
   management_considerations: string[]; guideline: string;
 };
 type ModelRun = {
-  key: string; name: string; algorithm: string; model_version: string; band: string; note: string;
+  key: string; name: string; algorithm: string; model_version: string; band: string; probability: number; note: string;
   inputs: { feature: string; label: string; value: number; source: string; detail: string }[];
   measured_inputs: number; total_inputs: number;
 };
@@ -390,7 +390,11 @@ function ModelCard({ m }: { m: ModelRun }) {
     <Card>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0"><div className="font-semibold">{m.name}</div><div className="text-sm text-muted-foreground">{m.algorithm}</div></div>
-        <div className="text-right"><div className="text-2xl font-semibold text-ai">{m.band}</div><div className="whitespace-nowrap text-xs text-muted-foreground">screening band</div></div>
+        <div className="text-right" title="Model score, not a validated clinical probability">
+          <div className="text-2xl font-semibold text-ai">{m.band}</div>
+          <div className="whitespace-nowrap text-xs text-muted-foreground">screening band</div>
+          <div className="whitespace-nowrap font-mono text-[11px] text-muted-foreground">model score {m.probability.toFixed(2)}</div>
+        </div>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-1" aria-hidden>{BANDS.map((b, i) => <div key={b} className={cn("h-1.5 rounded-full", i <= idx ? "bg-ai" : "bg-muted")} />)}</div>
       <p className="mt-2 text-xs text-muted-foreground">{m.note}</p>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Radio, Siren } from "lucide-react";
+import { CheckCircle2, Radio, Siren, TestTube } from "lucide-react";
 import { useState } from "react";
 import { useFacilityStream } from "@/components/hospital/useFacilityStream";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,8 @@ type Item = Schemas["LabQueueItem"];
 export default function LabQueue() {
   const { data: me } = useMe();
   const qc = useQueryClient();
-  const isLab = me?.role === "lab";
+  const isRad = me?.role === "radiology";
+  const isLab = me?.role === "lab" || isRad;
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["lab-queue"],
     queryFn: () => api<Item[]>("/hospital/lab/queue"),
@@ -37,22 +38,41 @@ export default function LabQueue() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["lab-queue"] }),
   });
 
-  if (!isLab) return <Card>The lab queue is for lab and radiology staff.</Card>;
-  const toResult = items.filter((i) => i.order.status === "ordered");
+  if (!isLab) return <Card>This worklist is for lab and radiology staff.</Card>;
+  // Lab: ordered -> sample collected -> result -> verify. Radiology: ordered -> report -> verify.
+  const toCollect = isRad ? [] : items.filter((i) => i.order.status === "ordered");
+  const toResult = items.filter((i) => i.order.status === (isRad ? "ordered" : "collected"));
   const toVerify = items.filter((i) => i.order.status === "resulted");
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Lab &amp; radiology</h1>
+        <h1 className="text-2xl font-bold">{isRad ? "Radiology" : "Lab"} worklist</h1>
         <span className={cn("inline-flex items-center gap-1.5 text-sm", live ? "text-primary" : "text-muted-foreground")}>
           <Radio className={cn("h-4 w-4", live && "vt-pulse")} /> {live ? "Live" : "Connecting…"}
         </span>
       </div>
       {act.error ? <p className="rounded-lg bg-emergency-soft p-2 text-sm text-emergency">{(act.error as Error).message}</p> : null}
       {isLoading ? <p className="text-muted-foreground">Loading…</p> : null}
+      {!isRad ? (
+        <section className="space-y-2">
+          <h2 className="font-bold">To collect ({toCollect.length})</h2>
+          {!toCollect.length ? <Card className="text-sm text-muted-foreground">No samples waiting.</Card> : null}
+          {toCollect.map((i) => (
+            <Card key={i.order.id} className="space-y-2">
+              <Header i={i} />
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-muted-foreground">ordered by {i.order.ordered_by} at {clockTime(i.order.created_at)}</span>
+                <Button size="sm" disabled={act.isPending} onClick={() => act.mutate({ id: i.order.id, path: "collect" })}>
+                  <TestTube className="h-4 w-4" /> Sample collected
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </section>
+      ) : null}
       <section className="space-y-2">
-        <h2 className="font-bold">To result ({toResult.length})</h2>
+        <h2 className="font-bold">{isRad ? "To report" : "To result"} ({toResult.length})</h2>
         {!toResult.length ? <Card className="text-sm text-muted-foreground">Nothing waiting.</Card> : null}
         {toResult.map((i) => <ResultForm key={i.order.id} i={i} params={params(i.order.test_code)} busy={act.isPending}
           onSave={(text, abnormal, values) => act.mutate({ id: i.order.id, path: "result", body: { result_text: text, abnormal, values } })} />)}
@@ -117,7 +137,8 @@ function ResultForm({ i, params, busy, onSave }: {
   return (
     <Card className="space-y-2">
       <Header i={i} />
-      <p className="text-xs text-muted-foreground">ordered by {i.order.ordered_by} at {clockTime(i.order.created_at)}{i.order.clinical_note ? ` — ${i.order.clinical_note}` : ""}</p>
+      <p className="text-xs text-muted-foreground">ordered by {i.order.ordered_by} at {clockTime(i.order.created_at)}{i.order.clinical_note ? ` — ${i.order.clinical_note}` : ""}
+        {i.order.collected_at ? ` · sample collected by ${i.order.collected_by} at ${clockTime(i.order.collected_at)}` : ""}</p>
       {params.length ? (
         <div className="grid gap-2 sm:grid-cols-2">
           {params.map((p) => (
@@ -140,7 +161,7 @@ function ResultForm({ i, params, busy, onSave }: {
         placeholder={i.order.category === "radiology" ? "Report" : params.length ? "Comment (optional)" : "Result"} className={cn(inputCls, "h-auto py-2")} />
       <div className="flex items-center justify-between gap-2">
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={abnormal} onChange={(e) => setAbnormal(e.target.checked)} /> Abnormal</label>
-        <Button size="sm" disabled={busy || (!text.trim() && !filled.length)} onClick={save}>Save result</Button>
+        <Button size="sm" disabled={busy || (!text.trim() && !filled.length)} onClick={save}>{i.order.category === "radiology" ? "Save report" : "Save result"}</Button>
       </div>
     </Card>
   );

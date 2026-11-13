@@ -16,6 +16,7 @@ from app.engines.matching.loader import load_snapshots
 from app.models import Facility, Patient, Referral, TriageReport, User
 from app.models.enums import REFERRAL_TRANSITIONS, ReferralStatus, TriageStatus
 from app.realtime.broker import broker
+from app.services import push
 from app.services.notify import sms
 from app.services.triage import report_location
 
@@ -109,6 +110,12 @@ async def create_referral(
     report.status = TriageStatus.referred
     await db.flush()
     publish(ref, "referral.new", {"facility_name": choice.name})
+    await push.notify_facility(
+        db, ref.facility_id, {"receptionist", "doctor", "facility_admin", "nurse"},
+        title="New referral" + (" · emergency" if report.red_flag else ""),
+        body="A patient is being referred to you" + (f", about {ref.eta_minutes} min away." if ref.eta_minutes else "."),
+        url="/hospital", tag=f"ref-{ref.id}",
+    )
     return ref
 
 
@@ -169,6 +176,18 @@ async def _text_family(db: AsyncSession, ref: Referral, target: ReferralStatus, 
     worker = await db.get(User, ref.worker_id) if ref.worker_id else None
     for phone in {p for p in (patient.phone, worker.phone if worker else None) if p}:
         await sms().send(phone, msg)
+    await _push_both(db, ref, nxt, "Hospital is ready" if target == ReferralStatus.accepted else "Finding another hospital",
+                     msg.removeprefix("VITALIS: "))
+
+
+async def _push_both(db: AsyncSession, ref: Referral, nxt: Referral | None, title: str, body: str) -> None:
+    """Family's phone opens their referral page; the chemist's opens it in their worker app."""
+    target = nxt or ref
+    await push.notify(db, patient_ids=[ref.patient_id], title=title, body=body, url=f"/referral/{target.id}",
+                      tag=f"ref-{ref.report_id}")
+    if ref.worker_id:
+        await push.notify(db, user_ids=[ref.worker_id], title=title, body=body,
+                          url=f"/worker/referrals/{target.id}", tag=f"ref-{ref.report_id}")
 
 
 async def mark_arrived(db: AsyncSession, ref: Referral, user_id: uuid.UUID) -> None:
@@ -216,5 +235,8 @@ async def run_overdue_check(db: AsyncSession) -> int:
                 f"VITALIS: {patient.vitalis_id} has not arrived at {facility.name}. "
                 "If you are on the way, keep going. If you need help, call 112.",
             )
+        if patient and facility:
+            await _push_both(db, ref, None, "Not arrived yet",
+                             f"{patient.vitalis_id} has not arrived at {facility.name}. If you need help, call 112.")
     await db.commit()
     return count

@@ -99,7 +99,7 @@ FACILITIES = [
       status=VerificationStatus.pending, demo_role="PENDING verification -> never appears in matching"),
 ]
 
-HOSPITAL_ROLES = [Role.facility_admin, Role.receptionist, Role.nurse, Role.doctor, Role.lab]
+HOSPITAL_ROLES = [Role.facility_admin, Role.receptionist, Role.nurse, Role.doctor, Role.lab, Role.radiology]
 FIRST_NAMES = ["Adaeze", "Tunde", "Bisi", "Chinedu", "Halima", "Segun", "Ngozi", "Ibrahim", "Kemi", "Emeka"]
 
 

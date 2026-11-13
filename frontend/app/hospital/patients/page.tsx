@@ -18,7 +18,7 @@ type Item = Schemas["EncounterListItem"];
 const COLUMNS: { states: string[]; title: string; roles: string[] }[] = [
   { states: ["registered", "awaiting_nursing"], title: "Nursing", roles: ["nurse"] },
   { states: ["awaiting_doctor", "results_ready"], title: "Doctor", roles: ["doctor"] },
-  { states: ["awaiting_investigation"], title: "Investigations", roles: ["lab"] },
+  { states: ["awaiting_investigation"], title: "Investigations", roles: ["lab", "radiology"] },
   { states: ["awaiting_disposition"], title: "Discharge / admission", roles: ["receptionist"] },
 ];
 const AGE: Record<string, string> = { under5: "Under 5", child: "Child", teen: "Teen", adult: "Adult", elderly: "Elderly" };

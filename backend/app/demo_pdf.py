@@ -7,9 +7,9 @@ from fpdf.fonts import FontFace
 
 PRIMARY = (15, 92, 74)
 MUTED = (90, 100, 98)
-ROLE_ORDER = ["facility_admin", "receptionist", "nurse", "doctor", "lab"]
+ROLE_ORDER = ["facility_admin", "receptionist", "nurse", "doctor", "lab", "radiology"]
 ROLE_LABEL = {"pending nurse": "Nurse (pending)", "facility_admin": "Hospital admin", "receptionist": "Reception", "nurse": "Nurse",
-              "doctor": "Doctor", "lab": "Lab"}
+              "doctor": "Doctor", "lab": "Lab", "radiology": "Radiology"}
 
 
 def _t(s: str) -> str:
@@ -93,7 +93,7 @@ def write_logins_pdf(out: Path, *, password: str, base_url: str, logins: list[tu
     _heading(pdf, "Hospital staff")
     pdf.set_font("helvetica", "", 9)
     pdf.set_text_color(*MUTED)
-    pdf.multi_cell(0, 4.5, _t("Each hospital has the same five roles. Emails follow role.hospital@vitalis.demo."),
+    pdf.multi_cell(0, 4.5, _t("Each hospital has the same six roles. Emails follow role.hospital@vitalis.demo."),
                    new_x="LMARGIN", new_y="NEXT")
     pdf.set_text_color(0, 0, 0)
     pdf.ln(1)
