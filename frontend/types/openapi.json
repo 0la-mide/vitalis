@@ -3215,47 +3215,6 @@
         }
       }
     },
-    "/api/v1/demo/login": {
-      "post": {
-        "tags": [
-          "demo"
-        ],
-        "summary": "Demo Login",
-        "operationId": "demo_login_api_v1_demo_login_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DemoLoginIn"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Envelope_MeOut_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/demo/patient": {
       "post": {
         "tags": [
@@ -3942,13 +3901,6 @@
       },
       "DemoAccounts": {
         "properties": {
-          "staff": {
-            "items": {
-              "$ref": "#/components/schemas/DemoStaff"
-            },
-            "type": "array",
-            "title": "Staff"
-          },
           "patients": {
             "items": {
               "$ref": "#/components/schemas/DemoPatient"
@@ -3959,23 +3911,9 @@
         },
         "type": "object",
         "required": [
-          "staff",
           "patients"
         ],
         "title": "DemoAccounts"
-      },
-      "DemoLoginIn": {
-        "properties": {
-          "email": {
-            "type": "string",
-            "title": "Email"
-          }
-        },
-        "type": "object",
-        "required": [
-          "email"
-        ],
-        "title": "DemoLoginIn"
       },
       "DemoPatient": {
         "properties": {
@@ -4031,46 +3969,6 @@
           "device_key"
         ],
         "title": "DemoPatientOut"
-      },
-      "DemoStaff": {
-        "properties": {
-          "email": {
-            "type": "string",
-            "title": "Email"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "role": {
-            "type": "string",
-            "title": "Role"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "facility": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Facility"
-          }
-        },
-        "type": "object",
-        "required": [
-          "email",
-          "name",
-          "role",
-          "status",
-          "facility"
-        ],
-        "title": "DemoStaff"
       },
       "DraftDecisionIn": {
         "properties": {

@@ -1282,23 +1282,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/demo/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Demo Login */
-        post: operations["demo_login_api_v1_demo_login_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/demo/patient": {
         parameters: {
             query?: never;
@@ -1541,15 +1524,8 @@ export interface components {
         };
         /** DemoAccounts */
         DemoAccounts: {
-            /** Staff */
-            staff: components["schemas"]["DemoStaff"][];
             /** Patients */
             patients: components["schemas"]["DemoPatient"][];
-        };
-        /** DemoLoginIn */
-        DemoLoginIn: {
-            /** Email */
-            email: string;
         };
         /** DemoPatient */
         DemoPatient: {
@@ -1574,19 +1550,6 @@ export interface components {
             vitalis_id: string;
             /** Device Key */
             device_key: string;
-        };
-        /** DemoStaff */
-        DemoStaff: {
-            /** Email */
-            email: string;
-            /** Name */
-            name: string;
-            /** Role */
-            role: string;
-            /** Status */
-            status: string;
-            /** Facility */
-            facility: string | null;
         };
         /** DraftDecisionIn */
         DraftDecisionIn: {
@@ -5624,39 +5587,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_DemoAccounts_"];
-                };
-            };
-        };
-    };
-    demo_login_api_v1_demo_login_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DemoLoginIn"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Envelope_MeOut_"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

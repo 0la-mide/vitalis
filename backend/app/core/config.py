@@ -45,11 +45,18 @@ class Settings(BaseSettings):
     vapid_private_key: str = ""
     vapid_subject: str = "mailto:admin@example.org"
 
+    # SMS: console (dev) | termii | bulksmsnigeria. Sender ID: 3-11 letters/digits, registered with the provider.
     sms_provider: str = "console"
+    sms_sender_id: str = "VITALIS"
+    termii_api_key: str = ""
+    termii_base_url: str = "https://v3.api.termii.com"
+    termii_channel: str = "generic"  # "dnd" once Termii activates transactional routing on the account
+    bulksmsnigeria_api_token: str = ""
+    bulksmsnigeria_gateway: str = "direct-refund"
 
     rate_limit_enabled: bool = True
 
-    # One-tap sign-in to the seeded @vitalis.demo accounts and demo patients (synthetic data only).
+    # One-tap "open a demo patient's phone" on /card (synthetic data only). Staff always use email + password.
     # On by default: this is a demo build. Set DEMO_LOGINS=false before any real pilot.
     demo_logins: bool = True
 

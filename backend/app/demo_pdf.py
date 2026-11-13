@@ -107,7 +107,7 @@ def write_logins_pdf(out: Path, *, password: str, base_url: str, logins: list[tu
     # Pending examples (verification demo) are sorted with their hospital.
     _table(pdf, ["Hospital", "Role", "Email", "Note"], rows, [58, 28, 76, 20])
 
-    _heading(pdf, "Demo patients (open on a phone: My health record > restore)")
+    _heading(pdf, "Demo patients (My health record: tap the name, or restore with ID + code)")
     _table(pdf, ["Patient", "VITALIS ID", "Recovery code"], [list(p) for p in patients], [70, 50, 62])
     pdf.set_font("helvetica", "", 8.5)
     pdf.set_text_color(*MUTED)

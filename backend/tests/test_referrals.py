@@ -115,3 +115,18 @@ def _slug(name: str) -> str:
     from app.seed import FACILITIES
 
     return next(f.slug for f in FACILITIES if f.name == name)
+
+
+async def test_family_texted_when_hospital_accepts(client, staff_client):
+    r = await client.post("/api/v1/patients/start", json={"phone": "0800 000 0077"})
+    client.headers["x-patient-key"] = r.json()["data"]["device_key"]
+    rid = (await client.post("/api/v1/triage", json={"taps": [
+        DEMO_LOCATION, {"kind": "emergency", "code": "cant_breathe"}]})).json()["data"]["report_id"]
+    ref = (await client.post(f"/api/v1/triage/{rid}/referral", json={})).json()["data"]
+    ConsoleSms.sent.clear()
+    fac = await staff_client(f"doctor.{_slug(ref['facility']['name'])}@vitalis.demo")
+    await fac.patch(f"/api/v1/hospital/referrals/{ref['id']}", json={"action": "accept"})
+    assert len(ConsoleSms.sent) == 1
+    phone, msg = ConsoleSms.sent[0]
+    assert phone == "0800 000 0077" and ref["facility"]["name"] in msg and "ready" in msg
+    assert "breath" not in msg.lower()  # no clinical details in an SMS

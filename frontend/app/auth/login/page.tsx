@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { DemoAccounts } from "@/components/auth/DemoAccounts";
 import { api, type MeOut } from "@/lib/api";
 import { homeFor } from "@/lib/staff";
 
@@ -78,7 +77,6 @@ export default function LoginPage() {
           </Button>
         </form>
       </Card>
-      <DemoAccounts onSignedIn={goOn} />
       <p className="mt-4 text-center text-sm">
         New hospital, staff member or chemist? <Link href="/auth/register" className="font-semibold text-primary underline">Register</Link>
       </p>

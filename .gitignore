@@ -2,6 +2,7 @@
 .env.local
 .DS_Store
 backups/
+DEMO_LOGINS.pdf
 
 # backend
 backend/.venv/

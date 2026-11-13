@@ -18,7 +18,7 @@ Open **http://localhost:3000**.
 | Useful command | What it does |
 |---|---|
 | `make logins` | Shows every demo account and the shared password (also as `backend/var/DEMO_LOGINS.pdf`) |
-| Demo accounts | On the sign-in page: pick a hospital and tap a role, no password. On `/card`: open a demo patient's phone in one tap. On by default; `DEMO_LOGINS=false` turns it off |
+| Demo patients | On `/card`: open a demo patient's phone in one tap. On by default; `DEMO_LOGINS=false` turns it off |
 | `make demo-reset` | Wipes everything and reseeds in ~1 s. **Do this before each test round.** It also creates a new password, so run `make logins` again |
 | `make overdue-now` | Makes every accepted referral look 3 hours old, so the overdue alert fires within a minute |
 | `make test` | Runs the 79 automated backend tests |

@@ -92,10 +92,23 @@ when the database is already running, pulls, rebuilds, migrates and keeps the na
 `./deploy/deploy.sh --reset-demo` wipes and reseeds the synthetic demo data.
 
 The internal Nginx gateway serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal
-only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebuilds. One-tap demo accounts on the sign-in page are on by default
-(synthetic data only: anyone with the URL can sign in as any demo role); set `DEMO_LOGINS=false` before a real pilot.
-The seed writes `var/DEMO_LOGINS.pdf` inside the backend container; copy it out with
-`docker compose -f deploy/docker-compose.yml --env-file .env cp backend:/app/var/DEMO_LOGINS.pdf .`
+only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebuilds. Staff sign in with email and password; `/card` offers one-tap demo patients
+(synthetic data only); set `DEMO_LOGINS=false` before a real pilot.
+Each deploy copies the demo logins PDF to `DEMO_LOGINS.pdf` in the repo folder on the server (gitignored); it is
+created whenever demo data is seeded (`--reset-demo`).
+
+## SMS (families and chemists)
+
+Families who give a phone number, and the referring chemist, get a text when a hospital accepts, declines (with the
+next hospital) or the patient is overdue. No clinical details are ever sent. Pick a gateway in `.env`:
+
+- **Termii** (termii.com, free credit on sign-up): `SMS_PROVIDER=termii`, `TERMII_API_KEY=…`, `TERMII_BASE_URL=` the base
+  URL on your dashboard, `SMS_SENDER_ID=` a sender ID you registered there.
+- **BulkSMS Nigeria** (bulksmsnigeria.com, ₦50 free credit): `SMS_PROVIDER=bulksmsnigeria`, `BULKSMSNIGERIA_API_TOKEN=…`,
+  `SMS_SENDER_ID=…`.
+
+Then `./deploy/deploy.sh`. Delivery results show in `docker compose … logs backend | grep sms`. The default `console`
+only logs (numbers masked).
 
 ## Data protection
 

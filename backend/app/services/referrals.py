@@ -145,7 +145,30 @@ async def decide(
         nxt = await create_referral(db, report, None, previous=ref)
     await db.flush()
     publish(ref, f"referral.{ref.status}", {"next_referral_id": nxt.id if nxt else None})
+    await _text_family(db, ref, target, nxt)
     return nxt
+
+
+async def _text_family(db: AsyncSession, ref: Referral, target: ReferralStatus, nxt: Referral | None) -> None:
+    """SMS the family (phone given at triage) and the referring worker. No clinical details, ever."""
+    if target not in (ReferralStatus.accepted, ReferralStatus.declined):
+        return
+    patient = await db.get(Patient, ref.patient_id)
+    facility = await db.get(Facility, ref.facility_id)
+    if not patient or not facility:
+        return
+    if target == ReferralStatus.accepted:
+        eta = f" in about {ref.eta_minutes} min" if ref.eta_minutes else ""
+        msg = (f"VITALIS: {facility.name} is ready for {patient.vitalis_id} and expects you{eta}. "
+               "Show this ID at reception. Emergency: call 112.")
+    else:
+        other = await db.get(Facility, nxt.facility_id) if nxt else None
+        msg = (f"VITALIS: {facility.name} cannot take {patient.vitalis_id} now. "
+               + (f"We have asked {other.name}. Wait for their answer." if other
+                  else "Go to the nearest hospital or call 112."))
+    worker = await db.get(User, ref.worker_id) if ref.worker_id else None
+    for phone in {p for p in (patient.phone, worker.phone if worker else None) if p}:
+        await sms().send(phone, msg)
 
 
 async def mark_arrived(db: AsyncSession, ref: Referral, user_id: uuid.UUID) -> None:

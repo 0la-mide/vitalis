@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/card";
 import { api, type HospitalCard, type Schemas, type TriageOut } from "@/lib/api";
 import { speak } from "@/lib/audio";
-import { LANGS, pickLabel, useLang, useT, type Lang } from "@/lib/i18n";
+import { LANGS, pickLabel, useActiveLang, useLang, useT, type Lang } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
 
 export type Taxonomy = Schemas["Taxonomy"];
@@ -20,12 +20,12 @@ export function useTaxonomy() {
 }
 
 export function useLabel() {
-  const lang = useLang((s) => s.lang);
+  const lang = useActiveLang();
   return (labels: Record<string, string> | undefined) => pickLabel(labels, lang);
 }
 
 export function SpeakButton({ code, text, className }: { code: string; text: string; className?: string }) {
-  const lang = useLang((s) => s.lang);
+  const lang = useActiveLang();
   const t = useT();
   return (
     <button
@@ -52,14 +52,14 @@ export function LangPicker() {
       <Languages className="h-4 w-4" aria-hidden />
       <span className="sr-only">Language</span>
       <select
-        value={lang}
+        value={LANGS.find((l) => l.code === lang)?.ready ? lang : "en"}
         onChange={(e) => setLang(e.target.value as Lang)}
         className="bg-transparent outline-none"
         suppressHydrationWarning
       >
         {LANGS.map((l) => (
-          <option key={l.code} value={l.code}>
-            {l.label}
+          <option key={l.code} value={l.code} disabled={!l.ready}>
+            {l.ready ? l.label : `${l.label} (coming soon)`}
           </option>
         ))}
       </select>

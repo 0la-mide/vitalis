@@ -42,6 +42,11 @@ if [ "${1:-}" = "--reset-demo" ] || [ "$users" = "0" ]; then
   "${COMPOSE[@]}" exec -T backend uv run --no-sync python -m app.seed
 fi
 
+# Every demo login (password, emails, demo patients' recovery codes) as a PDF next to this script's repo.
+if "${COMPOSE[@]}" cp backend:/app/var/DEMO_LOGINS.pdf ./DEMO_LOGINS.pdf >/dev/null 2>&1; then
+  echo "Demo logins PDF: $(pwd)/DEMO_LOGINS.pdf"
+fi
+
 docker image prune -f >/dev/null
 echo "Up: https://${DOMAIN}"
-echo "Demo logins: docker compose -f deploy/docker-compose.yml --env-file .env exec backend cat var/DEMO_LOGINS.md"
+echo "Demo logins: $(pwd)/DEMO_LOGINS.pdf (run with --reset-demo once if it is missing)"
