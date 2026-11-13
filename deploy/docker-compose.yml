@@ -1,4 +1,4 @@
-# VITALIS on one VPS. Only nginx is published; postgres and the model are internal.
+# VITALIS on one VPS behind the host's existing Traefik reverse proxy.
 # Usage (from repo root): docker compose -f deploy/docker-compose.yml --env-file .env up -d --build
 name: vitalis
 
@@ -23,6 +23,12 @@ services:
     build: { context: ../model }
     restart: unless-stopped
     expose: ["8100"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     networks: [internal]
 
   backend:
@@ -37,9 +43,16 @@ services:
       PUBLIC_BASE_URL: https://${DOMAIN}
     depends_on:
       postgres: { condition: service_healthy }
+      model: { condition: service_healthy }
     expose: ["8000"]
     volumes:
       - uploads:/app/var/uploads
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
     networks: [internal]
 
   frontend:
@@ -48,25 +61,40 @@ services:
     environment:
       API_ORIGIN: http://backend:8000
     expose: ["3000"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks: [internal]
 
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
-    depends_on: [frontend, backend]
-    ports: ["80:80", "443:443"]
-    environment:
-      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+    depends_on:
+      frontend: { condition: service_healthy }
+      backend: { condition: service_healthy }
+    expose: ["8080"]
     volumes:
       - ./nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - certbot-www:/var/www/certbot
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     networks: [internal]
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.vitalis.rule: "Host(`${DOMAIN:?set DOMAIN in .env}`)"
+      traefik.http.routers.vitalis.entrypoints: websecure
+      traefik.http.routers.vitalis.tls: "true"
+      traefik.http.routers.vitalis.tls.certresolver: letsencrypt
+      traefik.http.services.vitalis.loadbalancer.server.port: "8080"
 
 volumes:
   pgdata:
   uploads:
-  certbot-www:
 
 networks:
   internal:

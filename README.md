@@ -78,20 +78,21 @@ docs/      architecture.md, api.md, demo-script.md
 
 ## Deploy (one VPS)
 
-First time, on an Ubuntu server with Docker and the domain's DNS pointing at it:
+The VPS deployment expects the existing host-level Traefik instance to own ports 80/443 and issue the Let's Encrypt certificate. First point the domain's DNS at the VPS, then:
 
 ```bash
-git clone <repo-url> vitalis && cd vitalis
-cp .env.example .env   # ENV=prod, DOMAIN, CERTBOT_EMAIL, POSTGRES_PASSWORD, JWT_SECRET, DEMO_PASSWORD
-./deploy/deploy.sh     # certificate, build, migrations, demo data (first run only)
+git clone https://github.com/0la-mide/vitalis.git /opt/vitalis/current
+cd /opt/vitalis/current
+cp .env.example .env   # ENV=prod, DOMAIN, POSTGRES_PASSWORD, JWT_SECRET, DEMO_PASSWORD
+./deploy/deploy.sh     # build, migrations, persistent database, demo data on first run
 ```
 
-Every update: push from your laptop, then on the server run `./deploy/deploy.sh` again. It pulls, rebuilds and migrates,
-and keeps the data. `./deploy/deploy.sh --reset-demo` wipes and reseeds the synthetic demo data.
+Every update: push from your laptop, then on the server run `./deploy/deploy.sh` again. It creates a PostgreSQL backup
+when the database is already running, pulls, rebuilds, migrates and keeps the named data/upload volumes.
+`./deploy/deploy.sh --reset-demo` wipes and reseeds the synthetic demo data.
 
-Nginx serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal only. Set
-`DEMO_PASSWORD` so demo logins survive rebuilds. Certificates last 90 days: renew with
-`docker compose -f deploy/docker-compose.yml stop nginx && sudo docker run --rm -p 80:80 -v /etc/letsencrypt:/etc/letsencrypt certbot/certbot renew && ./deploy/deploy.sh`.
+The internal Nginx gateway serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal
+only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebuilds.
 
 ## Data protection
 
