@@ -11,8 +11,10 @@ set -a; . ./.env; set +a
 : "${DOMAIN:?set DOMAIN in .env}"
 COMPOSE=(docker compose -f deploy/docker-compose.yml --env-file .env)
 
-if [ -d .git ]; then
+# Pull first, then restart this script so the rest always runs the newest version of it.
+if [ -d .git ] && [ -z "${VITALIS_UPDATED:-}" ]; then
   git pull --ff-only origin main
+  VITALIS_UPDATED=1 exec bash deploy/deploy.sh "$@"
 fi
 
 mkdir -p backups
