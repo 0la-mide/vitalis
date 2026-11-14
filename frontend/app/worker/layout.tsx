@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
@@ -31,6 +32,7 @@ export default function WorkerLayout({ children }: { children: React.ReactNode }
               <div className="truncate text-sm font-bold">{me?.full_name ?? "VITALIS"}</div>
               <div className="text-xs text-muted-foreground">Frontline worker</div>
             </div>
+            <ThemeToggle />
             <button type="button" aria-label="Sign out" className="rounded-lg p-2 hover:bg-muted"
               onClick={async () => {
                 await api("/auth/logout", { method: "POST" }).catch(() => {});

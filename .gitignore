@@ -3,6 +3,7 @@
 .DS_Store
 backups/
 DEMO_LOGINS.pdf
+VITALIS-User-Guide.pdf
 
 # backend
 backend/.venv/

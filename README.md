@@ -94,8 +94,9 @@ when the database is already running, pulls, rebuilds, migrates and keeps the na
 The internal Nginx gateway serves the PWA on `/` and the API on `/api`; Postgres and the model container are internal
 only. Traefik terminates HTTPS. Set `DEMO_PASSWORD` so demo logins survive rebuilds. Staff sign in with email and password; `/card` offers one-tap demo patients
 (synthetic data only); set `DEMO_LOGINS=false` before a real pilot.
-Each deploy copies the demo logins PDF to `DEMO_LOGINS.pdf` in the repo folder on the server (gitignored); it is
-created whenever demo data is seeded (`--reset-demo`).
+Each deploy copies `DEMO_LOGINS.pdf` and `VITALIS-User-Guide.pdf` (user guide + full test plan, with that server's
+working sign-in details) to the repo folder on the server (gitignored). Both are made whenever demo data is seeded
+(`--reset-demo`). Locally: `make demo-reset` writes them to `backend/var/`.
 
 ## Alerts on the phone (web push)
 

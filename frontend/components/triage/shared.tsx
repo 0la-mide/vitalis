@@ -54,7 +54,7 @@ export function LangPicker() {
       <select
         value={LANGS.find((l) => l.code === lang)?.ready ? lang : "en"}
         onChange={(e) => setLang(e.target.value as Lang)}
-        className="bg-transparent outline-none"
+        className="w-[4.5rem] bg-transparent outline-none"
         suppressHydrationWarning
       >
         {LANGS.map((l) => (

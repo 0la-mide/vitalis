@@ -43,9 +43,11 @@ if [ "${1:-}" = "--reset-demo" ] || [ "$users" = "0" ]; then
 fi
 
 # Every demo login (password, emails, demo patients' recovery codes) as a PDF next to this script's repo.
-if "${COMPOSE[@]}" cp backend:/app/var/DEMO_LOGINS.pdf ./DEMO_LOGINS.pdf >/dev/null 2>&1; then
-  echo "Demo logins PDF: $(pwd)/DEMO_LOGINS.pdf"
-fi
+for f in DEMO_LOGINS.pdf VITALIS-User-Guide.pdf; do
+  if "${COMPOSE[@]}" cp "backend:/app/var/$f" "./$f" >/dev/null 2>&1; then
+    echo "Saved: $(pwd)/$f"
+  fi
+done
 
 docker image prune -f >/dev/null
 echo "Up: https://${DOMAIN}"

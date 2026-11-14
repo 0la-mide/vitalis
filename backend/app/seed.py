@@ -276,6 +276,10 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
     write_logins_pdf(out.with_suffix(".pdf"), password=password, base_url=get_settings().public_base_url,
                      logins=logins, patients=[(d, p.vitalis_id, rc) for d, p, rc in patients],
                      facility_roles=[(f.name, f.demo_role) for f in FACILITIES if f.demo_role])
+    from app.guide.build import build_user_guide
+    build_user_guide(out.parent / "VITALIS-User-Guide.pdf", password=password,
+                     base_url=get_settings().public_base_url, logins=logins,
+                     patients=[(d, p.vitalis_id, rc) for d, p, rc in patients])
     return out
 
 
