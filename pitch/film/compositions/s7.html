@@ -1,0 +1,74 @@
+<template>
+  <style>
+
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); font-weight: 500; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); font-weight: 600; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-700-normal.woff2') format('woff2'); font-weight: 700; }
+#root { position: absolute; inset: 0; overflow: hidden; font-family: 'Plex', sans-serif; color: #14201C; }
+.bg { position: absolute; inset: 0; }
+.phone { position: absolute; width: 440px; height: 920px; border-radius: 62px; background: #101614; padding: 14px;
+  box-shadow: 0 40px 80px rgba(20,32,28,.18); }
+.screen { position: relative; width: 412px; height: 892px; border-radius: 48px; overflow: hidden; background: #F6F8F7; }
+.inner { position: absolute; left: 0; top: 0; width: 412px; height: 892px; }
+.inner img { position: absolute; left: 0; top: 0; width: 412px; height: 892px; }
+.tap { position: absolute; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+  background: rgba(20,32,28,.30); border: 2px solid rgba(255,255,255,.9); opacity: 0; }
+.t { position: absolute; margin: 0; font-weight: 700; letter-spacing: -0.02em; line-height: 1.06; }
+.t span, .sub span { display: inline-block; }
+.sub { position: absolute; margin: 0; font-weight: 500; font-size: 34px; line-height: 1.3; color: #4B5A55; }
+.win { position: absolute; overflow: hidden; border-radius: 20px; background: #fff;
+  box-shadow: 0 40px 80px rgba(20,32,28,.16); }
+.pan { position: absolute; left: 0; top: 0; }
+.pan img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.cursor { position: absolute; width: 48px; height: 64px; left: 0; top: 0; opacity: 0; }
+.dim { position: absolute; inset: 0; background: rgba(0,0,0,.38); opacity: 0; }
+.sheet { position: absolute; left: 10px; right: 10px; bottom: 10px; border-radius: 30px; background: #fff;
+  padding: 24px 22px 20px; box-shadow: 0 -10px 40px rgba(0,0,0,.2); opacity: 0; }
+.sheet .host { font-size: 22px; color: #4B5A55; }
+.sheet .ask { font-size: 28px; font-weight: 600; margin: 8px 0 20px; display: flex; gap: 10px; align-items: center; }
+.sheet .btns { display: flex; gap: 10px; }
+.sheet .b { flex: 1; text-align: center; padding: 14px 0; border-radius: 16px; font-size: 24px; font-weight: 600;
+  background: #EEF2F0; }
+.sheet .b.allow { background: #0F5C4A; color: #fff; }
+.note { position: absolute; left: 10px; right: 10px; top: 12px; border-radius: 26px; background: rgba(255,255,255,.97);
+  padding: 16px 18px; box-shadow: 0 16px 40px rgba(0,0,0,.22); display: flex; gap: 14px; opacity: 0; }
+.note img { width: 44px; height: 44px; border-radius: 11px; flex: none; }
+.note .app { font-size: 14px; color: #4B5A55; font-weight: 600; letter-spacing: .04em; }
+.note .ttl { font-size: 19px; font-weight: 700; margin-top: 2px; }
+.note .body { font-size: 16px; line-height: 1.3; margin-top: 2px; }
+
+
+  </style>
+  <div id="root" data-composition-id="s7" data-width="1920" data-height="1080">
+
+<div id="s7-a" style="position:absolute; inset:0; background:#F6F8F7;">
+  <h2 id="s7-t" class="t" style="left:160px; top:140px; width:1600px; font-size:76px; color:#14201C;"><span class="s7-t-w">It</span> <span class="s7-t-w">remembers</span> <span class="s7-t-w">what</span> <span class="s7-t-w">another</span> <span class="s7-t-w">hospital</span> <span class="s7-t-w">wrote</span></h2>
+  <div id="s7-win" class="win" style="left:160px; top:300px; width:1600px; height:471px;"><div id="s7-win-pan" class="pan" style="width:1440px; height:900px;"><img src="assets/screens/D_safety.png" alt=""></div></div>
+  <p id="s7-s" class="sub" style="left:162px; top:820px; width:1600px; font-size:34px; color:#4B5A55;"><span class="s7-s-w">Allergy</span> <span class="s7-s-w">recorded</span> <span class="s7-s-w">at</span> <span class="s7-s-w">Ogun</span> <span class="s7-s-w">Teaching</span> <span class="s7-s-w">Hospital</span></p>
+</div>
+<div id="s7-b" style="position:absolute; inset:0; background:#EEF6F3; opacity:0;">
+  <h2 id="s7-t2" class="t" style="left:310px; top:140px; width:1300px; font-size:80px; color:#14201C;"><span class="s7-t2-w">AI</span> <span class="s7-t2-w">suggests.</span> <span class="s7-t2-w">The</span> <span class="s7-t2-w">doctor</span> <span class="s7-t2-w">decides.</span></h2>
+  <div id="s7-win2" class="win" style="left:310px; top:300px; width:1300px; height:560px;"><div id="s7-win2-pan" class="pan" style="width:752px; height:324px;"><img src="assets/screens/D_prescribe.png" alt=""></div></div>
+  <p id="s7-s2" class="sub" style="left:312px; top:900px; width:1300px; font-size:34px; color:#4B5A55;"><span class="s7-s2-w">Overriding</span> <span class="s7-s2-w">it</span> <span class="s7-s2-w">needs</span> <span class="s7-s2-w">a</span> <span class="s7-s2-w">reason</span></p>
+</div>
+
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.set("#s7-b", {opacity: 0}, 0);
+tl.fromTo("#s7-a", {opacity: 0, filter: "blur(12px)", scale: 1.04}, {opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power3.out"}, 0);
+tl.set("#s7-win-pan", {transformOrigin: "0 0", scale: 1.6340, x: -470.6, y: -191.2}, 0);
+tl.fromTo("#s7-t .s7-t-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.067, ease: "power2.out"}, 0.3);
+tl.to("#s7-win-pan", {scale: 1.7361, x: -537.5, y: -398.4, duration: 0.6, ease: "power2.inOut"}, 1.8);
+tl.fromTo("#s7-s .s7-s-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.05, ease: "power2.out"}, 1.7);
+tl.to("#s7-a", {opacity: 0, filter: "blur(12px)", duration: 0.2, ease: "power3.in"}, 4.0);
+tl.fromTo("#s7-b", {opacity: 0, filter: "blur(12px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.25, ease: "power3.out"}, 4.15);
+tl.set("#s7-win2-pan", {transformOrigin: "0 0", scale: 1.7287, x: 0.0, y: 0.0}, 0);
+tl.fromTo("#s7-t2 .s7-t2-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.067, ease: "power2.out"}, 4.4);
+tl.fromTo("#s7-s2 .s7-s2-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.06, ease: "power2.out"}, 4.9);
+tl.fromTo("#s7-b", {opacity: 1, filter: "blur(0px)"}, {opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in"}, 7.78);
+    tl.set({}, {}, 8.0);
+    window.__timelines["s7"] = tl;
+  </script>
+</template>

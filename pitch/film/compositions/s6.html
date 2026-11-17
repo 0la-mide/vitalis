@@ -1,0 +1,76 @@
+<template>
+  <style>
+
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); font-weight: 500; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); font-weight: 600; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-700-normal.woff2') format('woff2'); font-weight: 700; }
+#root { position: absolute; inset: 0; overflow: hidden; font-family: 'Plex', sans-serif; color: #14201C; }
+.bg { position: absolute; inset: 0; }
+.phone { position: absolute; width: 440px; height: 920px; border-radius: 62px; background: #101614; padding: 14px;
+  box-shadow: 0 40px 80px rgba(20,32,28,.18); }
+.screen { position: relative; width: 412px; height: 892px; border-radius: 48px; overflow: hidden; background: #F6F8F7; }
+.inner { position: absolute; left: 0; top: 0; width: 412px; height: 892px; }
+.inner img { position: absolute; left: 0; top: 0; width: 412px; height: 892px; }
+.tap { position: absolute; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+  background: rgba(20,32,28,.30); border: 2px solid rgba(255,255,255,.9); opacity: 0; }
+.t { position: absolute; margin: 0; font-weight: 700; letter-spacing: -0.02em; line-height: 1.06; }
+.t span, .sub span { display: inline-block; }
+.sub { position: absolute; margin: 0; font-weight: 500; font-size: 34px; line-height: 1.3; color: #4B5A55; }
+.win { position: absolute; overflow: hidden; border-radius: 20px; background: #fff;
+  box-shadow: 0 40px 80px rgba(20,32,28,.16); }
+.pan { position: absolute; left: 0; top: 0; }
+.pan img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.cursor { position: absolute; width: 48px; height: 64px; left: 0; top: 0; opacity: 0; }
+.dim { position: absolute; inset: 0; background: rgba(0,0,0,.38); opacity: 0; }
+.sheet { position: absolute; left: 10px; right: 10px; bottom: 10px; border-radius: 30px; background: #fff;
+  padding: 24px 22px 20px; box-shadow: 0 -10px 40px rgba(0,0,0,.2); opacity: 0; }
+.sheet .host { font-size: 22px; color: #4B5A55; }
+.sheet .ask { font-size: 28px; font-weight: 600; margin: 8px 0 20px; display: flex; gap: 10px; align-items: center; }
+.sheet .btns { display: flex; gap: 10px; }
+.sheet .b { flex: 1; text-align: center; padding: 14px 0; border-radius: 16px; font-size: 24px; font-weight: 600;
+  background: #EEF2F0; }
+.sheet .b.allow { background: #0F5C4A; color: #fff; }
+.note { position: absolute; left: 10px; right: 10px; top: 12px; border-radius: 26px; background: rgba(255,255,255,.97);
+  padding: 16px 18px; box-shadow: 0 16px 40px rgba(0,0,0,.22); display: flex; gap: 14px; opacity: 0; }
+.note img { width: 44px; height: 44px; border-radius: 11px; flex: none; }
+.note .app { font-size: 14px; color: #4B5A55; font-weight: 600; letter-spacing: .04em; }
+.note .ttl { font-size: 19px; font-weight: 700; margin-top: 2px; }
+.note .body { font-size: 16px; line-height: 1.3; margin-top: 2px; }
+
+
+  </style>
+  <div id="root" data-composition-id="s6" data-width="1920" data-height="1080">
+
+<div id="s6-a" style="position:absolute; inset:0; background:#F6F8F7;">
+  <div id="s6-ph" class="phone" style="left:1180px; top:80px;"><div class="screen"><div id="s6-ph-inner" class="inner"><img id="s6-ph-0" src="assets/screens/P_worker.png" alt="" style="opacity:1;"></div></div></div>
+  <h2 id="s6-t" class="t" style="left:160px; top:300px; width:900px; font-size:84px; color:#14201C;"><span class="s6-t-w">The</span> <span class="s6-t-w">chemist</span> <span class="s6-t-w">on</span> <span class="s6-t-w">the</span> <span class="s6-t-w">corner</span> <span class="s6-t-w">can</span> <span class="s6-t-w">start</span> <span class="s6-t-w">it</span> <span class="s6-t-w">too</span></h2>
+  <p id="s6-s" class="sub" style="left:162px; top:610px; width:820px; font-size:34px; color:#4B5A55;"><span class="s6-s-w">Walk-in</span> <span class="s6-s-w">triage</span> <span class="s6-s-w">and</span> <span class="s6-s-w">vital</span> <span class="s6-s-w">signs</span></p>
+</div>
+<div id="s6-b" style="position:absolute; inset:0; background:#EEF6F3; opacity:0;">
+  <h2 id="s6-t2" class="t" style="left:210px; top:170px; width:1500px; font-size:80px; color:#14201C;"><span class="s6-t2-w">One</span> <span class="s6-t2-w">VITALIS</span> <span class="s6-t2-w">ID.</span> <br> <span class="s6-t2-w">Her</span> <span class="s6-t2-w">name.</span> <span class="s6-t2-w">Her</span> <span class="s6-t2-w">NHIA</span> <span class="s6-t2-w">number.</span></h2>
+  <div id="s6-win" class="win" style="left:210px; top:520px; width:1500px; height:235px;"><div id="s6-win-pan" class="pan" style="width:752px; height:118px;"><img src="assets/screens/D_details.png" alt=""></div></div>
+  <div id="s6-line" style="position:absolute; left:1200px; top:732px; width:240px; height:6px; border-radius:3px; background:#0F5C4A;"></div>
+  <p id="s6-s2" class="sub" style="left:212px; top:820px; width:1500px; font-size:34px; color:#4B5A55;"><span class="s6-s2-w">She</span> <span class="s6-s2-w">adds</span> <span class="s6-s2-w">it.</span> <span class="s6-s2-w">Reception</span> <span class="s6-s2-w">can</span> <span class="s6-s2-w">fix</span> <span class="s6-s2-w">it.</span></p>
+  <p id="s6-s3" class="sub" style="left:212px; top:880px; width:1500px; font-size:30px; color:#4B5A55;"><span class="s6-s3-w">NHIA,</span> <span class="s6-s3-w">formerly</span> <span class="s6-s3-w">the</span> <span class="s6-s3-w">NHIS</span></p>
+</div>
+
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.set("#s6-b", {opacity: 0}, 0);
+tl.fromTo("#s6-ph", {opacity: 0, y: 220}, {opacity: 1, y: 0, duration: 0.6, ease: "expo.out"}, 0);
+tl.fromTo("#s6-t .s6-t-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.067, ease: "power2.out"}, 0.3);
+tl.fromTo("#s6-s .s6-s-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.05, ease: "power2.out"}, 1.0);
+tl.to("#s6-a", {x: -480, opacity: 0, filter: "blur(14px)", duration: 0.3, ease: "power3.in"}, 3.0);
+tl.fromTo("#s6-b", {x: 480, opacity: 0, filter: "blur(14px)"}, {x: 0, opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power3.out"}, 3.2);
+tl.set("#s6-win-pan", {transformOrigin: "0 0", scale: 1.9947, x: 0.0, y: 0.0}, 0);
+tl.fromTo("#s6-t2 .s6-t2-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.067, ease: "power2.out"}, 3.45);
+tl.fromTo("#s6-line", {scaleX: 0, transformOrigin: "0% 50%"}, {scaleX: 1, duration: 0.4, ease: "power3.inOut"}, 4.2);
+tl.fromTo("#s6-s2 .s6-s2-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.05, ease: "power2.out"}, 4.4);
+tl.fromTo("#s6-s3 .s6-s3-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.05, ease: "power2.out"}, 4.75);
+tl.fromTo("#s6-b", {opacity: 1, filter: "blur(0px)"}, {opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power3.in"}, 6.8);
+    tl.set({}, {}, 7.0);
+    window.__timelines["s6"] = tl;
+  </script>
+</template>

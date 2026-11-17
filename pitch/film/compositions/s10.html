@@ -1,0 +1,75 @@
+<template>
+  <style>
+
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); font-weight: 500; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); font-weight: 600; }
+@font-face { font-family: 'Plex'; src: url('assets/fonts/ibm-plex-sans-latin-700-normal.woff2') format('woff2'); font-weight: 700; }
+#root { position: absolute; inset: 0; overflow: hidden; font-family: 'Plex', sans-serif; color: #14201C; }
+.bg { position: absolute; inset: 0; }
+.phone { position: absolute; width: 440px; height: 920px; border-radius: 62px; background: #101614; padding: 14px;
+  box-shadow: 0 40px 80px rgba(20,32,28,.18); }
+.screen { position: relative; width: 412px; height: 892px; border-radius: 48px; overflow: hidden; background: #F6F8F7; }
+.inner { position: absolute; left: 0; top: 0; width: 412px; height: 892px; }
+.inner img { position: absolute; left: 0; top: 0; width: 412px; height: 892px; }
+.tap { position: absolute; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
+  background: rgba(20,32,28,.30); border: 2px solid rgba(255,255,255,.9); opacity: 0; }
+.t { position: absolute; margin: 0; font-weight: 700; letter-spacing: -0.02em; line-height: 1.06; }
+.t span, .sub span { display: inline-block; }
+.sub { position: absolute; margin: 0; font-weight: 500; font-size: 34px; line-height: 1.3; color: #4B5A55; }
+.win { position: absolute; overflow: hidden; border-radius: 20px; background: #fff;
+  box-shadow: 0 40px 80px rgba(20,32,28,.16); }
+.pan { position: absolute; left: 0; top: 0; }
+.pan img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.cursor { position: absolute; width: 48px; height: 64px; left: 0; top: 0; opacity: 0; }
+.dim { position: absolute; inset: 0; background: rgba(0,0,0,.38); opacity: 0; }
+.sheet { position: absolute; left: 10px; right: 10px; bottom: 10px; border-radius: 30px; background: #fff;
+  padding: 24px 22px 20px; box-shadow: 0 -10px 40px rgba(0,0,0,.2); opacity: 0; }
+.sheet .host { font-size: 22px; color: #4B5A55; }
+.sheet .ask { font-size: 28px; font-weight: 600; margin: 8px 0 20px; display: flex; gap: 10px; align-items: center; }
+.sheet .btns { display: flex; gap: 10px; }
+.sheet .b { flex: 1; text-align: center; padding: 14px 0; border-radius: 16px; font-size: 24px; font-weight: 600;
+  background: #EEF2F0; }
+.sheet .b.allow { background: #0F5C4A; color: #fff; }
+.note { position: absolute; left: 10px; right: 10px; top: 12px; border-radius: 26px; background: rgba(255,255,255,.97);
+  padding: 16px 18px; box-shadow: 0 16px 40px rgba(0,0,0,.22); display: flex; gap: 14px; opacity: 0; }
+.note img { width: 44px; height: 44px; border-radius: 11px; flex: none; }
+.note .app { font-size: 14px; color: #4B5A55; font-weight: 600; letter-spacing: .04em; }
+.note .ttl { font-size: 19px; font-weight: 700; margin-top: 2px; }
+.note .body { font-size: 16px; line-height: 1.3; margin-top: 2px; }
+
+#s10-word { clip-path: inset(0 100% 0 0); } #s10-url { font-weight: 500; }
+  </style>
+  <div id="root" data-composition-id="s10" data-width="1920" data-height="1080">
+
+<div id="s10-bg" class="bg" style="background:#F6F8F7;"></div>
+<div id="s10-m1" style="position:absolute; inset:0; background:#0B1411; opacity:0;"><div id="s10-ph" class="phone" style="left:740px; top:80px;"><div class="screen"><div id="s10-ph-inner" class="inner"><img id="s10-ph-0" src="assets/screens/P_home_dark.png" alt="" style="opacity:1;"></div></div></div></div>
+<div id="s10-m2" style="position:absolute; inset:0; background:#EEF6F3; opacity:0;"><div id="s10-w2" class="win" style="left:210px; top:160px; width:1500px; height:524px;"><div id="s10-w2-pan" class="pan" style="width:1440px; height:900px;"><img src="assets/screens/D_admin.png" alt=""></div></div></div>
+<div id="s10-m3" style="position:absolute; inset:0; background:#F6F8F7; opacity:0;"><div id="s10-w3" class="win" style="left:360px; top:160px; width:1200px; height:571px;"><div id="s10-w3-pan" class="pan" style="width:752px; height:358px;"><img src="assets/screens/D_network.png" alt=""></div></div></div>
+<h2 id="s10-c1" class="t" style="left:160px; top:330px; width:1600px; font-size:92px; color:#14201C;"><span class="s10-c1-w">From</span> <span class="s10-c1-w">“something</span> <span class="s10-c1-w">is</span> <span class="s10-c1-w">wrong”</span></h2>
+<h2 id="s10-c2" class="t" style="left:160px; top:450px; width:1600px; font-size:92px; color:#0F5C4A;"><span class="s10-c2-w">to</span> <span class="s10-c2-w">“a</span> <span class="s10-c2-w">hospital</span> <span class="s10-c2-w">is</span> <span class="s10-c2-w">ready</span> <span class="s10-c2-w">for</span> <span class="s10-c2-w">you.”</span></h2>
+<img id="s10-icon" src="assets/brand/icon.png" alt="" style="position:absolute; left:545px; top:360px; width:180px; height:180px; border-radius:42px; box-shadow:0 24px 50px rgba(0,0,0,.18); opacity:0;">
+<div id="s10-word" class="t" style="left:765px; top:368px; font-size:150px; color:#fff; letter-spacing:0.02em;"><span>V</span><span>I</span><span>T</span><span>A</span><span>L</span><span>I</span><span>S</span></div>
+<h2 id="s10-url" class="t" style="left:771px; top:560px; width:900px; font-size:44px; color:rgba(255,255,255,.92);"><span class="s10-url-w">vitalis.olamide.cloud</span></h2>
+<p id="s10-fine" class="sub" style="left:773px; top:630px; width:1000px; font-size:28px; color:rgba(255,255,255,.7);"><span class="s10-fine-w">ITDC</span> <span class="s10-fine-w">2026</span> <span class="s10-fine-w">·</span> <span class="s10-fine-w">synthetic</span> <span class="s10-fine-w">demo</span> <span class="s10-fine-w">data</span></p>
+
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.set("#s10-m1", {opacity: 1}, 0); tl.set("#s10-m1", {opacity: 0}, 0.4);
+tl.set("#s10-m2", {opacity: 1}, 0.4); tl.set("#s10-m2", {opacity: 0}, 0.8);
+tl.set("#s10-m3", {opacity: 1}, 0.8); tl.set("#s10-m3", {opacity: 0}, 1.2);
+tl.set("#s10-w2-pan", {transformOrigin: "0 0", scale: 1.3528, x: -370.1, y: -24.4}, 0);
+tl.set("#s10-w3-pan", {transformOrigin: "0 0", scale: 1.5957, x: 0.0, y: 0.0}, 0);
+tl.fromTo("#s10-c1 .s10-c1-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.09, ease: "power2.out"}, 1.3);
+tl.fromTo("#s10-c2 .s10-c2-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.09, ease: "power2.out"}, 1.8);
+tl.fromTo("#s10-c1, #s10-c2", {opacity: 1, filter: "blur(0px)"}, {opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in"}, 4.4);
+tl.fromTo("#s10-bg", {backgroundColor: "#F6F8F7"}, {backgroundColor: "#0F5C4A", duration: 0.4, ease: "power2.inOut"}, 4.45);
+tl.fromTo("#s10-icon", {opacity: 0, y: 300}, {opacity: 1, y: 0, duration: 0.6, ease: "expo.out"}, 4.55);
+tl.fromTo("#s10-word", {clipPath: "inset(0 100% 0 0)"}, {clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power3.out"}, 4.8);
+tl.fromTo("#s10-url .s10-url-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.067, ease: "power2.out"}, 5.1);
+tl.fromTo("#s10-fine .s10-fine-w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.05, ease: "power2.out"}, 5.25);
+    tl.set({}, {}, 8.0);
+    window.__timelines["s10"] = tl;
+  </script>
+</template>
