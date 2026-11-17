@@ -20,9 +20,14 @@
     for about 2.6 s; the checker's 0.37 s is a sampling artefact.
 - Snapshots of every beat, every seam and the phone sheet were looked at.
 
-## Not checked
-- The sound was placed by time, not heard. There is no music bed yet: add one (HeyGen music catalog after
-  `heygen auth login --oauth`, or a local MusicGen track) and duck the effects 3-6 dB under it.
+## Sound
+- Narration: Davis (VibeVoice-Realtime `en-Davis_man`, the case-file host voice), 13 lines, voiced by
+  `tools/vo.py`, every take checked by transcription (VoiceStudio). Line 8 uses take 1 ("Her ID"), placed in
+  `voice/placement.tsv`. Voice track -16.7 LUFS.
+- Music: generated locally with MusicGen-small (`tools/music.py`, take 1 of 2: steadier, no gaps), looped and ducked
+  under the voice by `tools/mix.sh` (sidechain, 6:1). Bed about 12 dB under the voice.
+- Effects lowered to 60% so they sit under the narration.
+- Measured, not heard: listen once before presenting. Audio files are rebuilt by the tools (not committed).
 
 ## Weakest shot and next steps
 - The hospital Incoming card (22-24 s) sits in the left half of the frame; a slow push toward Accept would give it more

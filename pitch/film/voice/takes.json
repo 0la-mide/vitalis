@@ -1,0 +1,148 @@
+{
+ "l01": [
+  {
+   "take": 1,
+   "seconds": 3.31,
+   "sim": 0.737,
+   "heard": "2 in the morning, 34 weeks pregnant, and bleeding."
+  },
+  {
+   "take": 2,
+   "seconds": 3.78,
+   "sim": 0.737,
+   "heard": "2 in the morning, 34 weeks pregnant, and bleeding."
+  },
+  {
+   "take": 3,
+   "seconds": 3.56,
+   "sim": 0.737,
+   "heard": "2 in the morning. 34 weeks pregnant and bleeding."
+  }
+ ],
+ "l02": [
+  {
+   "take": 1,
+   "seconds": 5.63,
+   "sim": 1.0,
+   "heard": "Her family has one question, and every wrong answer costs time."
+  },
+  {
+   "take": 2,
+   "seconds": 4.38,
+   "sim": 1.0,
+   "heard": "Her family has one question, and every wrong answer costs time."
+  }
+ ],
+ "l03": [
+  {
+   "take": 1,
+   "seconds": 1.87,
+   "sim": 0.571,
+   "heard": "This is the TELUS."
+  },
+  {
+   "take": 2,
+   "seconds": 1.73,
+   "sim": 1.0,
+   "heard": "This is Vitalis."
+  }
+ ],
+ "l04": [
+  {
+   "take": 1,
+   "seconds": 4.64,
+   "sim": 1.0,
+   "heard": "She taps what's happening, where it is, and what she sees. That's all it takes."
+  }
+ ],
+ "l05": [
+  {
+   "take": 1,
+   "seconds": 7.25,
+   "sim": 0.778,
+   "heard": "Vitalis only offers hospitals that can treat her horribly, I mean, I'm able to follow up, I am. And they're alerted at once."
+  },
+  {
+   "take": 2,
+   "seconds": 4.57,
+   "sim": 1.0,
+   "heard": "Vitalis only offers hospitals that can treat her, and they're alerted at once."
+  }
+ ],
+ "l06": [
+  {
+   "take": 1,
+   "seconds": 4.79,
+   "sim": 1.0,
+   "heard": "The hospital accepts on its own screen, and her phone tells her to go now."
+  }
+ ],
+ "l07": [
+  {
+   "take": 1,
+   "seconds": 2.8,
+   "sim": 1.0,
+   "heard": "A chemist on the corner can start the same journey."
+  }
+ ],
+ "l08": [
+  {
+   "take": 1,
+   "seconds": 3.84,
+   "sim": 1.0,
+   "heard": "Her ID carries her name and NHIA number everywhere."
+  },
+  {
+   "take": 2,
+   "seconds": 3.3,
+   "sim": 0.875,
+   "heard": "Our ID carries her name and NHIA number everywhere."
+  },
+  {
+   "take": 3,
+   "seconds": 3.37,
+   "sim": 0.941,
+   "heard": "Her ID carries her name and NHI number everywhere."
+  }
+ ],
+ "l09": [
+  {
+   "take": 1,
+   "seconds": 5.78,
+   "sim": 1.0,
+   "heard": "At the bedside, the AI finds an allergy written at another hospital and blocks the clash."
+  }
+ ],
+ "l10": [
+  {
+   "take": 1,
+   "seconds": 1.76,
+   "sim": 1.0,
+   "heard": "But the doctor stays in charge."
+  }
+ ],
+ "l11": [
+  {
+   "take": 1,
+   "seconds": 2.43,
+   "sim": 1.0,
+   "heard": "Lab and radiology each work their own list."
+  }
+ ],
+ "l12": [
+  {
+   "take": 1,
+   "seconds": 4.3,
+   "sim": 1.0,
+   "heard": "Nobody sees her history unless she allows it, and she can see who looked."
+  }
+ ],
+ "l13": [
+  {
+   "take": 1,
+   "seconds": 3.16,
+   "sim": 1.0,
+   "heard": "Vitalis. Get the right hospital fast."
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+# id	start_s	max_s	text   (start in film seconds; max = time before the next line)
+l01	0.5	3.9	Two in the morning. Thirty-four weeks pregnant, and bleeding.
+l02	4.8	4.7	Her family has one question, and every wrong answer costs time.
+l03	10.0	2.4	This is VITALIS.
+l04	13.0	5.6	She taps what's happening, where it is, and what she sees. That's all it takes.
+l05	18.8	4.5	VITALIS only offers hospitals that can treat her, and they're alerted at once.
+l06	23.4	5.4	The hospital accepts on its own screen, and her phone tells her to go now.
+l07	29.0	3.6	A chemist on the corner can start the same journey.
+l08	32.4	3.2	Her ID carries her name and NHIA number everywhere.
+l09	36.0	5.7	At the bedside, the AI finds an allergy written at another hospital, and blocks the clash.
+l10	41.9	1.9	But the doctor stays in charge.
+l11	44.0	3.0	Lab and radiology each work their own list.
+l12	48.0	5.4	Nobody sees her history unless she allows it, and she can see who looked.
+l13	58.6	3.2	VITALIS. Get the right hospital, fast.

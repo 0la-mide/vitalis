@@ -510,14 +510,20 @@ sfx = [  # (file, absolute time, volume)
     ("click-soft", starts["s9"] + 2.2, 0.7),
     ("whoosh-short", starts["s9"] + 6.2, 0.4),
     ("whoosh-short", starts["s10"] + 0.4, 0.35), ("whoosh", starts["s10"] + 0.8, 0.3),
-    ("impact-bass-2", starts["s10"] + 4.45, 0.6),
+    ("impact-bass-2", starts["s10"] + 4.35, 0.6),
 ]
 dur_of = {"whoosh-short": 0.57, "whoosh": 0.57, "pop": 0.72, "click-soft": 0.37, "click": 0.37,
           "notification": 2.46, "impact-bass-2": 2.59}
+SFX_UNDER_VOICE = 0.6  # effects sit under Davis' narration
 audio = "\n".join(
     f'      <audio id="sfx-{i}" class="clip" src="assets/sfx/{f}.mp3" data-start="{at:.2f}" '
-    f'data-duration="{dur_of[f]}" data-track-index="{10 + i % 3}" data-volume="{v}"></audio>'
+    f'data-duration="{dur_of[f]}" data-track-index="{10 + i % 3}" data-volume="{v * SFX_UNDER_VOICE:.2f}"></audio>'
     for i, (f, at, v) in enumerate(sfx))
+# Narration (Davis, VibeVoice) and the locally generated music bed, ducked under the voice (tools/mix.sh)
+audio += (f'\n      <audio id="vo" class="clip" src="assets/audio/vo.wav" data-start="0" data-duration="{TOTAL:g}" '
+          f'data-track-index="8" data-volume="1"></audio>'
+          f'\n      <audio id="music" class="clip" src="assets/audio/bed.wav" data-start="0" data-duration="{TOTAL:g}" '
+          f'data-track-index="9" data-volume="1.4"></audio>')
 (ROOT / "index.html").write_text(f"""<!doctype html>
 <html lang="en">
   <head>
