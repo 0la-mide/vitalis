@@ -21,7 +21,9 @@ from app.core.ratelimit import limiter, patient_key
 from app.core.security import new_secret, sha256_hex
 from app.models import AccessRequest, AuditEvent, Consent, Facility, Patient, QRGrant, Referral, User
 from app.models.enums import VerificationStatus
+from app.schemas.encounter import PatientIdentityIn, PatientIdentityOut
 from app.services import records as rsvc
+from app.services.patients import apply_identity
 
 router = APIRouter(prefix="/me", tags=["my record"])
 
@@ -89,6 +91,25 @@ class RequestRow(BaseModel):
 
 class DecideIn(BaseModel):
     decision: Literal["allow", "deny"]
+
+
+@router.get("/profile", response_model=Envelope[PatientIdentityOut])
+async def my_profile(patient: Patient = Depends(current_patient)):
+    return ok(PatientIdentityOut(vitalis_id=patient.vitalis_id, full_name=patient.full_name,
+                                 nhia_number=patient.nhia_number))
+
+
+@router.patch("/profile", response_model=Envelope[PatientIdentityOut])
+async def update_profile(body: PatientIdentityIn, patient: Patient = Depends(current_patient),
+                         db: AsyncSession = Depends(get_db)):
+    """The patient sets their own name and NHIA (formerly NHIS) number. Hospitals see it on their next visit."""
+    changed = apply_identity(patient, body.full_name, body.nhia_number)
+    if changed:
+        await audit(db, "patient.identity.update", actor_type="patient", actor_id=patient.id, subject_type="patient",
+                    subject_id=patient.id, details={"fields": changed})
+        await db.commit()
+    return ok(PatientIdentityOut(vitalis_id=patient.vitalis_id, full_name=patient.full_name,
+                                 nhia_number=patient.nhia_number))
 
 
 @router.get("/records", response_model=Envelope[MyRecord])

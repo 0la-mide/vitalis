@@ -1,5 +1,6 @@
 "use client";
 
+import { IdentityCard, PatientName } from "@/components/hospital/PatientName";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDown, ArrowRight, ArrowUp, CircleAlert, FileSignature, FlaskConical, Siren } from "lucide-react";
 import Link from "next/link";
@@ -64,7 +65,7 @@ export default function EncounterPage() {
       <Card className={cn("flex flex-wrap items-start justify-between gap-3", e.emergency && "border-l-4 border-l-emergency")}>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="font-mono text-2xl font-bold">{e.patient.vitalis_id}</h1>
+            <h1><PatientName p={e.patient} size="lg" /></h1>
             {e.emergency ? <Badge tone="danger"><Siren className="h-3.5 w-3.5" /> Emergency</Badge> : null}
           </div>
           <p className="text-sm text-muted-foreground">
@@ -85,6 +86,8 @@ export default function EncounterPage() {
 
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <div className="space-y-4">
+          <IdentityCard encounterId={e.id} p={e.patient}
+            canEdit={!closed && ["receptionist", "nurse", "facility_admin"].includes(me?.role ?? "")} />
           {e.referral ? <ReferralCard r={e.referral} /> : null}
           <RecordCard encounterId={e.id} canAdd={!closed && (me?.role === "nurse" || isDoctor)} />
           <NetworkRecordCard patientId={e.patient_id} encounterId={e.id} />

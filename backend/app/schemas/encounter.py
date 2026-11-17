@@ -116,6 +116,7 @@ class EncounterOut(BaseModel):
 
 
 class WalkInIn(BaseModel):
+    full_name: str | None = Field(default=None, max_length=120)
     age_group: Literal["under5", "child", "teen", "adult", "elderly"]
     sex: Literal["female", "male", "unknown"] = "unknown"
     pregnant: bool = False
@@ -191,3 +192,20 @@ class TestOption(BaseModel):
     name: str
     category: str
     params: list[TestParam] = []
+
+
+NAME_MAX = 120
+NHIA_PATTERN = r"^[A-Za-z0-9/ .-]{4,24}$"
+
+
+class PatientIdentityIn(BaseModel):
+    """Name and NHIA (formerly NHIS) number. Send "" to clear a field; leave it out to keep it."""
+
+    full_name: str | None = Field(default=None, max_length=NAME_MAX)
+    nhia_number: str | None = Field(default=None, max_length=24)
+
+
+class PatientIdentityOut(BaseModel):
+    vitalis_id: str
+    full_name: str | None
+    nhia_number: str | None

@@ -1,5 +1,6 @@
 "use client";
 
+import { PatientName } from "@/components/hospital/PatientName";
 import { AlertsButton } from "@/components/ui/AlertsButton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BellRing, CheckCircle2, Clock, Radio, Siren, UserRound } from "lucide-react";
@@ -126,7 +127,7 @@ export default function IncomingPage() {
             {done.map((i) => (
               <Card key={i.id} className={cn("py-3", fresh.has(i.id) && "vt-new")}>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono font-semibold">{i.patient.vitalis_id}</span>
+                  <PatientName p={i.patient} size="sm" />
                   <Badge tone={STATUS_TONE[i.status] ?? "neutral"}>{i.status.replace("_", " ")}</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -168,7 +169,7 @@ function IncomingCard({
         <div>
           <div className="flex items-center gap-2">
             {i.kind === "alert" ? <BellRing className="h-5 w-5 text-emergency" aria-hidden /> : <UserRound className="h-5 w-5" aria-hidden />}
-            <span className="font-mono text-lg font-bold">{p.vitalis_id}</span>
+            <PatientName p={p} />
           </div>
           <p className="text-sm text-muted-foreground">
             {AGE[p.age_group ?? ""] ?? "Age ?"} · {p.sex ?? "sex ?"}

@@ -80,6 +80,8 @@ async def _item(db: AsyncSession, report: TriageReport, *, ref: Referral | None,
         report_id=report.id,
         patient=IncomingPatient(
             vitalis_id=patient.vitalis_id,
+            name=patient.full_name,
+            nhia_number=patient.nhia_number,
             age_group=ctx.get("age_group") or patient.age_group,
             sex=ctx.get("sex") or patient.sex,
             pregnant=bool(ctx.get("pregnant")),

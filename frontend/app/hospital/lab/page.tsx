@@ -104,7 +104,7 @@ function Header({ i }: { i: Item }) {
     <div className="flex flex-wrap items-center justify-between gap-2">
       <div>
         <span className="font-semibold">{i.order.test_name}</span>{" "}
-        <span className="text-sm text-muted-foreground">· {i.order.category} · <span className="font-mono">{i.vitalis_id}</span></span>
+        <span className="text-sm text-muted-foreground">· {i.order.category} · <span className="font-mono">{i.vitalis_id}</span>{i.patient.name ? ` · ${i.patient.name}` : ""}</span>
       </div>
       <div className="flex gap-1.5">
         {i.emergency ? <Badge tone="danger"><Siren className="h-3 w-3" /> emergency</Badge> : null}

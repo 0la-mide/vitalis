@@ -155,6 +155,12 @@ async def wipe(db) -> None:
     await db.execute(text(f"TRUNCATE {tables} RESTART IDENTITY CASCADE"))
 
 
+# Synthetic names and NHIA numbers for the demo patients (made up; the format is illustrative only).
+DEMO_NAMES = {"Mrs. Adebayo (demo)": "Bisi Adebayo", "Baba Ogun (demo)": "Tunde Ogunleye",
+              "Little Ife (demo)": "Ifeoluwa Bello"}
+DEMO_NHIA = {"Mrs. Adebayo (demo)": "NHIA/OG/0045821", "Baba Ogun (demo)": "NHIA/OG/0012907"}
+
+
 async def seed(password: str | None = None, write_logins: bool = False) -> Path | None:
     password = password or os.environ.get("DEMO_PASSWORD") or secrets.token_urlsafe(9)
     pw_hash = hash_password(password)
@@ -235,7 +241,9 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
             ("Little Ife (demo)", "under5", "female", False, "+2348000000003"),
         ]:
             p, _key, recovery = await create_patient(db, phone=phone, age_group=age, sex=sex, pregnant=preg,
-                                                     display_name=display)
+                                                     display_name=display,
+                                                     full_name=DEMO_NAMES.get(display))
+            p.nhia_number = DEMO_NHIA.get(display)
             patients.append((display, p, recovery))
 
         # A little history: an earlier antenatal check-in for Mrs. Adebayo with chemist vitals.
@@ -306,8 +314,9 @@ async def seed_folake(db, now) -> None:
     nurse, doctor = staff[Role.nurse], staff[Role.doctor]
 
     p, _key, recovery = await create_patient(db, phone="+2348000000054", age_group="adult", sex="female",
-                                         display_name="Mrs. Folake Adewale (demo)")
+                                         display_name="Mrs. Folake Adewale (demo)", full_name="Folake Adewale")
     p.date_of_birth = date(1972, 3, 14)
+    p.nhia_number = "NHIA/OG/0078314"
     H = PatientHistoryEntry
     db.add_all([
         H(patient_id=p.id, kind="condition", text="Hypertension", facility_id=central.id, recorded_by=doctor.id,

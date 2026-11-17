@@ -27,6 +27,7 @@ generates `frontend/types/api.ts` (`make types`).
 
 | Method | Path | Notes |
 |---|---|---|
+| GET/PATCH | `/me/profile` | `{full_name?, nhia_number?}`: the patient's own name and NHIA (formerly NHIS) number; "" clears |
 | GET | `/me/records` | the patient's own record: history entries and visits at every hospital |
 | POST | `/me/consents` | `{facility_id?, scope: full|summary}` → `{consent_id, url, qr_png, expires_at}`; the QR works once and expires in 10 min; `facility_id` null = any verified hospital |
 | DELETE | `/me/consents/{id}` | stop sharing (revokes the consent and any unused QR) |
@@ -97,6 +98,9 @@ Documents: PDF/JPG/PNG by **magic bytes**, max 5 MB, random file names in `UPLOA
 
 States: `registered → awaiting_nursing → awaiting_doctor → awaiting_investigation → results_ready →
 awaiting_disposition → completed | cancelled`. Emergency (red flag or ticked at registration) skips to the doctor.
+
+Reception, nurses and hospital admins: `PATCH /hospital/encounters/{id}/patient` `{full_name?, nhia_number?}` (audited).
+Walk-ins (`POST /hospital/encounters`, `POST /worker/triage`) accept an optional `full_name`.
 
 ## Doctor tools (facility-scoped)
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BellRing, ChevronLeft, Eye, FileText, QrCode, ShieldCheck, ShieldOff, X } from "lucide-react";
+import { BellRing, ChevronLeft, Eye, FileText, Pencil, QrCode, ShieldCheck, ShieldOff, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RecoverySlip } from "@/components/triage/RecoverySlip";
@@ -97,6 +97,59 @@ function Requests() {
   );
 }
 
+/** Name and NHIA number on this VITALIS ID: optional, editable here, and seen by the hospital at reception. */
+function MyDetails({ vitalisId }: { vitalisId: string }) {
+  const qc = useQueryClient();
+  const { data } = useQuery({ queryKey: ["my-profile"], queryFn: () => api<Schemas["PatientIdentityOut"]>("/me/profile", { patient: true }) });
+  const [editing, setEditing] = useState(false);
+  const save = useMutation({
+    mutationFn: (body: { full_name: string; nhia_number: string }) =>
+      api<Schemas["PatientIdentityOut"]>("/me/profile", { method: "PATCH", body, patient: true }),
+    onSuccess: (d) => {
+      qc.setQueryData(["my-profile"], d);
+      setEditing(false);
+    },
+  });
+  return (
+    <Card className="space-y-2">
+      <div className="text-center">
+        <p className="text-sm text-muted-foreground">Your VITALIS ID</p>
+        <p className="font-mono text-3xl font-bold tracking-wider">{vitalisId}</p>
+      </div>
+      {editing ? (
+        <form className="grid gap-2" onSubmit={(e) => {
+          e.preventDefault();
+          const fd = new FormData(e.currentTarget);
+          save.mutate({ full_name: String(fd.get("full_name") ?? ""), nhia_number: String(fd.get("nhia_number") ?? "") });
+        }}>
+          <label className="grid gap-1 text-sm font-medium">Your name
+            <input name="full_name" defaultValue={data?.full_name ?? ""} maxLength={120} autoComplete="name" className={inputCls} />
+          </label>
+          <label className="grid gap-1 text-sm font-medium">NHIA number (formerly NHIS), if you have one
+            <input name="nhia_number" defaultValue={data?.nhia_number ?? ""} maxLength={24} className={cn(inputCls, "font-mono uppercase")} />
+          </label>
+          {save.error ? <p className="text-sm text-emergency">{(save.error as Error).message}</p> : null}
+          <div className="flex gap-2">
+            <Button type="submit" size="lg" className="flex-1" disabled={save.isPending}>Save</Button>
+            <Button type="button" size="lg" variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
+          </div>
+        </form>
+      ) : (
+        <button type="button" onClick={() => setEditing(true)}
+          className="flex w-full items-center justify-between gap-3 rounded-lg bg-muted px-3 py-2.5 text-left">
+          <span>
+            <span className="block font-semibold">{data?.full_name || "Add your name"}</span>
+            <span className="block text-sm text-muted-foreground">
+              {data?.nhia_number ? (/^NHIA/i.test(data.nhia_number) ? data.nhia_number : `NHIA ${data.nhia_number}`) : "NHIA number (optional)"} · hospitals see this at reception
+            </span>
+          </span>
+          <Pencil className="size-4 shrink-0 text-muted-foreground" />
+        </button>
+      )}
+    </Card>
+  );
+}
+
 function RecordTab() {
   const { data } = useMyRecord();
   if (!data) return <p className="text-muted-foreground">Loading…</p>;
@@ -104,10 +157,7 @@ function RecordTab() {
   const allergies = by("allergy");
   return (
     <div className="space-y-3">
-      <Card className="text-center">
-        <p className="text-sm text-muted-foreground">Your VITALIS ID</p>
-        <p className="font-mono text-3xl font-bold tracking-wider">{data.vitalis_id}</p>
-      </Card>
+      <MyDetails vitalisId={data.vitalis_id} />
       <Card className={cn(allergies.length && "border-l-4 border-l-emergency")}>
         <h2 className="font-bold">Allergies</h2>
         {allergies.length ? allergies.map((a, i) => (

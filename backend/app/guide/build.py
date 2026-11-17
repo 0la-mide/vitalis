@@ -366,6 +366,8 @@ def build_user_guide(out: Path, *, password: str, base_url: str, logins: list[tu
     pdf.h1("4. My health record")
     pdf.p("From the patient home: **My health record**. Four tabs:")
     pdf.bullets([
+        "**Your details** (top of Record) - add your name and NHIA (formerly NHIS) number. Both are optional; "
+        "hospitals see them at reception and can correct them.",
         "**Record** - allergies, conditions, medicines, family history; each says which hospital recorded it and when.",
         "**Visits** - every visit at every hospital: vital signs, verified results, signed notes, prescriptions.",
         "**Share** - pick a hospital (or any verified hospital) and __Everything__ or __Summary only__, then **Show my QR "
@@ -401,7 +403,9 @@ def build_user_guide(out: Path, *, password: str, base_url: str, logins: list[tu
         "needs a reason; the family is moved to the next hospital).",
         "When the patient arrives: **Confirm arrival & open encounter**. Everything the chemist or family entered "
         "comes with them; nothing is typed twice.",
-        "Walk-ins without a referral: register them at reception.",
+        "Walk-ins without a referral: register them at reception (name optional).",
+        "**Patient details** on the visit - see the patient's name, VITALIS ID and NHIA (formerly NHIS) number; "
+        "tap **Edit** to record or correct them. One VITALIS ID per person, at every hospital.",
         "**Service availability** - one tap per service (available / limited / unavailable). It stamps the time; "
         "families see how fresh it is.",
     ])

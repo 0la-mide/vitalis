@@ -585,6 +585,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/hospital/encounters/{encounter_id}/patient": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Identity
+         * @description Reception (or nurse / hospital admin) records or corrects the patient's name and NHIA number.
+         */
+        patch: operations["update_identity_api_v1_hospital_encounters__encounter_id__patient_patch"];
+        trace?: never;
+    };
     "/api/v1/hospital/encounters/{encounter_id}": {
         parameters: {
             query?: never;
@@ -1089,6 +1109,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/me/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Profile */
+        get: operations["my_profile_api_v1_me_profile_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Profile
+         * @description The patient sets their own name and NHIA (formerly NHIS) number. Hospitals see it on their next visit.
+         */
+        patch: operations["update_profile_api_v1_me_profile_patch"];
+        trace?: never;
+    };
     "/api/v1/me/records": {
         parameters: {
             query?: never;
@@ -1313,6 +1354,77 @@ export interface paths {
          * @description Opens a demo patient's record on this phone. Rotates the device key only (the recovery code stays).
          */
         post: operations["demo_patient_api_v1_demo_patient_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/push/key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Key */
+        get: operations["key_api_v1_push_key_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/push": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Patient Subscribe */
+        post: operations["patient_subscribe_api_v1_me_push_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/push/subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Staff Subscribe */
+        post: operations["staff_subscribe_api_v1_push_subscribe_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/push/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unsubscribe
+         * @description Knowing the (secret, browser-issued) endpoint is enough to stop alerts to that browser.
+         */
+        post: operations["unsubscribe_api_v1_push_unsubscribe_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1686,6 +1798,11 @@ export interface components {
             /** Correction Reason */
             correction_reason?: string | null;
         };
+        /** EndpointIn */
+        EndpointIn: {
+            /** Endpoint */
+            endpoint: string;
+        };
         /** Envelope[AccessLog] */
         Envelope_AccessLog_: {
             data: components["schemas"]["AccessLog"];
@@ -1761,9 +1878,19 @@ export interface components {
             data: components["schemas"]["OrderRow"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[PatientIdentityOut] */
+        Envelope_PatientIdentityOut_: {
+            data: components["schemas"]["PatientIdentityOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[PatientKeysOut] */
         Envelope_PatientKeysOut_: {
             data: components["schemas"]["PatientKeysOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[PushKey] */
+        Envelope_PushKey_: {
+            data: components["schemas"]["PushKey"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[RecordOut] */
@@ -2130,6 +2257,10 @@ export interface components {
         IncomingPatient: {
             /** Vitalis Id */
             vitalis_id: string;
+            /** Name */
+            name?: string | null;
+            /** Nhia Number */
+            nhia_number?: string | null;
             /** Age Group */
             age_group: string | null;
             /** Sex */
@@ -2375,6 +2506,25 @@ export interface components {
             /** Offset */
             offset: number;
         };
+        /**
+         * PatientIdentityIn
+         * @description Name and NHIA (formerly NHIS) number. Send "" to clear a field; leave it out to keep it.
+         */
+        PatientIdentityIn: {
+            /** Full Name */
+            full_name?: string | null;
+            /** Nhia Number */
+            nhia_number?: string | null;
+        };
+        /** PatientIdentityOut */
+        PatientIdentityOut: {
+            /** Vitalis Id */
+            vitalis_id: string;
+            /** Full Name */
+            full_name: string | null;
+            /** Nhia Number */
+            nhia_number: string | null;
+        };
         /** PatientKeysOut */
         PatientKeysOut: {
             /**
@@ -2436,6 +2586,18 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+        };
+        /** PushKey */
+        PushKey: {
+            /** Public Key */
+            public_key: string;
+        };
+        /** PushKeys */
+        PushKeys: {
+            /** P256Dh */
+            p256dh: string;
+            /** Auth */
+            auth: string;
         };
         /** RecordOut */
         RecordOut: {
@@ -2732,6 +2894,12 @@ export interface components {
             created_at: string;
             /** Verification Id */
             verification_id: string | null;
+        };
+        /** SubscriptionIn */
+        SubscriptionIn: {
+            /** Endpoint */
+            endpoint: string;
+            keys: components["schemas"]["PushKeys"];
         };
         /** SymptomLine */
         SymptomLine: {
@@ -3186,6 +3354,8 @@ export interface components {
         };
         /** WalkInIn */
         WalkInIn: {
+            /** Full Name */
+            full_name?: string | null;
             /**
              * Age Group
              * @enum {string}
@@ -3291,6 +3461,8 @@ export interface components {
         WorkerTriageIn: {
             /** Taps */
             taps?: components["schemas"]["Tap"][];
+            /** Full Name */
+            full_name?: string | null;
             /** Family Phone */
             family_phone?: string | null;
         };
@@ -4322,6 +4494,41 @@ export interface operations {
             };
         };
     };
+    update_identity_api_v1_hospital_encounters__encounter_id__patient_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                encounter_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatientIdentityIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_EncounterOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_encounter_api_v1_hospital_encounters__encounter_id__get: {
         parameters: {
             query?: never;
@@ -5303,6 +5510,59 @@ export interface operations {
             };
         };
     };
+    my_profile_api_v1_me_profile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_PatientIdentityOut_"];
+                };
+            };
+        };
+    };
+    update_profile_api_v1_me_profile_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PatientIdentityIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_PatientIdentityOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     my_records_api_v1_me_records_get: {
         parameters: {
             query?: never;
@@ -5663,6 +5923,125 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_DemoPatientOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    key_api_v1_push_key_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_PushKey_"];
+                };
+            };
+        };
+    };
+    patient_subscribe_api_v1_me_push_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    staff_subscribe_api_v1_push_subscribe_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unsubscribe_api_v1_push_unsubscribe_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndpointIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
                 };
             };
             /** @description Validation Error */

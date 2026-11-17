@@ -44,7 +44,7 @@ type State = {
   go: (s: Step) => void;
   back: () => void;
   countTap: () => void;
-  begin: (taps: Tap[], next: Step, opts?: { familyPhone?: string; context?: Record<string, unknown> }) => Promise<TriageOut | null>;
+  begin: (taps: Tap[], next: Step, opts?: { familyPhone?: string; fullName?: string; context?: Record<string, unknown> }) => Promise<TriageOut | null>;
   tap: (taps: Tap[]) => void;
   flush: () => Promise<TriageOut | null>;
   setRegion: (r: string | null) => void;
@@ -135,6 +135,7 @@ export const useTriage = create<State>((set, get) => ({
       if (get().mode === "worker") {
         const body: Record<string, unknown> = { taps: [...locationTap(get().location), ...taps] };
         if (opts?.familyPhone) body.family_phone = opts.familyPhone;
+        if (opts?.fullName) body.full_name = opts.fullName;
         const res = await api<WorkerStart>("/worker/triage", { body });
         set({
           reportId: res.triage.report_id,

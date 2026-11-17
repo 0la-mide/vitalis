@@ -36,6 +36,7 @@ from app.schemas.encounter import (
     NoteRow,
     OrderRow,
     OrdersIn,
+    PatientIdentityIn,
     ReferralSummary,
     ResultIn,
     TestOption,
@@ -48,7 +49,7 @@ from app.schemas.encounter import (
 from app.schemas.referral import IncomingPatient, SymptomLine
 from app.schemas.worker import VITAL_RANGES
 from app.services import encounters as esvc
-from app.services.patients import create_patient
+from app.services.patients import apply_identity, create_patient
 
 router = APIRouter(prefix="/hospital", tags=["encounters"])
 ES = EncounterState
@@ -78,7 +79,8 @@ async def _names(db: AsyncSession, ids: set) -> dict[uuid.UUID, User]:
 
 def _patient_brief(p: Patient, report: TriageReport | None) -> IncomingPatient:
     ctx = (report.context if report else None) or {}
-    return IncomingPatient(vitalis_id=p.vitalis_id, age_group=ctx.get("age_group") or p.age_group,
+    return IncomingPatient(vitalis_id=p.vitalis_id, name=p.full_name, nhia_number=p.nhia_number,
+                           age_group=ctx.get("age_group") or p.age_group,
                            sex=ctx.get("sex") or p.sex, pregnant=bool(ctx.get("pregnant") or p.pregnant))
 
 
@@ -228,11 +230,27 @@ async def test_catalogue(_: User = Depends(any_staff)):
     return ok([TestOption.model_validate(t) for t in esvc.investigations().values()])
 
 
+# ---------- patient identity (reception) ----------
+@router.patch("/encounters/{encounter_id}/patient", response_model=Envelope[EncounterOut])
+async def update_identity(encounter_id: uuid.UUID, body: PatientIdentityIn, user: User = Depends(front_desk),
+                          db: AsyncSession = Depends(get_db)):
+    """Reception (or nurse / hospital admin) records or corrects the patient's name and NHIA number."""
+    enc = await _scoped(db, encounter_id, user)
+    p = await db.get(Patient, enc.patient_id)
+    changed = apply_identity(p, body.full_name, body.nhia_number)
+    if changed:
+        await audit(db, "patient.identity.update", actor_id=user.id, subject_type="patient", subject_id=p.id,
+                    facility_id=user.facility_id, details={"fields": changed})
+        await db.commit()
+        esvc.publish(enc)
+    return ok(await _respond(db, enc, user))
+
+
 # ---------- reception ----------
 @router.post("/encounters", response_model=Envelope[WalkInOut])
 async def register_walk_in(body: WalkInIn, user: User = Depends(front_desk), db: AsyncSession = Depends(get_db)):
     patient, _key, recovery = await create_patient(db, phone=body.family_phone, age_group=body.age_group,
-                                                   sex=body.sex, pregnant=body.pregnant)
+                                                   sex=body.sex, pregnant=body.pregnant, full_name=body.full_name)
     enc = await esvc.open_encounter(db, facility_id=user.facility_id, patient_id=patient.id, actor=user,
                                     emergency=body.emergency, chief_complaint=body.chief_complaint.strip())
     await db.commit()

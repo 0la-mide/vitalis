@@ -26,6 +26,7 @@ VITAL_RANGES: dict[str, tuple[float, float, str]] = {
 
 class WorkerTriageIn(BaseModel):
     taps: list[Tap] = Field(default_factory=list, max_length=20)
+    full_name: str | None = Field(default=None, max_length=120)
     family_phone: str | None = Field(default=None, max_length=20, pattern=r"^\+?[0-9 ]{7,20}$")
 
 

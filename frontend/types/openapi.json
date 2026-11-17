@@ -1291,6 +1291,60 @@
         }
       }
     },
+    "/api/v1/hospital/encounters/{encounter_id}/patient": {
+      "patch": {
+        "tags": [
+          "encounters"
+        ],
+        "summary": "Update Identity",
+        "description": "Reception (or nurse / hospital admin) records or corrects the patient's name and NHIA number.",
+        "operationId": "update_identity_api_v1_hospital_encounters__encounter_id__patient_patch",
+        "parameters": [
+          {
+            "name": "encounter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Encounter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientIdentityIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_EncounterOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/hospital/encounters/{encounter_id}": {
       "get": {
         "tags": [
@@ -2812,6 +2866,67 @@
         }
       }
     },
+    "/api/v1/me/profile": {
+      "get": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "My Profile",
+        "operationId": "my_profile_api_v1_me_profile_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PatientIdentityOut_"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Update Profile",
+        "description": "The patient sets their own name and NHIA (formerly NHIS) number. Hospitals see it on their next visit.",
+        "operationId": "update_profile_api_v1_me_profile_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientIdentityIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PatientIdentityOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me/records": {
       "get": {
         "tags": [
@@ -3283,6 +3398,151 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Envelope_DemoPatientOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/push/key": {
+      "get": {
+        "tags": [
+          "push"
+        ],
+        "summary": "Key",
+        "operationId": "key_api_v1_push_key_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PushKey_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/push": {
+      "post": {
+        "tags": [
+          "push"
+        ],
+        "summary": "Patient Subscribe",
+        "operationId": "patient_subscribe_api_v1_me_push_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/push/subscribe": {
+      "post": {
+        "tags": [
+          "push"
+        ],
+        "summary": "Staff Subscribe",
+        "operationId": "staff_subscribe_api_v1_push_subscribe_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/push/unsubscribe": {
+      "post": {
+        "tags": [
+          "push"
+        ],
+        "summary": "Unsubscribe",
+        "description": "Knowing the (secret, browser-issued) endpoint is enough to stop alerts to that browser.",
+        "operationId": "unsubscribe_api_v1_push_unsubscribe_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndpointIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_dict_"
                 }
               }
             }
@@ -4360,6 +4620,20 @@
         ],
         "title": "EncounterVitalsIn"
       },
+      "EndpointIn": {
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Endpoint"
+          }
+        },
+        "type": "object",
+        "required": [
+          "endpoint"
+        ],
+        "title": "EndpointIn"
+      },
       "Envelope_AccessLog_": {
         "properties": {
           "data": {
@@ -4690,6 +4964,28 @@
         ],
         "title": "Envelope[OrderRow]"
       },
+      "Envelope_PatientIdentityOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PatientIdentityOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[PatientIdentityOut]"
+      },
       "Envelope_PatientKeysOut_": {
         "properties": {
           "data": {
@@ -4711,6 +5007,28 @@
           "data"
         ],
         "title": "Envelope[PatientKeysOut]"
+      },
+      "Envelope_PushKey_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PushKey"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[PushKey]"
       },
       "Envelope_RecordOut_": {
         "properties": {
@@ -5957,6 +6275,28 @@
             "type": "string",
             "title": "Vitalis Id"
           },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "nhia_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nhia Number"
+          },
           "age_group": {
             "anyOf": [
               {
@@ -6691,6 +7031,74 @@
         ],
         "title": "PageMeta"
       },
+      "PatientIdentityIn": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "nhia_number": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 24
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nhia Number"
+          }
+        },
+        "type": "object",
+        "title": "PatientIdentityIn",
+        "description": "Name and NHIA (formerly NHIS) number. Send \"\" to clear a field; leave it out to keep it."
+      },
+      "PatientIdentityOut": {
+        "properties": {
+          "vitalis_id": {
+            "type": "string",
+            "title": "Vitalis Id"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "nhia_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nhia Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vitalis_id",
+          "full_name",
+          "nhia_number"
+        ],
+        "title": "PatientIdentityOut"
+      },
       "PatientKeysOut": {
         "properties": {
           "patient_id": {
@@ -6857,6 +7265,39 @@
           "created_at"
         ],
         "title": "PrescriptionRow"
+      },
+      "PushKey": {
+        "properties": {
+          "public_key": {
+            "type": "string",
+            "title": "Public Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_key"
+        ],
+        "title": "PushKey"
+      },
+      "PushKeys": {
+        "properties": {
+          "p256dh": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "P256Dh"
+          },
+          "auth": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Auth"
+          }
+        },
+        "type": "object",
+        "required": [
+          "p256dh",
+          "auth"
+        ],
+        "title": "PushKeys"
       },
       "RecordOut": {
         "properties": {
@@ -7686,6 +8127,25 @@
           "verification_id"
         ],
         "title": "StaffRow"
+      },
+      "SubscriptionIn": {
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "maxLength": 2000,
+            "pattern": "^https://",
+            "title": "Endpoint"
+          },
+          "keys": {
+            "$ref": "#/components/schemas/PushKeys"
+          }
+        },
+        "type": "object",
+        "required": [
+          "endpoint",
+          "keys"
+        ],
+        "title": "SubscriptionIn"
       },
       "SymptomLine": {
         "properties": {
@@ -9064,6 +9524,18 @@
       },
       "WalkInIn": {
         "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
           "age_group": {
             "type": "string",
             "enum": [
@@ -9383,6 +9855,18 @@
             "type": "array",
             "maxItems": 20,
             "title": "Taps"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
           },
           "family_phone": {
             "anyOf": [

@@ -54,7 +54,8 @@ async def start(
     request: Request, body: WorkerTriageIn, worker: User = Depends(worker_only), db: AsyncSession = Depends(get_db)
 ):
     """Creates the walk-in patient and a triage report labelled as done on their behalf."""
-    patient, _device_key, recovery = await create_patient(db, phone=body.family_phone, created_by_worker_id=worker.id)
+    patient, _device_key, recovery = await create_patient(db, phone=body.family_phone, created_by_worker_id=worker.id,
+                                                             full_name=body.full_name)
     r = TriageReport(patient_id=patient.id, worker_id=worker.id, context={}, answers={"symptoms": [], "regions": []})
     # Default location: the worker's shop, so matching works before any GPS tap.
     profile = (await db.execute(select(WorkerProfile).where(WorkerProfile.user_id == worker.id))).scalar_one_or_none()

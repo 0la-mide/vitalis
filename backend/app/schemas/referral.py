@@ -64,6 +64,8 @@ class VitalLine(BaseModel):
 
 class IncomingPatient(BaseModel):
     vitalis_id: str
+    name: str | None = None
+    nhia_number: str | None = None
     age_group: str | None
     sex: str | None
     pregnant: bool

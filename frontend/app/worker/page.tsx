@@ -16,6 +16,7 @@ export default function WorkerHome() {
   const { data: tax } = useTaxonomy();
   const { reset, begin, setLocation } = useTriage();
   const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
 
   useEffect(() => {
     reset("worker");
@@ -35,7 +36,7 @@ export default function WorkerHome() {
   const familyPhone = /^\+?[0-9 ]{7,20}$/.test(phone.trim()) ? phone.trim() : undefined;
   const start = (code: string | null, next: string, context?: Record<string, unknown>) => {
     const step = next === "emergency" ? "emergency" : next === "who_child" ? "who_child" : next === "who" ? "who" : "body";
-    void begin(code ? [{ kind: "emergency", code }] : [], step, { familyPhone, context });
+    void begin(code ? [{ kind: "emergency", code }] : [], step, { familyPhone, fullName: name.trim() || undefined, context });
     router.push("/worker/triage");
   };
 
@@ -48,6 +49,10 @@ export default function WorkerHome() {
           Triage on behalf of the patient. They get a VITALIS ID and a recovery slip at the end.
         </p>
       </section>
+      <label className="grid gap-1 text-sm font-medium">
+        Patient&apos;s name (optional)
+        <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="off" maxLength={120} className={inputCls} />
+      </label>
       <label className="grid gap-1 text-sm font-medium">
         Family phone for alerts (optional)
         <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" inputMode="tel"

@@ -53,6 +53,10 @@ class Patient(IdMixin, TimestampMixin, Base):
     recovery_hash: Mapped[str] = mapped_column(String(64))
     phone: Mapped[str | None] = mapped_column(String(32))
     display_name: Mapped[str | None] = mapped_column(String(120))  # synthetic demo label only
+    # Set by the patient in the app, or by hospital reception. Optional: VITALIS works without a name.
+    full_name: Mapped[str | None] = mapped_column(String(120))
+    # National Health Insurance Authority (formerly NHIS) enrolment number, if the patient has one.
+    nhia_number: Mapped[str | None] = mapped_column(String(24))
     age_group: Mapped[str | None] = mapped_column(String(16))
     sex: Mapped[str | None] = mapped_column(String(8))
     pregnant: Mapped[bool] = mapped_column(default=False)

@@ -1,5 +1,6 @@
 "use client";
 
+import { PatientName } from "@/components/hospital/PatientName";
 import { useQuery } from "@tanstack/react-query";
 import { FlaskConical, Radio, Siren, UserPlus } from "lucide-react";
 import Link from "next/link";
@@ -77,7 +78,7 @@ function BoardCard({ i }: { i: Item }) {
     <Link href={`/hospital/patients/${i.id}`}>
       <Card className={cn("space-y-1 p-3 hover:bg-muted", i.emergency && "border-l-4 border-l-emergency")}>
         <div className="flex items-center justify-between gap-2">
-          <span className="font-mono font-semibold">{i.patient.vitalis_id}</span>
+          <PatientName p={i.patient} size="sm" />
           {i.state === "results_ready" ? <Badge tone="ok">Results ready</Badge> : null}
         </div>
         <p className="text-xs text-muted-foreground">
@@ -143,6 +144,7 @@ function WalkInForm({ onDone }: { onDone: () => void }) {
               emergency: fd.get("emergency") === "on",
               chief_complaint: fd.get("chief_complaint"),
               ...(fd.get("family_phone") ? { family_phone: fd.get("family_phone") } : {}),
+              ...(String(fd.get("full_name") ?? "").trim() ? { full_name: fd.get("full_name") } : {}),
             };
             setSlip(await api<Schemas["WalkInOut"]>("/hospital/encounters", { body }));
           } catch (err) {
@@ -152,6 +154,7 @@ function WalkInForm({ onDone }: { onDone: () => void }) {
           }
         }}
       >
+        <Field label="Full name (optional)"><input name="full_name" maxLength={120} className={inputCls} /></Field>
         <Field label="Age group">
           <select name="age_group" className={inputCls} defaultValue="adult">
             {Object.entries(AGE).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
