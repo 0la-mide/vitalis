@@ -23,3 +23,4 @@ frontend/public/sw.js.map
 frontend/public/swe-worker*
 frontend/*.tsbuildinfo
 pitch/VITALIS-video-assets.zip
+pitch/*.mp4
