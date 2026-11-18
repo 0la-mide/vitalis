@@ -6,6 +6,7 @@ import uuid
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 request_id_var: contextvars.ContextVar[str] = contextvars.ContextVar("request_id", default="-")
 
@@ -74,3 +75,30 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         if request.url.scheme == "https":
             h.setdefault("Strict-Transport-Security", "max-age=63072000; includeSubDomains")
         return response
+
+
+class DefaultLimitMiddleware(BaseHTTPMiddleware):
+    """At most 1200 API requests a minute from one IP, for every route.
+
+    Generous on purpose: a hospital or a venue's Wi-Fi puts many people behind one IP. Routes that create things
+    or check secrets have their own, tighter limits. Health checks and live streams are not counted.
+    """
+
+    SKIP = ("/api/v1/health",)
+
+    async def dispatch(self, request: Request, call_next):
+        from app.core import guard
+
+        path = request.url.path
+        w = guard.api_requests
+        if guard.enabled() and path.startswith("/api/") \
+                and path not in self.SKIP and not path.endswith("/stream"):
+            ip = request.client.host if request.client else "unknown"
+            if w.blocked(ip):
+                return JSONResponse(
+                    {"error": {"code": "rate_limited", "message": "Too many requests. Please wait a moment and try again.",
+                               "details": None}},
+                    status_code=429, headers={"Retry-After": str(w.retry_after(ip))},
+                )
+            w.hit(ip)
+        return await call_next(request)

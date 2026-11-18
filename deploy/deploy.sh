@@ -17,7 +17,22 @@ if [ -d .git ] && [ -z "${VITALIS_UPDATED:-}" ]; then
   VITALIS_UPDATED=1 exec bash deploy/deploy.sh "$@"
 fi
 
+# Secrets: only this user can read .env, and the app refuses to run on a weak signing secret, so make one.
+chmod 600 .env
+js="${JWT_SECRET:-}"
+if [ "${#js}" -lt 32 ] || [[ "$js" == change-me* || "$js" == dev-only* ]]; then
+  new=$(openssl rand -base64 48 | tr -d '\n/+=' | cut -c1-64)
+  if grep -q '^JWT_SECRET=' .env; then sed -i.bak "s|^JWT_SECRET=.*|JWT_SECRET=${new}|" .env && rm -f .env.bak
+  else echo "JWT_SECRET=${new}" >> .env; fi
+  export JWT_SECRET="${new}"
+  echo "Set a new random JWT_SECRET in .env (everyone signs in again once)."
+fi
+case "${POSTGRES_PASSWORD:-}" in change-me*|"") echo "WARNING: POSTGRES_PASSWORD in .env is weak. The database is not exposed outside Docker, but change it before a real pilot.";; esac
+
 mkdir -p backups
+chmod 700 backups
+# Keep two weeks of backups so they never fill the disk.
+find backups -name 'vitalis-*.sql.gz' -mtime +14 -delete 2>/dev/null || true
 if "${COMPOSE[@]}" exec -T postgres pg_isready -U vitalis -d vitalis >/dev/null 2>&1; then
   backup="backups/vitalis-$(date -u +%Y%m%dT%H%M%SZ).sql.gz"
   echo "Backing up PostgreSQL to ${backup}…"

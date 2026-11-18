@@ -1,6 +1,31 @@
+# Flood protection in front of the app (the app has its own, finer limits per route and per account).
+# The real client IP: Traefik (on a Docker network) puts it in X-Forwarded-For; trust only private hops, so a
+# client cannot pretend to be someone else by sending its own X-Forwarded-For.
+set_real_ip_from 10.0.0.0/8;
+set_real_ip_from 172.16.0.0/12;
+set_real_ip_from 192.168.0.0/16;
+set_real_ip_from 127.0.0.1;
+real_ip_header X-Forwarded-For;
+real_ip_recursive on;
+
+limit_req_zone $binary_remote_addr zone=vt_api:10m rate=40r/s;
+limit_req_zone $binary_remote_addr zone=vt_auth:10m rate=2r/s;
+limit_req_zone $binary_remote_addr zone=vt_web:10m rate=100r/s;
+limit_conn_zone $binary_remote_addr zone=vt_conn:10m;
+limit_req_status 429;
+limit_conn_status 429;
+
 server {
     listen 8080;
     server_name _;
+    server_tokens off;
+
+    # Slow clients cannot hold connections open forever.
+    client_header_timeout 15s;
+    client_body_timeout 15s;
+    send_timeout 30s;
+    keepalive_timeout 30s;
+    limit_conn vt_conn 100;  # one IP (a whole venue on Wi-Fi) can hold up to 100 connections, live streams included
 
     # Re-resolve container names (Docker DNS) so a rebuilt frontend/backend with a new IP never gives a 502.
     resolver 127.0.0.11 valid=10s ipv6=off;
@@ -29,7 +54,7 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Connection "";
         proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
         proxy_cache off;
@@ -37,18 +62,31 @@ server {
         proxy_read_timeout 1h;
     }
 
-    location /api/ {
+    # Sign-in and other secret-checking routes: a short burst is fine, a guessing script is not.
+    location ~ ^/api/v1/(auth/login|auth/register/|auth/resubmit|patients/recover) {
+        limit_req zone=vt_auth burst=20 nodelay;
         proxy_pass http://$backend_up;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api/ {
+        limit_req zone=vt_api burst=400 nodelay;
+        proxy_pass http://$backend_up;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     location / {
+        limit_req zone=vt_web burst=500 nodelay;
+        proxy_hide_header X-Powered-By;
         proxy_pass http://$frontend_up;
         proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }

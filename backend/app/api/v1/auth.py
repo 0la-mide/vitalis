@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import guard
 from app.core.audit import audit
 from app.core.config import get_settings
 from app.core.db import get_db, utcnow
@@ -70,13 +71,16 @@ async def _me(db: AsyncSession, user: User, csrf: str | None = None) -> MeOut:
 
 
 @router.post("/login", response_model=Envelope[MeOut])
-@limiter.limit("10/minute")
+@limiter.limit("30/minute")  # per network: a hospital or a venue shares one IP; guessing is stopped per account
 async def login(request: Request, body: LoginIn, response: Response, db: AsyncSession = Depends(get_db)):
+    guard.check_login(body.email)
     user = (
         await db.execute(select(User).where(func.lower(User.email) == body.email.lower()))
     ).scalar_one_or_none()
     if not verify_password(body.password, user.password_hash if user else None) or not user:
+        guard.login_failures.hit(body.email.strip().lower())
         raise AppError(401, "invalid_credentials", "Email or password is incorrect")
+    guard.login_failures.clear(body.email.strip().lower())
     user.last_login_at = utcnow()
     await audit(db, "auth.login", actor_id=user.id, facility_id=user.facility_id)
     await db.commit()

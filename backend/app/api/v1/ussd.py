@@ -13,8 +13,10 @@ from urllib.parse import parse_qs
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
+from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core import guard
 from app.core.config import get_settings
 from app.core.db import get_db
 from app.core.errors import AppError, Envelope, ok
@@ -40,7 +42,7 @@ async def numbers():
 
 
 @router.post("/ussd", response_class=PlainTextResponse)
-@limiter.limit("120/minute")
+@limiter.limit("600/minute")  # every caller arrives from the gateway's few IPs; the secret is the real gate
 async def ussd_callback(request: Request, key: str = "", db: AsyncSession = Depends(get_db)):
     s = get_settings()
     if s.ussd_secret:
@@ -80,15 +82,21 @@ def _demo_phone(phone: str) -> None:
 
 
 @router.post("/demo/ussd", response_model=Envelope[DemoUssdOut])
-@limiter.limit("60/minute")
+@limiter.limit("300/minute")
 async def demo_ussd(request: Request, body: DemoUssdIn, db: AsyncSession = Depends(get_db)):
     _demo_phone(body.phone)
+    # Finishing a session alerts a hospital: cap those per network so nobody can flood the demo hospitals.
+    net = get_remote_address(request)
+    if svc.read(body.text).state == "submit":
+        if guard.enabled() and guard.ussd_requests.blocked(net):
+            raise AppError(429, "too_many_requests", "Too many USSD requests from this network. Try again later.")
+        guard.ussd_requests.hit(net)
     reply = await svc.handle(db, body.phone, body.text, "simulator")
     return ok(DemoUssdOut(reply=reply[4:], done=reply.startswith("END")))
 
 
 @router.get("/demo/sms", response_model=Envelope[list[DemoSms]])
-@limiter.limit("60/minute")
+@limiter.limit("300/minute")  # the simulator polls every 3 s; a room full of people shares one IP
 async def demo_sms(request: Request, phone: str):
     _demo_phone(phone)
     return ok([DemoSms(**m) for m in reversed(demo_inbox(phone))])

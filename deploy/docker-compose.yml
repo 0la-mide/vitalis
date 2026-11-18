@@ -2,8 +2,18 @@
 # Usage (from repo root): docker compose -f deploy/docker-compose.yml --env-file .env up -d --build
 name: vitalis
 
+# Shared by every service: logs are rotated (they can never fill the disk) and no process can gain privileges.
+x-safe: &safe
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 512
+
 services:
   postgres:
+    <<: *safe
+    mem_limit: 1g
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -20,6 +30,9 @@ services:
     networks: [internal]
 
   model:
+    <<: *safe
+    mem_limit: 384m
+    cap_drop: [ALL]
     build: { context: ../model }
     restart: unless-stopped
     expose: ["8100"]
@@ -32,6 +45,9 @@ services:
     networks: [internal]
 
   backend:
+    <<: *safe
+    mem_limit: 1g
+    cap_drop: [ALL]
     build: { context: .., dockerfile: deploy/backend.Dockerfile }
     restart: unless-stopped
     env_file: ../.env
@@ -56,6 +72,9 @@ services:
     networks: [internal]
 
   frontend:
+    <<: *safe
+    mem_limit: 512m
+    cap_drop: [ALL]
     build: { context: ../frontend, dockerfile: ../deploy/frontend.Dockerfile }
     restart: unless-stopped
     environment:
@@ -70,6 +89,8 @@ services:
     networks: [internal]
 
   nginx:
+    <<: *safe
+    mem_limit: 128m
     image: nginx:1.27-alpine
     restart: unless-stopped
     depends_on:

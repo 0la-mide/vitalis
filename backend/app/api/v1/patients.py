@@ -15,7 +15,7 @@ router = APIRouter(prefix="/patients", tags=["patient"])
 
 
 @router.post("/start", response_model=Envelope[PatientKeysOut])
-@limiter.limit("10/minute")
+@limiter.limit("60/minute")  # per network: everyone at a venue or on one mobile carrier NAT shares an IP
 async def start(request: Request, body: PatientStartIn, db: AsyncSession = Depends(get_db)):
     """No login. Creates a patient and returns a device key + one-time recovery code (shown once)."""
     p, key, recovery = await create_patient(db, phone=body.phone)

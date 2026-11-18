@@ -1,12 +1,17 @@
 from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, FastAPI
-from slowapi import _rate_limit_exceeded_handler
+from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 
 from app.core.config import get_settings
 from app.core.errors import install_error_handlers
-from app.core.middleware import RequestIdMiddleware, SecurityHeadersMiddleware, setup_logging
+from app.core.middleware import (
+    DefaultLimitMiddleware,
+    RequestIdMiddleware,
+    SecurityHeadersMiddleware,
+    setup_logging,
+)
 from app.core.ratelimit import limiter
 
 
@@ -56,6 +61,15 @@ async def lifespan(app: FastAPI):
         t.cancel()
 
 
+def _too_many(request, exc):
+    """Same error shape as every other API error, so the app shows a calm message."""
+    return JSONResponse(
+        {"error": {"code": "rate_limited", "message": "Too many requests. Please wait a moment and try again.",
+                   "details": None}},
+        status_code=429, headers={"Retry-After": "60"},
+    )
+
+
 def create_app() -> FastAPI:
     setup_logging()
     settings = get_settings()
@@ -64,11 +78,15 @@ def create_app() -> FastAPI:
         version="0.1.0",
         lifespan=lifespan,
         docs_url=None if settings.is_prod else "/api/docs",
-        openapi_url="/api/openapi.json",
+        openapi_url=None if settings.is_prod else "/api/openapi.json",  # don't publish a map of the API in prod
         redoc_url=None,
     )
+    if settings.is_prod and (settings.jwt_secret.startswith("dev-only") or len(settings.jwt_secret) < 32):
+        raise RuntimeError("Set JWT_SECRET in .env to a long random value (deploy.sh does this for you).")
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, _too_many)
+    # Safety net: every API route, per IP, on top of each route's own @limiter.limit.
+    app.add_middleware(DefaultLimitMiddleware)
     install_error_handlers(app)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestIdMiddleware)
