@@ -24,3 +24,8 @@ frontend/public/swe-worker*
 frontend/*.tsbuildinfo
 pitch/VITALIS-video-assets.zip
 pitch/*.mp4
+
+# Built pitch files: delivered to ~/Downloads/vitalis/v2, rebuilt from the sources here
+pitch/VITALIS-presentation.pptx
+pitch/VITALIS-and-NHIA.pdf
+pitch/VITALIS-teleprompter.pdf

@@ -92,7 +92,8 @@ pres.addSection({ title: "Opening" });
 let s = dark("Opening");
 s.addImage({ path: IMG("icon.png"), x: 0.9, y: 1.3, w: 0.95, h: 0.95, objectName: "VITALIS icon", altText: "VITALIS icon" });
 T(s, "VITALIS", { x: 0.9, y: 2.55, w: 7.8, h: 1.2, fontSize: 66, bold: true, color: C.background1 });
-T(s, "Get the right hospital, fast.", { x: 0.9, y: 3.8, w: 7.8, h: 0.7, fontSize: 30, color: C.accent6 });
+T(s, "Healthcare for everyone.", { x: 0.9, y: 3.8, w: 7.8, h: 0.7, fontSize: 30, color: C.accent6 });
+T(s, "Get the right hospital, fast. On any phone.", { x: 0.9, y: 4.5, w: 7.8, h: 0.5, fontSize: 18, color: "A1A1A6" });
 T(s, "Healthcare coordination for Nigeria  ·  ITDC 2026  ·  vitalis.olamide.cloud", { x: 0.9, y: 5.7, w: 7.8, h: 0.4, fontSize: 14, color: C.accent4 });
 phone(s, "home.png", 9.35, 0.75, 6.0, "Patient home screen");
 s.addNotes("Good afternoon. We are VITALIS. In one sentence: VITALIS takes a family from 'something is wrong' to 'a hospital is ready for you', fast. Everything you will see is running live at vitalis.olamide.cloud, on synthetic demo data.");
@@ -109,17 +110,18 @@ const PROBLEMS = [
   ["Records stay behind", "Each hospital keeps its own file. Allergies don't travel with the patient."],
   ["Signal and power fail", "Apps that need the internet stop exactly when they are needed."],
   ["Cost decides the door", "Families don't know where their NHIA cover or free maternal care applies."],
+  ["Most phones aren't smart", "In villages many people have a basic phone and no data. Apps never reach them."],
 ];
 s = light("Opening", "The problem", "Finding care in Nigeria is guesswork.");
 PROBLEMS.forEach(([h, b], i) => {
-  const x = 0.7 + i * 2.43, w = 2.23;
+  const x = 0.7 + i * 2.02, w = 1.87;
   box(s, x, 1.95, w, 3.6, C.background2, `problem ${i + 1}`);
-  T(s, `0${i + 1}`, { x: x + 0.25, y: 2.2, w: 1.5, h: 0.8, fontSize: 40, bold: true, color: C.accent3 });
-  T(s, [{ text: h, options: { bold: true, fontSize: 17, color: C.text1, breakLine: true } }, { text: b, options: { fontSize: 13, color: C.accent4 } }],
-    { x: x + 0.25, y: 3.1, w: w - 0.45, h: 2.3, paraSpaceAfter: 6 });
+  T(s, `0${i + 1}`, { x: x + 0.2, y: 2.2, w: 1.5, h: 0.8, fontSize: 36, bold: true, color: C.accent3 });
+  T(s, [{ text: h, options: { bold: true, fontSize: 16, color: C.text1, breakLine: true } }, { text: b, options: { fontSize: 12.5, color: C.accent4 } }],
+    { x: x + 0.2, y: 3.05, w: w - 0.35, h: 2.4, paraSpaceAfter: 6 });
 });
 T(s, "Each one costs minutes. In an emergency, minutes are the difference.", { x: 0.7, y: 5.95, w: 11.9, h: 0.5, fontSize: 20, bold: true, color: C.accent1 });
-s.addNotes("We started by listing what actually goes wrong. One: nobody can see which hospital is able and ready tonight. Two: most people see a chemist first, and the chemist refers blind. Three: records stay locked inside each hospital, so an allergy recorded in one is unknown in the next. Four: signal and power fail, so apps that need the internet stop exactly when they are needed. Five: cost decides the door, because families don't know where their NHIA cover or free maternal care applies. Each one costs minutes. We built VITALIS to answer all five.");
+s.addNotes("We started by listing what actually goes wrong. One: nobody can see which hospital is able and ready tonight. Two: most people see a chemist first, and the chemist refers blind. Three: records stay locked inside each hospital, so an allergy recorded in one is unknown in the next. Four: signal and power fail, so apps that need the internet stop exactly when they are needed. Five: cost decides the door, because families don't know where their NHIA cover or free maternal care applies. And six: most phones in our villages are not smartphones, and there is no data, so apps never reach the people who need them most. Each one costs minutes. We built VITALIS to answer all six.");
 
 // =====================================================================================================
 // THE APP
@@ -177,7 +179,7 @@ pres.addSection({ title: "The people" });
 s = light("The people", "Everyone who touches the journey", "Nine roles. One journey.");
 box(s, 0.7, 1.95, 3.1, 3.55, C.background2, "community zone");
 T(s, "IN THE COMMUNITY", { x: 0.95, y: 2.1, w: 2.6, h: 0.3, fontSize: 11, bold: true, color: C.accent4, charSpacing: 1 });
-[["Family", "Triage, referral, her own record"], ["Chemist", "Walk-in triage, vitals, live referral"]].forEach(([h, b], i) => {
+[["Family", "App or USSD: triage, referral, her record"], ["Chemist", "Walk-in triage, vitals, live referral"]].forEach(([h, b], i) => {
   box(s, 0.95, 2.55 + i * 1.4, 2.6, 1.2, C.background1, `${h} card`, LINE);
   T(s, [{ text: h, options: { bold: true, fontSize: 17, color: C.text1, breakLine: true } }, { text: b, options: { fontSize: 12, color: C.accent4 } }], { x: 1.15, y: 2.7 + i * 1.4, w: 2.25, h: 0.95 });
 });
@@ -292,6 +294,53 @@ T(s, "Light and dark mode  ·  Large tap targets  ·  Pictures before words  · 
 s.addNotes("And it is light. The saved list of every verified hospital nearby is about six kilobytes. Each tap during triage sends under one kilobyte. The whole app, the first time, is about 228 kilobytes compressed, smaller than a single photo on WhatsApp. And there is no app store: it installs straight from the browser, on a basic Android phone.");
 
 // =====================================================================================================
+// EVERYONE: USSD AND THE AMBULANCE
+// =====================================================================================================
+pres.addSection({ title: "Everyone" });
+const BASIC = { U_menu: 680 / 1160, U_emergency: 680 / 1240, U_area: 680 / 1282, U_sent: 680 / 1160, U_dial: 680 / 1276 };
+const basic = (slide, name, x, y, h, alt) => {
+  const w = h * BASIC[name];
+  slide.addImage({ path: IMG(`${name}.png`), x, y, w, h, objectName: alt, altText: alt });
+  return w;
+};
+s = dark("Everyone");
+T(s, "HEALTHCARE FOR EVERYONE", { x: 0.9, y: 1.2, w: 7, h: 0.35, fontSize: 13, bold: true, color: C.accent6, charSpacing: 2 });
+T(s, "No smartphone.\nNo data.\nStill covered.", { x: 0.9, y: 1.65, w: 7.8, h: 3.2, fontSize: 54, bold: true, color: C.background1 });
+T(s, [{ text: "Dial ", options: {} }, { text: "*384*8482#", options: { bold: true, color: C.accent6 } },
+  { text: " on any phone. The nearest hospital that can treat you answers by SMS.", options: {} }],
+  { x: 0.9, y: 4.95, w: 7.4, h: 1.0, fontSize: 21, color: "A1A1A6" });
+basic(s, "U_menu", 9.3, 0.8, 5.9, "USSD menu on a basic phone");
+T(s, "Demo code. The live code is issued by an NCC-licensed USSD gateway.", { x: 0.9, y: 6.55, w: 7.4, h: 0.35, fontSize: 11, color: C.accent4 });
+s.addNotes("Now the people the apps never reach. In our villages many people have a basic phone, and no data at all. So VITALIS works without a smartphone and without data. You dial star 384 star 8482 hash on any phone, from any network, even on 2G. Healthcare for everyone.");
+
+s = light("Everyone", "USSD on any phone", "Dial. Choose. Sent.");
+[["U_menu", "Dial *384*8482#"], ["U_emergency", "What is happening?"], ["U_area", "Where are you?"], ["U_sent", "Sent. They will SMS you."]].forEach(([img, cap], i) => {
+  const x = 0.95 + i * 3.1;
+  const w = basic(s, img, x, 1.85, 4.25, cap);
+  num(s, x + w / 2 - 0.2, 6.2, String(i + 1), i === 3 ? C.accent1 : C.accent2, 0.4);
+  if (i < 3) chevron(s, x + 2.72, 3.8, `ussd arrow ${i + 1}`);
+  T(s, cap, { x: x - 0.25, y: 6.65, w: w + 0.5, h: 0.35, fontSize: 12, bold: true, color: C.text1, align: "center" });
+});
+s.addNotes("Three or four answers. What is happening: the same eight emergencies as the app. For a pregnancy or a sick child, what you see. Then where you are: a basic phone has no GPS, so you pick your local government area. And it is sent, to the nearest hospital that can actually treat it, chosen by the same rules as the app. You get your VITALIS ID, the hospital's number and the ambulance number on the screen, and again by SMS.");
+
+s = light("Everyone", "The other side of the call", "The hospital sees it. The answer comes by SMS.");
+card(s, "D_ussd.png", 0.8, 1.95, 5.7, 732 / 1076, "Hospital Incoming card dialled by USSD");
+card(s, "U_sms.png", 7.0, 1.95, 5.6, 524 / 1256, "SMS replies on the basic phone");
+point(s, 7.0, 4.65, 5.6, "Same rules as the app", "The same danger signs and matching decide.", "1", 0.75);
+point(s, 7.0, 5.45, 5.6, "No duplicate alerts", "One open request per phone; dial again for status.", "2", 0.75);
+point(s, 7.0, 6.25, 5.6, "Nothing near? The ambulance.", "They are told to call it at once.", "3", 0.75);
+s.addNotes("On the hospital side it is just another referral, marked Dialled by USSD, with a number to call back. The doctor taps Accept, and the answer reaches the basic phone by SMS: the hospital is ready, here is its number, here is the ambulance. Dialling again never alerts a second hospital; it shows the status. And if no hospital near that area can take the case, VITALIS tells them to call the ambulance straight away.");
+
+s = light("Everyone", "Ambulance", "One tap from the Ogun State Ambulance.");
+phone(s, "P_emergency_amb.png", 0.95, 1.85, 4.9, "Emergency plan with the ambulance button");
+phone(s, "P_home_amb.png", 3.65, 1.85, 4.9, "Home screen with the ambulance and USSD code");
+point(s, 6.6, 2.0, 6.0, "Beside 112 on every emergency screen", "Ogun State Ambulance · 0811 200 0033, one tap to call.", "1");
+point(s, 6.6, 3.1, 6.0, "In the USSD menu and every SMS", "Option 3 on any phone. The number travels with each answer.", "2");
+point(s, 6.6, 4.2, 6.0, "Works with no signal", "Saved on the phone with the hospital list.", "3");
+point(s, 6.6, 5.3, 6.0, "Never the wrong number", "Shown only where we know the state's ambulance. Today: Ogun State.", "4");
+s.addNotes("And help that comes to you. The Ogun State Ambulance, 0811 200 0033, now sits beside 112 on every emergency screen, one tap to call. It is option 3 on the USSD menu, and it is in every SMS we send. It is saved on the phone, so it works with no signal. And we only show it where we know it is the right ambulance: today, Ogun State.");
+
+// =====================================================================================================
 // ADOPTION
 // =====================================================================================================
 pres.addSection({ title: "Adoption" });
@@ -323,7 +372,7 @@ T(s, "Proposed model.", { x: 0.7, y: 6.35, w: 11.9, h: 0.35, fontSize: 12, color
 s.addNotes("Who is it for? Public first. Most Nigerians, especially low and middle income families, get care from public hospitals and health centres, so for them and for state ministries of health, VITALIS is free. Private hospitals and HMOs pay for extras: dashboards, links to their own systems, priority support. Same network, same patients. And one rule we will not break: there is never a fee per referral. A patient in an emergency is never a sale.");
 
 s = light("Adoption", "How it spreads", "Start where people already go first.");
-[["Abeokuta pilot", "Chemists and hospitals in one city. Clinicians review the rules."], ["Ogun State", "With the state ministry of health and primary health care board."],
+[["Abeokuta pilot", "Chemists, hospitals and USSD for the villages around one city."], ["Ogun State", "With the state ministry of health and primary health care board."],
   ["South-West", "Yoruba and Pidgin, with voice prompts."], ["Nigeria", "Hausa and Igbo. Linked with the NHIA."]].forEach(([h, b], i) => {
   const x = 0.7 + i * 3.05;
   num(s, x, 2.15, String(i + 1));
@@ -345,45 +394,46 @@ T(s, "What changes.", { x: 0.9, y: 2.4, w: 11.5, h: 1.4, fontSize: 72, bold: tru
 T(s, "For families. For hospitals. For Nigeria.", { x: 0.9, y: 3.9, w: 11.5, h: 0.7, fontSize: 28, color: C.accent6 });
 s.addNotes("So what changes? For families, for hospitals, and for Nigeria.");
 
-s = light("Benefits", "The problems, solved", "Five problems. Five answers.");
+s = light("Benefits", "The problems, solved", "Six problems. Six answers.");
 const ANSWERS = [
   "Hospitals mark what they can do. Only those that can treat her are shown, freshest first.",
   "He triages and refers live, and sees who reached care.",
   "One VITALIS ID. History opens with her consent; allergies always travel.",
   "Hospitals are saved on the phone. Requests and hospital actions send when signal returns.",
   "NHIA and free maternal care are shown. Insured patients see covered hospitals first.",
+  "Dial *384*8482# on any phone. The hospital answers by SMS; the ambulance is one call away.",
 ];
 PROBLEMS.forEach(([p], i) => {
-  const y = 1.95 + i * 0.92;
-  box(s, 0.7, y, 4.6, 0.76, C.background2, `problem row ${i + 1}`);
-  T(s, [{ text: `0${i + 1}  `, options: { bold: true, color: C.accent3 } }, { text: p, options: { color: C.text1 } }], { x: 0.95, y, w: 4.2, h: 0.76, fontSize: 16, bold: true, valign: "middle" });
-  s.addShape(pres.shapes.RIGHT_ARROW, { x: 5.45, y: y + 0.2, w: 0.5, h: 0.36, fill: { color: C.accent6 }, line: { type: "none" }, objectName: `answer arrow ${i + 1}` });
-  box(s, 6.1, y, 6.53, 0.76, C.accent5, `answer row ${i + 1}`);
-  T(s, ANSWERS[i], { x: 6.35, y, w: 6.1, h: 0.76, fontSize: 14, color: C.text1, valign: "middle" });
+  const y = 1.9 + i * 0.8;
+  box(s, 0.7, y, 4.6, 0.68, C.background2, `problem row ${i + 1}`);
+  T(s, [{ text: `0${i + 1}  `, options: { bold: true, color: C.accent3 } }, { text: p, options: { color: C.text1 } }], { x: 0.95, y, w: 4.2, h: 0.68, fontSize: 16, bold: true, valign: "middle" });
+  s.addShape(pres.shapes.RIGHT_ARROW, { x: 5.45, y: y + 0.16, w: 0.5, h: 0.36, fill: { color: C.accent6 }, line: { type: "none" }, objectName: `answer arrow ${i + 1}` });
+  box(s, 6.1, y, 6.53, 0.68, C.accent5, `answer row ${i + 1}`);
+  T(s, ANSWERS[i], { x: 6.35, y, w: 6.1, h: 0.68, fontSize: 14, color: C.text1, valign: "middle" });
 });
-s.addNotes("Remember the five problems. Nobody knows who is ready: now hospitals mark what they can do, and only those that can treat her are shown, freshest first. The chemist refers blind: now he refers live and sees who reached care. Records stay behind: now one VITALIS ID carries her history, opened with her consent, and allergies always travel. Signal and power fail: now hospitals are saved on the phone and everything sends when the signal returns. Cost decides the door: now NHIA and free maternal care are shown, and insured patients see covered hospitals first.");
+s.addNotes("Remember the six problems. Nobody knows who is ready: now hospitals mark what they can do, and only those that can treat her are shown, freshest first. The chemist refers blind: now he refers live and sees who reached care. Records stay behind: now one VITALIS ID carries her history, opened with her consent, and allergies always travel. Signal and power fail: now hospitals are saved on the phone and everything sends when the signal returns. Cost decides the door: now NHIA and free maternal care are shown, and insured patients see covered hospitals first. And most phones aren't smart: now anyone can dial star 384 star 8482 hash, the hospital answers by SMS, and the ambulance is one call away.");
 
 s = light("Benefits", "Who benefits", "Better for everyone in the room.");
-[["Families", C.accent1, ["Know where to go, in three taps", "Their history follows them, on their terms", "Works with no signal, on any phone", "Free, with no account"]],
+[["Families", C.accent1, ["Know where to go, in three taps", "Their history follows them, on their terms", "Works with no signal, on any phone", "A basic phone is enough, by USSD"]],
   ["Hospitals", C.accent2, ["Patients arrive expected and triaged", "Fewer patients at the wrong door", "Safer prescribing, with history from other hospitals", "Keep working when the network drops"]],
-  ["Nigeria", C.text2, ["Faster care where delay costs lives, starting with mothers", "Chemists become a trusted front door", "Insurance and free care easier to use", "A clear view of where care is needed most"]]].forEach(([h, color, items], i) => {
+  ["Nigeria", C.text2, ["Faster care where delay costs lives, starting with mothers", "Villages reached on any phone, the ambulance one call away", "Insurance and free care easier to use", "A clear view of where care is needed most"]]].forEach(([h, color, items], i) => {
   const x = 0.7 + i * 4.05;
   box(s, x, 1.95, 3.83, 0.85, color, `${h} header`);
   T(s, h, { x: x + 0.3, y: 1.95, w: 3.3, h: 0.85, fontSize: 22, bold: true, color: C.background1, valign: "middle" });
   box(s, x, 2.95, 3.83, 3.55, C.background2, `${h} list`);
-  T(s, items.map((t, k) => ({ text: t, options: { bullet: { indent: 16 }, breakLine: k < items.length - 1 } })), { x: x + 0.3, y: 3.2, w: 3.3, h: 3.15, fontSize: 17, color: C.text1, paraSpaceAfter: 14 });
+  T(s, items.map((t, k) => ({ text: t, options: { bullet: { indent: 16 }, breakLine: k < items.length - 1 } })), { x: x + 0.3, y: 3.2, w: 3.3, h: 3.2, fontSize: 16, color: C.text1, paraSpaceAfter: 12 });
 });
-s.addNotes("For families: they know where to go in three taps, their history follows them on their terms, and it works with no signal, free, with no account. For hospitals: patients arrive expected, fewer turn up at the wrong door, prescribing is safer, and work continues when the network drops. And for Nigeria: faster care where delay costs lives, starting with mothers; chemists become a trusted front door; insurance and free care become easier to use; and for the first time, a clear view of where care is needed most.");
+s.addNotes("For families: they know where to go in three taps, their history follows them on their terms, and it works with no signal, and a basic phone is enough. For hospitals: patients arrive expected, fewer turn up at the wrong door, prescribing is safer, and work continues when the network drops. And for Nigeria: faster care where delay costs lives, starting with mothers; villages are reached on any phone, with the ambulance one call away; insurance and free care become easier to use; and for the first time, a clear view of where care is needed most.");
 
 s = dark("Benefits");
 T(s, "BY THE NUMBERS", { x: 0.9, y: 0.75, w: 6, h: 0.35, fontSize: 13, bold: true, color: C.accent6, charSpacing: 2 });
 [["3", "taps to an emergency plan"], ["6 KB", "to work with no signal"], ["10 min", "a QR code lasts"], ["24 h", "a consent lasts"],
-  ["9", "roles, one journey"], ["114", "automated tests"], ["< 1 KB", "per tap"], ["0", "fees per referral"]].forEach(([n, l], i) => {
+  ["9", "roles, one journey"], ["121", "automated tests"], ["2G", "is all USSD needs"], ["0", "fees per referral"]].forEach(([n, l], i) => {
   const x = 0.9 + (i % 4) * 3.0, y = 1.5 + Math.floor(i / 4) * 2.55;
   T(s, n, { x, y, w: 2.85, h: 1.25, fontSize: 52, bold: true, color: C.background1 });
   T(s, l, { x, y: y + 1.3, w: 2.7, h: 0.8, fontSize: 17, color: "A1A1A6" });
 });
-s.addNotes("By the numbers. Three taps to an emergency plan. Six kilobytes to work with no signal. A QR code that lasts ten minutes, and consent that lasts twenty-four hours. Nine roles, one journey. 114 automated tests. Under a kilobyte per tap. And zero fees per referral.");
+s.addNotes("By the numbers. Three taps to an emergency plan. Six kilobytes to work with no signal. A QR code that lasts ten minutes, and consent that lasts twenty-four hours. Nine roles, one journey. 121 automated tests. 2G is all you need to reach us by USSD. And zero fees per referral.");
 
 // =====================================================================================================
 // CLOSE

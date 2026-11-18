@@ -121,9 +121,9 @@ pdf.ln(4)
 # together
 pdf.set_fill_color(*MINT)
 y = pdf.get_y()
-pdf.rect(16, y, W, 50, style="F")
+pdf.rect(16, y, W, 55, style="F")
 pdf.set_fill_color(*GREEN)
-pdf.rect(16, y, 1.6, 50, style="F")
+pdf.rect(16, y, 1.6, 55, style="F")
 pdf.set_xy(22, y + 4)
 pdf.set_font("helvetica", "B", 12)
 pdf.cell(0, 6, "Working together", new_x="LMARGIN", new_y="NEXT")
@@ -133,13 +133,15 @@ together = [
     "coverage can be checked without another form.",
     "**Today:** hospitals show **Accepts NHIA** and **Free maternal care**; an insured patient sees those first, "
     "but only among hospitals that can treat her. Saved on the phone, so it works with no signal.",
+    "**Today:** no smartphone or data needed: people dial a USSD code from any phone and the hospital answers by "
+    "SMS, reaching the same families the Vulnerable Group Fund is for.",
     "**Next (planned):** referral and arrival records that can support claims and help the NHIA see where care is "
     "needed most.",
 ]
 for it in together:
     pdf.set_x(22)
-    pdf.multi_cell(W - 12, 5.8, t(it), markdown=True, align="L", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(1.2)
+    pdf.multi_cell(W - 12, 5.3, t(it), markdown=True, align="L", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(0.7)
 
 # footer
 pdf.set_y(-21)
