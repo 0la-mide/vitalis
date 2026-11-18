@@ -68,6 +68,8 @@ class HospitalCard(BaseModel):
     ready_now: bool
     reasons: list[str]
     warnings: list[str]
+    accepts_nhia: bool = False
+    free_maternal_care: bool = False
 
 
 class ExcludedCard(BaseModel):

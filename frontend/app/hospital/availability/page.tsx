@@ -1,5 +1,6 @@
 "use client";
 
+import { CoverageCard } from "@/components/hospital/CoverageCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge, Card } from "@/components/ui/card";
 import { api, type Schemas } from "@/lib/api";
@@ -33,6 +34,7 @@ export default function AvailabilityPage() {
           updated in the last 6 hours.
         </p>
       </div>
+      <CoverageCard />
       {isLoading ? <p className="text-muted-foreground">Loading…</p> : null}
       <div className="grid gap-2 md:grid-cols-2">
         {rows.map((r) => (

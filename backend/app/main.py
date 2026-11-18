@@ -22,6 +22,7 @@ def build_router() -> APIRouter:
         hospital,
         me,
         network,
+        offline,
         patients,
         push,
         referrals,
@@ -31,7 +32,7 @@ def build_router() -> APIRouter:
     )
 
     api = APIRouter(prefix="/api/v1")
-    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, encounters, clinical, admin, worker, me, network, demo, push):
+    for module in (health, auth, registration, patients, triage, referrals, facilities, hospital, encounters, clinical, admin, worker, me, network, demo, push, offline):
         api.include_router(module.router)
     return api
 

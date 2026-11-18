@@ -21,6 +21,10 @@ class Facility(IdMixin, TimestampMixin, Base):
     status: Mapped[str] = mapped_column(String(16), default=VerificationStatus.pending, index=True)
     status_reason: Mapped[str | None] = mapped_column(String(300))
     licence_number: Mapped[str | None] = mapped_column(String(64))
+    # Cost and coverage, shown to families: does it take NHIA (formerly NHIS) patients, and does a state free
+    # maternal and child health programme apply here.
+    accepts_nhia: Mapped[bool] = mapped_column(default=False, server_default="false")
+    free_maternal_care: Mapped[bool] = mapped_column(default=False, server_default="false")
 
     services = relationship(
         "FacilityService", lazy="raise", back_populates="facility", cascade="all, delete-orphan"

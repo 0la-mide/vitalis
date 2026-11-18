@@ -1,5 +1,6 @@
 "use client";
 
+import { isQueued, sendOrQueue } from "@/lib/outbox";
 import { IdentityCard, PatientName } from "@/components/hospital/PatientName";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDown, ArrowRight, ArrowUp, CircleAlert, FileSignature, FlaskConical, Siren } from "lucide-react";
@@ -20,6 +21,13 @@ import { clockTime, cn, timeAgo } from "@/lib/utils";
 import { VITAL_FIELDS, vitalLabel } from "@/lib/vitals";
 
 type Enc = Schemas["EncounterOut"];
+
+/** Each reading keeps the moment it was taken, even if it reaches the server later. */
+function stampVitals(body: unknown): unknown {
+  const b = (body ?? {}) as { readings?: { kind: string; value: number; measured_at?: string }[] };
+  const at = new Date().toISOString();
+  return { ...b, readings: (b.readings ?? []).map((r) => ({ measured_at: at, ...r })) };
+}
 type Vital = Schemas["VitalRow"];
 type Mutate = (path: string, body?: unknown) => Promise<void>;
 
@@ -43,9 +51,13 @@ export default function EncounterPage() {
 
   const m = useMutation({
     mutationFn: ({ path, body }: { path: string; body?: unknown }) =>
-      api<Enc>(`/hospital/encounters/${id}${path}`, { body: body ?? {} }),
+      // Vitals taken with no signal are saved on this phone (with the time they were taken) and sent later.
+      path === "/vitals"
+        ? sendOrQueue<Enc>(`/hospital/encounters/${id}${path}`, { body: stampVitals(body) }, "Vital signs")
+        : api<Enc>(`/hospital/encounters/${id}${path}`, { body: body ?? {} }),
     onSuccess: (data) => {
       setErr(null);
+      if (isQueued(data)) return;
       qc.setQueryData(key, data);
       void qc.invalidateQueries({ queryKey: ["encounters"] });
     },

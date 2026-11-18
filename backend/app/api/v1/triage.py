@@ -62,7 +62,8 @@ def to_out(ev: svc.Evaluation, active_referral_id: uuid.UUID | None = None) -> T
                     facility_id=x.facility_id, name=x.name, lga=x.lga, lat=x.lat, lng=x.lng, phone=x.phone,
                     distance_km=x.distance_km, eta_minutes=x.eta_minutes, score=x.score,
                     freshness=x.freshness, last_confirmed_at=x.last_confirmed_at, ready_now=x.ready_now,
-                    reasons=x.reasons, warnings=x.warnings,
+                    reasons=x.reasons, warnings=x.warnings, accepts_nhia=x.accepts_nhia,
+                    free_maternal_care=x.free_maternal_care,
                 )
                 for x in m.matches[:3]
             ],

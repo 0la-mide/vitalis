@@ -98,6 +98,24 @@ Each deploy copies `DEMO_LOGINS.pdf` and `VITALIS-User-Guide.pdf` (user guide + 
 working sign-in details) to the repo folder on the server (gitignored). Both are made whenever demo data is seeded
 (`--reset-demo`). Locally: `make demo-reset` writes them to `backend/var/`.
 
+## Works with no signal
+
+- **Families:** the app keeps an offline copy on the phone (danger-sign rules, symptoms, every verified hospital with
+  its services and last-known availability: about 6 KB compressed, refreshed at most every 10 minutes when online).
+  With no signal the same rules and matching run on the phone (`frontend/lib/offline.ts`, kept identical to the server:
+  `node frontend/scripts/offline-parity.mjs`). The emergency screen, Call 112, the closest hospitals that can treat
+  the case and their phone numbers all work; hospitals are not alerted until the phone is back online, and the app says
+  so. "Save request" keeps it on the phone and sends it automatically when the signal returns.
+- **Hospitals:** accept / decline, arrival and vitals tapped with no signal are kept in an outbox on the phone and sent
+  in order when the signal returns (vitals keep the time they were taken). A bar says what is waiting.
+- **Data:** first visit about 230 KB compressed, then cached; each triage tap under 1 KB.
+
+## Cost and coverage
+
+Hospital cards show **Accepts NHIA** and **Free maternal care**. The hospital admin sets them under *Service
+availability*. Patients with an NHIA number see NHIA hospitals a little higher; cost never overrides capability (a
+hospital missing an essential service is still excluded).
+
 ## Alerts on the phone (web push)
 
 Families (on their referral page), chemists (My referrals) and hospital staff (Incoming) tap **Get alerts on this

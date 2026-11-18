@@ -1,5 +1,6 @@
 "use client";
 
+import { isQueued, sendOrQueue } from "@/lib/outbox";
 import { PatientName } from "@/components/hospital/PatientName";
 import { AlertsButton } from "@/components/ui/AlertsButton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -78,13 +79,18 @@ export default function IncomingPage() {
 
   const act = useMutation({
     mutationFn: async (v: { kind: "decide" | "arrived" | "ready"; id: string; action?: string; reason?: string }) => {
-      if (v.kind === "decide") return api(`/hospital/referrals/${v.id}`, { method: "PATCH", body: { action: v.action, reason: v.reason } });
-      if (v.kind === "arrived") return api(`/hospital/referrals/${v.id}/arrived`, { method: "POST" });
+      // No signal: accept / decline and arrival are saved on this phone and sent when it returns (OutboxBar).
+      if (v.kind === "decide") {
+        return sendOrQueue(`/hospital/referrals/${v.id}`, { method: "PATCH", body: { action: v.action, reason: v.reason } },
+          v.action === "accept" ? "Accept referral" : v.action === "decline" ? "Decline referral" : "Ask for more information");
+      }
+      if (v.kind === "arrived") return sendOrQueue(`/hospital/referrals/${v.id}/arrived`, { method: "POST" }, "Confirm arrival");
       return api(`/hospital/alerts/${v.id}/ready`, { method: "POST" });
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: ["incoming"] }),
+    onSettled: () => void qc.invalidateQueries({ queryKey: ["incoming"] }),
     // Arrival opens the encounter: go straight to it.
     onSuccess: (data, v) => {
+      if (isQueued(data)) return;
       const enc = (data as { encounter_id?: string | null } | undefined)?.encounter_id;
       if (v.kind === "arrived" && enc) router.push(`/hospital/patients/${enc}`);
     },

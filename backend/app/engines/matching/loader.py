@@ -44,6 +44,8 @@ async def load_snapshots(db: AsyncSession, report_id: uuid.UUID | None = None) -
                 for s in f.services
             },
             ready_alert=f.id in ready,
+            accepts_nhia=f.accepts_nhia,
+            free_maternal_care=f.free_maternal_care,
         )
         for f in rows
     ]

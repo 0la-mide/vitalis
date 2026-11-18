@@ -42,6 +42,9 @@ FRESH, STALE, OLD = timedelta(hours=1), timedelta(hours=12), timedelta(days=4)
 
 # Demo origin used by the demo script: Abeokuta South (Ibara / Kuto area).
 DEMO_ORIGIN = (7.1475, 3.3619)
+# Synthetic coverage flags for the demo hospitals (illustrative, not real NHIA accreditation data).
+DEMO_NHIA_FACILITIES = {"central", "lafenwa", "teaching", "kemta", "sapon"}
+DEMO_FREE_MATERNAL = {"central", "kemta", "lafenwa"}
 
 
 @dataclass
@@ -56,6 +59,8 @@ class F:
     services: dict  # code -> (availability, age-of-confirmation or None)
     status: str = VerificationStatus.approved
     demo_role: str = ""
+    accepts_nhia: bool = False
+    free_maternal_care: bool = False
 
 
 FACILITIES = [
@@ -183,6 +188,7 @@ async def seed(password: str | None = None, write_logins: bool = False) -> Path 
         n = 0
         for f in FACILITIES:
             fac = Facility(name=f.name, type=f.type, lga=f.lga, lat=f.lat, lng=f.lng, phone=f.phone,
+                           accepts_nhia=f.slug in DEMO_NHIA_FACILITIES, free_maternal_care=f.slug in DEMO_FREE_MATERNAL,
                            address=f"{f.lga}, Ogun State", status=f.status, licence_number=f"OG-HF-{1000 + n}")
             db.add(fac)
             await db.flush()

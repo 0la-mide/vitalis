@@ -45,7 +45,9 @@ def transition(ref: Referral, to: ReferralStatus) -> None:
 async def _ranked(db: AsyncSession, report: TriageReport) -> list[Match]:
     lat, lng, _ = report_location(report)
     snaps = await load_snapshots(db, report.id)
-    return match(snaps, report.care_type, lat, lng, utcnow(), get_settings().city_speed_kmh, limit=50).matches
+    patient = await db.get(Patient, report.patient_id)
+    return match(snaps, report.care_type, lat, lng, utcnow(), get_settings().city_speed_kmh, limit=50,
+                 prefer_nhia=bool(patient and patient.nhia_number)).matches
 
 
 async def _tried_facilities(db: AsyncSession, report_id: uuid.UUID) -> set[uuid.UUID]:

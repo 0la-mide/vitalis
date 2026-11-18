@@ -37,6 +37,8 @@ class FacilitySnap:
     phone: str | None
     services: dict[str, ServiceSnap]
     ready_alert: bool = False  # tapped "Ready" on a heads-up for this report
+    accepts_nhia: bool = False
+    free_maternal_care: bool = False
 
 
 @dataclass
@@ -56,6 +58,8 @@ class Match:
     ready_now: bool
     reasons: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    accepts_nhia: bool = False
+    free_maternal_care: bool = False
 
 
 @dataclass
@@ -97,6 +101,7 @@ def freshness_of(ts: datetime | None, now: datetime) -> str:
 
 FRESH_SCORE = {"confirmed": 1.0, "stale": 0.5, "unknown": 0.0}
 FRESH_RANK = {"confirmed": 2, "stale": 1, "unknown": 0}
+MATERNAL_CHILD = {"obstetrics", "paediatrics"}
 
 
 def _service_name(code: str) -> str:
@@ -114,7 +119,10 @@ def match(
     now: datetime,
     speed_kmh: float = 25.0,
     limit: int = 5,
+    prefer_nhia: bool = False,
 ) -> MatchResult:
+    """prefer_nhia: the patient has an NHIA number, so NHIA facilities rank a little higher. Cost never overrides
+    capability: a facility without the essential services is still excluded."""
     cfg = care_types()["care_types"].get(care_type or "", {})
     essential: list[str] = cfg.get("essential", [])
     preferred: list[str] = cfg.get("preferred", [])
@@ -192,6 +200,12 @@ def match(
             warnings.append("Availability not confirmed recently")
         if pref_have:
             reasons.append(f"Also has {', '.join(_service_name(c).lower() for c in pref_have[:3])}")
+        if f.accepts_nhia and prefer_nhia:
+            score = min(100.0, score + 4)
+            reasons.append("Accepts NHIA: your cover works here")
+        if f.free_maternal_care and care_type in MATERNAL_CHILD:
+            score = min(100.0, score + 2)
+            reasons.append("Free maternal and child care")
 
         ready = f.ready_alert or (
             bool(ess)
@@ -215,6 +229,8 @@ def match(
                 ready_now=ready,
                 reasons=reasons,
                 warnings=warnings,
+                accepts_nhia=f.accepts_nhia,
+                free_maternal_care=f.free_maternal_care,
             )
         )
 

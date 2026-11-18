@@ -2,7 +2,7 @@
 
 // Shared tap-to-triage flow: the family on their own phone, or a frontline worker on their behalf.
 
-import { Phone, Siren } from "lucide-react";
+import { CloudOff, Phone, Siren } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -24,7 +24,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api, type TriageOut } from "@/lib/api";
 import { useT } from "@/lib/i18n";
-import { triageBase, useTriage, type Mode } from "@/lib/triage-store";
+import { sessionTaps, triageBase, useTriage, type Mode } from "@/lib/triage-store";
+import { savePending, type PendingRequest } from "@/lib/offline";
 import { WalkInBar } from "@/components/worker/WalkInBar";
 import { cn } from "@/lib/utils";
 
@@ -67,6 +68,7 @@ export function TriageFlow({ mode }: { mode: Mode }) {
   const [view, setView] = useState<BodyView>("front");
   const [requesting, setRequesting] = useState<string | null>(null);
   const [requestError, setRequestError] = useState<string | null>(null);
+  const [saved, setSaved] = useState<PendingRequest | null>(null);
 
   // Landing here without a started triage (e.g. reload) -> back home.
   useEffect(() => {
@@ -94,6 +96,15 @@ export function TriageFlow({ mode }: { mode: Mode }) {
 
   const request = async (facilityId: string) => {
     s.countTap();
+    if (s.offline) {
+      // No signal: keep the request on the phone; OfflineSync sends it the moment the phone is back online.
+      const h = s.result?.hospitals.top.find((x) => x.facility_id === facilityId);
+      const p: PendingRequest = { taps: sessionTaps(), facility_id: facilityId, facility_name: h?.name ?? "the hospital",
+        facility_phone: h?.phone ?? null, saved_at: new Date().toISOString() };
+      await savePending(p);
+      setSaved(p);
+      return;
+    }
     setRequesting(facilityId);
     setRequestError(null);
     try {
@@ -117,7 +128,12 @@ export function TriageFlow({ mode }: { mode: Mode }) {
   const content = (() => {
     switch (s.step) {
       case "emergency":
-        return <EmergencyStep result={s.result} busy={s.busy} onRequest={request} requesting={requesting} />;
+        return (
+          <>
+            {s.offline ? <OfflineNotice ageMin={s.bundleAgeMin} saved={saved} /> : null}
+            <EmergencyStep result={s.result} busy={s.busy} onRequest={request} requesting={requesting} offline={s.offline} />
+          </>
+        );
       case "who":
         return (
           <>
@@ -303,7 +319,12 @@ export function TriageFlow({ mode }: { mode: Mode }) {
           </>
         );
       case "results":
-        return <ResultsStep result={s.result} onRequest={request} requesting={requesting} onBack={s.back} />;
+        return (
+          <>
+            {s.offline ? <OfflineNotice ageMin={s.bundleAgeMin} saved={saved} /> : null}
+            <ResultsStep result={s.result} onRequest={request} requesting={requesting} onBack={s.back} offline={s.offline} />
+          </>
+        );
     }
   })();
 
@@ -391,16 +412,49 @@ function SymptomsStep({
   );
 }
 
+/** No signal: say plainly what still works and what doesn't. */
+function OfflineNotice({ ageMin, saved }: { ageMin: number | null; saved: PendingRequest | null }) {
+  const t = useT();
+  if (saved) {
+    return (
+      <Card className="mt-3 space-y-2 border-2 border-primary" role="status">
+        <p className="flex items-center gap-2 text-lg font-bold"><CloudOff className="h-5 w-5" /> {t("offline.saved_title")}</p>
+        <p>{t("offline.saved_body").replace("{name}", saved.facility_name)}</p>
+        {saved.facility_phone ? (
+          <a href={`tel:${saved.facility_phone.replace(/\s/g, "")}`}
+            className="flex min-h-14 items-center justify-center gap-2 rounded-xl bg-primary text-lg font-bold text-primary-foreground">
+            <Phone className="h-5 w-5" /> {saved.facility_name}
+          </a>
+        ) : null}
+      </Card>
+    );
+  }
+  const age = ageMin;
+  return (
+    <div className="mt-3 rounded-2xl bg-muted p-3 text-sm" role="status">
+      <p className="flex items-center gap-2 font-bold"><CloudOff className="h-4 w-4" /> {t("offline.title")}</p>
+      <p className="mt-0.5">{t("offline.body")}</p>
+      {age !== null ? (
+        <p className="mt-0.5 text-muted-foreground">
+          {t("offline.saved_at")}: {age < 60 ? `${age} min` : `${Math.round(age / 60)} h`} ago
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 function EmergencyStep({
   result,
   busy,
   onRequest,
   requesting,
+  offline,
 }: {
   result: TriageOut | null;
   busy: boolean;
   onRequest: (id: string) => void;
   requesting: string | null;
+  offline?: boolean;
 }) {
   const t = useT();
   const top = result?.hospitals.top ?? [];
@@ -430,6 +484,7 @@ function EmergencyStep({
           h={h}
           primary={i === 0}
           emergency
+          offline={offline}
           onRequest={() => onRequest(h.facility_id)}
           requesting={requesting === h.facility_id}
         />
@@ -453,11 +508,13 @@ function ResultsStep({
   onRequest,
   requesting,
   onBack,
+  offline,
 }: {
   result: TriageOut | null;
   onRequest: (id: string) => void;
   requesting: string | null;
   onBack: () => void;
+  offline?: boolean;
 }) {
   const t = useT();
   if (!result?.action_level) {
@@ -490,6 +547,7 @@ function ResultsStep({
           key={h.facility_id}
           h={h}
           primary={i === 0}
+          offline={offline}
           onRequest={() => onRequest(h.facility_id)}
           requesting={requesting === h.facility_id}
         />

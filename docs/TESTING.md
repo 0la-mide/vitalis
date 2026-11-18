@@ -169,6 +169,14 @@ and recovery code from `make logins`).
 2. [ ] On the live site (HTTPS), tap **Get alerts on this phone** on a family referral page and on **Incoming**.
    Accept the referral: the family phone gets "Hospital is ready" even with the app closed.
 
+### E5. No signal (offline)
+
+1. [ ] Open the app once online (it saves the offline copy). Turn on airplane mode.
+2. [ ] Pregnancy problem → Private parts → Heavy bleeding. *Expect:* "No signal" note, the emergency screen, Call 112,
+   hospitals with "Accepts NHIA" / "Free maternal care", button "Save request (sends when online)".
+3. [ ] Tap it → "Request saved" with a call button. Turn airplane mode off and open the app → "Your request was sent".
+4. [ ] Hospital (Incoming), airplane mode on: Accept → bar "No signal · 1 saved on this phone". Back online → accepted.
+
 ### F. Registration and verification
 
 1. [ ] Sign out → **Register** → **Frontline worker**: fill it in, attach any small **PDF/JPG/PNG** (≤ 5 MB) → Submit.

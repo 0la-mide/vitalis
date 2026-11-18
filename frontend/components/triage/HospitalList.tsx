@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, CircleAlert, Phone } from "lucide-react";
+import { CheckCircle2, CircleAlert, HeartHandshake, Phone, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import type { HospitalCard, TriageOut } from "@/lib/api";
@@ -13,12 +13,14 @@ export function HospitalCardView({
   onRequest,
   requesting,
   emergency,
+  offline,
 }: {
   h: HospitalCard;
   primary?: boolean;
   onRequest?: () => void;
   requesting?: boolean;
   emergency?: boolean;
+  offline?: boolean;
 }) {
   const t = useT();
   return (
@@ -38,6 +40,8 @@ export function HospitalCardView({
       </div>
       <div className="mt-2 flex flex-wrap gap-1.5">
         <FreshnessBadge f={h.freshness} at={h.last_confirmed_at} />
+        {h.accepts_nhia ? <Badge tone="info"><ShieldCheck className="h-3.5 w-3.5" /> {t("hospital.nhia")}</Badge> : null}
+        {h.free_maternal_care ? <Badge tone="ok"><HeartHandshake className="h-3.5 w-3.5" /> {t("hospital.free_maternal")}</Badge> : null}
         {h.warnings.slice(0, 2).map((w) => (
           <Badge key={w} tone="warn">
             <CircleAlert className="h-3.5 w-3.5" /> {w}
@@ -60,7 +64,7 @@ export function HospitalCardView({
             onClick={onRequest}
             disabled={requesting}
           >
-            {requesting ? t("common.loading") : t("results.request")}
+            {requesting ? t("common.loading") : offline ? t("offline.save") : t("results.request")}
           </Button>
           {h.phone ? (
             <a

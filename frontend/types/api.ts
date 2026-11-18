@@ -550,6 +550,27 @@ export interface paths {
         patch: operations["decide_staff_api_v1_hospital_staff__user_id__patch"];
         trace?: never;
     };
+    "/api/v1/hospital/coverage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Coverage */
+        get: operations["coverage_api_v1_hospital_coverage_get"];
+        /**
+         * Set Coverage
+         * @description The hospital admin says whether the hospital takes NHIA patients and offers free maternal and child care.
+         */
+        put: operations["set_coverage_api_v1_hospital_coverage_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/hospital/encounters": {
         parameters: {
             query?: never;
@@ -1109,6 +1130,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/worker/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Stats
+         * @description This month: patients referred, how many reached a hospital, how many were emergencies. Plain recognition,
+         *     so the chemist on the corner sees the difference they make.
+         */
+        get: operations["stats_api_v1_worker_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me/profile": {
         parameters: {
             query?: never;
@@ -1431,6 +1473,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/offline/bundle": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Bundle */
+        get: operations["bundle_api_v1_offline_bundle_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1629,6 +1688,13 @@ export interface components {
             /** Other Hospital Visits */
             other_hospital_visits: number;
         };
+        /** CoverageIO */
+        CoverageIO: {
+            /** Accepts Nhia */
+            accepts_nhia: boolean;
+            /** Free Maternal Care */
+            free_maternal_care: boolean;
+        };
         /** DecideIn */
         DecideIn: {
             /**
@@ -1818,6 +1884,11 @@ export interface components {
             data: components["schemas"]["ConsentStatus"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[CoverageIO] */
+        Envelope_CoverageIO_: {
+            data: components["schemas"]["CoverageIO"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[DecisionOut] */
         Envelope_DecisionOut_: {
             data: components["schemas"]["DecisionOut"];
@@ -1946,6 +2017,11 @@ export interface components {
         /** Envelope[WorkerReferralOut] */
         Envelope_WorkerReferralOut_: {
             data: components["schemas"]["WorkerReferralOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[WorkerStats] */
+        Envelope_WorkerStats_: {
+            data: components["schemas"]["WorkerStats"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[WorkerTriageStartOut] */
@@ -2185,6 +2261,16 @@ export interface components {
             reasons: string[];
             /** Warnings */
             warnings: string[];
+            /**
+             * Accepts Nhia
+             * @default false
+             */
+            accepts_nhia: boolean;
+            /**
+             * Free Maternal Care
+             * @default false
+             */
+            free_maternal_care: boolean;
         };
         /** HospitalSummary */
         HospitalSummary: {
@@ -3457,6 +3543,21 @@ export interface components {
             /** Overdue At */
             overdue_at: string | null;
         };
+        /** WorkerStats */
+        WorkerStats: {
+            /** Month */
+            month: string;
+            /** Patients Referred */
+            patients_referred: number;
+            /** Reached Hospital */
+            reached_hospital: number;
+            /** Emergencies */
+            emergencies: number;
+            /** All Time Reached */
+            all_time_reached: number;
+            /** Badges */
+            badges: string[];
+        };
         /** WorkerTriageIn */
         WorkerTriageIn: {
             /** Taps */
@@ -4396,6 +4497,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_list_StaffRow__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    coverage_api_v1_hospital_coverage_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_CoverageIO_"];
+                };
+            };
+        };
+    };
+    set_coverage_api_v1_hospital_coverage_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CoverageIO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_CoverageIO_"];
                 };
             };
             /** @description Validation Error */
@@ -5510,6 +5664,26 @@ export interface operations {
             };
         };
     };
+    stats_api_v1_worker_stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_WorkerStats_"];
+                };
+            };
+        };
+    };
     my_profile_api_v1_me_profile_get: {
         parameters: {
             query?: never;
@@ -6051,6 +6225,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    bundle_api_v1_offline_bundle_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

@@ -4,6 +4,7 @@ import uuid
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sse_starlette.sse import EventSourceResponse
@@ -17,7 +18,7 @@ from app.core.errors import AppError, Envelope, ok
 from app.core.ratelimit import limiter
 from app.engines.triage.data import care_types
 from app.models import Facility, Patient, Referral, TriageReport, User, Vital, WorkerProfile
-from app.models.enums import Role
+from app.models.enums import ReferralStatus, Role
 from app.realtime.broker import SSE_HEADERS, broker
 from app.schemas.referral import ReferralCreateIn
 from app.schemas.triage import TapsIn, TriageOut
@@ -179,3 +180,42 @@ async def get_referral(referral_id: uuid.UUID, worker: User = Depends(worker_onl
     if not ref or ref.worker_id != worker.id:
         raise AppError(404, "not_found", "Not found")
     return ok(await _view(db, ref))
+
+
+# ---------- recognition: the chemist's month ----------
+class WorkerStats(BaseModel):
+    month: str
+    patients_referred: int
+    reached_hospital: int
+    emergencies: int
+    all_time_reached: int
+    badges: list[str]
+
+
+@router.get("/stats", response_model=Envelope[WorkerStats])
+async def stats(worker: User = Depends(worker_only), db: AsyncSession = Depends(get_db)):
+    """This month: patients referred, how many reached a hospital, how many were emergencies. Plain recognition,
+    so the chemist on the corner sees the difference they make."""
+    now = utcnow()
+    start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    reached = (ReferralStatus.arrived, ReferralStatus.completed)
+    rows = (await db.execute(
+        select(Referral.report_id, Referral.status, Referral.created_at, TriageReport.red_flag)
+        .join(TriageReport, TriageReport.id == Referral.report_id)
+        .where(Referral.worker_id == worker.id)
+    )).all()
+    month = [r for r in rows if r.created_at >= start]
+    patients = {r.report_id for r in month}
+    arrived = {r.report_id for r in month if r.status in reached}
+    emerg = {r.report_id for r in month if r.red_flag}
+    all_arrived = {r.report_id for r in rows if r.status in reached}
+    badges = []
+    if all_arrived:
+        badges.append("First patient reached care")
+    if arrived & emerg:
+        badges.append("Lifesaver: an emergency reached hospital this month")
+    if len(arrived) >= 5:
+        badges.append("Trusted referrer: 5 or more patients reached care this month")
+    return ok(WorkerStats(month=start.strftime("%B %Y"), patients_referred=len(patients),
+                          reached_hospital=len(arrived), emergencies=len(emerg),
+                          all_time_reached=len(all_arrived), badges=badges))

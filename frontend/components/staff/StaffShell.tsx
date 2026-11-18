@@ -1,5 +1,6 @@
 "use client";
 
+import { OutboxBar } from "@/components/hospital/OutboxBar";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
@@ -136,6 +137,7 @@ export function StaffShell({
             ))}
           </nav>
         </header>
+        <OutboxBar />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5 lg:px-8">{children}</main>
       </div>
     </div>

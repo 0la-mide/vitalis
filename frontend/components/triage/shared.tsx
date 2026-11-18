@@ -1,5 +1,6 @@
 "use client";
 
+import { getBundle } from "@/lib/offline";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Languages, MapPin, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,8 +15,16 @@ export type Taxonomy = Schemas["Taxonomy"];
 export function useTaxonomy() {
   return useQuery({
     queryKey: ["taxonomy"],
-    queryFn: () => api<Taxonomy>("/triage/taxonomy"),
+    // With no signal, the symptom list comes from the copy saved on this phone.
+    // The symptom list travels inside the offline bundle already saved on this phone: no extra download, and it
+    // works with no signal. Only a phone that has never been online fetches it on its own.
+    queryFn: async () => {
+      const b = await getBundle();
+      if (b) return b.taxonomy as Taxonomy;
+      return api<Taxonomy>("/triage/taxonomy");
+    },
     staleTime: Infinity,
+    retry: 0,
   });
 }
 

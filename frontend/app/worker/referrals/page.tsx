@@ -1,5 +1,6 @@
 "use client";
 
+import { MonthCard } from "@/components/worker/MonthCard";
 import { AlertsButton } from "@/components/ui/AlertsButton";
 import { Radio } from "lucide-react";
 import { RecentReferrals, useWorkerReferrals } from "@/components/worker/referrals";
@@ -16,6 +17,7 @@ export default function MyReferralsPage() {
         </span>
       </div>
       <AlertsButton who="staff" />
+      <MonthCard />
       <RecentReferrals />
     </main>
   );

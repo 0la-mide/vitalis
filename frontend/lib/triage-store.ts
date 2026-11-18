@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { api, ApiError, type Tap, type TriageOut } from "@/lib/api";
 import { clearIdentity, getIdentity, saveIdentity, setPendingRecovery } from "@/lib/patient-store";
+import { applyTap, emptyReport, evaluateOffline, getBundle, isNetworkError, isOffline, type LocalReport } from "@/lib/offline";
 import type { PatientKeysOut } from "@/lib/api";
 
 export type Step =
@@ -37,6 +38,10 @@ type State = {
   error: string | null;
   tapCount: number;
   startedAt: number | null;
+  /** No signal: the triage runs on this phone and hospitals are not alerted until it is back online. */
+  offline: boolean;
+  /** Minutes old the saved hospital list was when the phone went offline. */
+  bundleAgeMin: number | null;
   // actions
   reset: (mode?: Mode) => void;
   setResult: (r: TriageOut) => void;
@@ -52,6 +57,26 @@ type State = {
 };
 
 let queue: Tap[] = [];
+// Every tap of this session, online or not, so the triage can carry on on the phone if the signal drops.
+let allTaps: Tap[] = [];
+let localReport: LocalReport | null = null;
+export const sessionTaps = (): Tap[] => [...allTaps];
+
+async function goOffline(set: (p: Partial<State>) => void, get: () => State): Promise<TriageOut | null> {
+  const b = await getBundle();
+  if (!b) {
+    set({ busy: false, error: "No signal, and this phone has no saved hospital list yet. Call 112 now." });
+    return null;
+  }
+  localReport = emptyReport();
+  for (const t of allTaps) applyTap(localReport, t, b);
+  const result = evaluateOffline(localReport, b);
+  queue = [];
+  const bundleAgeMin = Math.max(0, Math.round((Date.now() - Date.parse(b.generated_at)) / 60000));
+  set({ offline: true, bundleAgeMin, reportId: "offline", result, busy: false, error: null });
+  if (result.red_flag.fired && get().step !== "emergency") set({ step: "emergency", history: [...get().history, get().step] });
+  return result;
+}
 let timer: ReturnType<typeof setTimeout> | null = null;
 let inflight: Promise<TriageOut | null> | null = null;
 const DEBOUNCE_MS = 250;
@@ -97,6 +122,8 @@ export const useTriage = create<State>((set, get) => ({
   error: null,
   tapCount: 0,
   startedAt: null,
+  offline: false,
+  bundleAgeMin: null,
 
   setResult: (result) => {
     set({ result });
@@ -106,8 +133,10 @@ export const useTriage = create<State>((set, get) => ({
   },
   reset: (mode = "patient") => {
     queue = [];
+    allTaps = [];
+    localReport = null;
     set({ mode, walkIn: null, localCtx: {}, reportId: null, entry: null, result: null, step: "who", history: [], region: null, selected: [], error: null,
-          tapCount: 0, startedAt: null });
+          tapCount: 0, startedAt: null, offline: false, bundleAgeMin: null });
   },
   setLocation: (location) => {
     set({ location });
@@ -130,7 +159,10 @@ export const useTriage = create<State>((set, get) => ({
   begin: async (taps, next, opts) => {
     get().countTap();
     const entry = taps.find((t) => t.kind === "emergency")?.code ?? "other";
-    set({ busy: true, error: null, step: next, history: [], entry, selected: [], region: null, localCtx: { ...(opts?.context ?? {}) } });
+    set({ busy: true, error: null, step: next, history: [], entry, selected: [], region: null, localCtx: { ...(opts?.context ?? {}) },
+          offline: false });
+    allTaps = [...locationTap(get().location), ...taps];
+    if (get().mode === "patient" && isOffline()) return goOffline(set, get);
     try {
       if (get().mode === "worker") {
         const body: Record<string, unknown> = { taps: [...locationTap(get().location), ...taps] };
@@ -162,6 +194,7 @@ export const useTriage = create<State>((set, get) => ({
       if (result.red_flag.fired) set({ step: "emergency" });
       return result;
     } catch (e) {
+      if (get().mode === "patient" && isNetworkError(e)) return goOffline(set, get);
       set({ busy: false, error: (e as Error).message });
       return null;
     }
@@ -176,6 +209,19 @@ export const useTriage = create<State>((set, get) => ({
       }
       set({ localCtx: merged });
     }
+    allTaps.push(...taps);
+    if (get().offline) {
+      void getBundle().then((b) => {
+        if (!b || !localReport) return;
+        for (const t of taps) applyTap(localReport, t, b);
+        const result = evaluateOffline(localReport, b);
+        set({ result });
+        if (result.red_flag.fired && get().step !== "emergency") {
+          set({ step: "emergency", history: [...get().history, get().step] });
+        }
+      });
+      return;
+    }
     queue.push(...taps);
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => void get().flush(), DEBOUNCE_MS);
@@ -185,6 +231,7 @@ export const useTriage = create<State>((set, get) => ({
     if (timer) clearTimeout(timer);
     timer = null;
     if (inflight) await inflight;
+    if (get().offline) return get().result;
     const id = get().reportId;
     if (!id || queue.length === 0) return get().result;
     const batch = queue;
@@ -199,6 +246,8 @@ export const useTriage = create<State>((set, get) => ({
         }
         return result;
       } catch (e) {
+        // The signal dropped mid-triage: carry on on the phone with everything tapped so far.
+        if (get().mode === "patient" && isNetworkError(e)) return goOffline(set, get);
         set({ error: (e as Error).message });
         return null;
       } finally {

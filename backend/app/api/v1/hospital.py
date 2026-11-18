@@ -17,6 +17,7 @@ from app.core.errors import AppError, Envelope, ok
 from app.engines.matching.engine import freshness_of
 from app.engines.triage.data import care_types, symptom_index
 from app.models import (
+    Facility,
     FacilityAlert,
     FacilityService,
     Patient,
@@ -337,3 +338,26 @@ async def decide_staff(
     await vsvc.decide(db, v, body.decision, body.reason, user)
     await db.commit()
     return ok(await _staff_rows(db, user.facility_id, user.id))
+
+
+# ---------- cost and coverage (shown to families on hospital cards) ----------
+class CoverageIO(BaseModel):
+    accepts_nhia: bool
+    free_maternal_care: bool
+
+
+@router.get("/coverage", response_model=Envelope[CoverageIO])
+async def coverage(user: User = Depends(any_staff), db: AsyncSession = Depends(get_db)):
+    f = await db.get(Facility, user.facility_id)
+    return ok(CoverageIO(accepts_nhia=f.accepts_nhia, free_maternal_care=f.free_maternal_care))
+
+
+@router.put("/coverage", response_model=Envelope[CoverageIO])
+async def set_coverage(body: CoverageIO, user: User = Depends(facility_admin_only), db: AsyncSession = Depends(get_db)):
+    """The hospital admin says whether the hospital takes NHIA patients and offers free maternal and child care."""
+    f = await db.get(Facility, user.facility_id)
+    f.accepts_nhia, f.free_maternal_care = body.accepts_nhia, body.free_maternal_care
+    await audit(db, "facility.coverage", actor_id=user.id, subject_type="facility", subject_id=f.id,
+                facility_id=f.id, details=body.model_dump())
+    await db.commit()
+    return ok(CoverageIO(accepts_nhia=f.accepts_nhia, free_maternal_care=f.free_maternal_care))

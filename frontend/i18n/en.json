@@ -64,5 +64,15 @@
   "common.back": "Back",
   "common.listen": "Listen",
   "common.loading": "Loading…",
-  "common.retry": "Try again"
+  "common.retry": "Try again",
+  "offline.title": "No signal",
+  "offline.body": "These hospitals were saved on this phone. They won't be alerted until you're back online, so call them or go now.",
+  "offline.saved_at": "Hospital list saved",
+  "offline.save": "Save request (sends when online)",
+  "offline.saved_title": "Request saved",
+  "offline.saved_body": "We'll send it to {name} as soon as you're back online. Don't wait: call them or go now.",
+  "offline.sent": "You're back online. Your request was sent to {name}.",
+  "offline.open": "Open",
+  "hospital.nhia": "Accepts NHIA",
+  "hospital.free_maternal": "Free maternal care"
 }

@@ -1179,6 +1179,67 @@
         }
       }
     },
+    "/api/v1/hospital/coverage": {
+      "get": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Coverage",
+        "operationId": "coverage_api_v1_hospital_coverage_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CoverageIO_"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "hospital"
+        ],
+        "summary": "Set Coverage",
+        "description": "The hospital admin says whether the hospital takes NHIA patients and offers free maternal and child care.",
+        "operationId": "set_coverage_api_v1_hospital_coverage_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageIO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_CoverageIO_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/hospital/encounters": {
       "get": {
         "tags": [
@@ -2866,6 +2927,28 @@
         }
       }
     },
+    "/api/v1/worker/stats": {
+      "get": {
+        "tags": [
+          "worker"
+        ],
+        "summary": "Stats",
+        "description": "This month: patients referred, how many reached a hospital, how many were emergencies. Plain recognition,\nso the chemist on the corner sees the difference they make.",
+        "operationId": "stats_api_v1_worker_stats_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_WorkerStats_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me/profile": {
       "get": {
         "tags": [
@@ -3559,6 +3642,25 @@
           }
         }
       }
+    },
+    "/api/v1/offline/bundle": {
+      "get": {
+        "tags": [
+          "offline"
+        ],
+        "summary": "Bundle",
+        "operationId": "bundle_api_v1_offline_bundle_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4141,6 +4243,24 @@
         ],
         "title": "ConsentStatus"
       },
+      "CoverageIO": {
+        "properties": {
+          "accepts_nhia": {
+            "type": "boolean",
+            "title": "Accepts Nhia"
+          },
+          "free_maternal_care": {
+            "type": "boolean",
+            "title": "Free Maternal Care"
+          }
+        },
+        "type": "object",
+        "required": [
+          "accepts_nhia",
+          "free_maternal_care"
+        ],
+        "title": "CoverageIO"
+      },
       "DecideIn": {
         "properties": {
           "decision": {
@@ -4699,6 +4819,28 @@
           "data"
         ],
         "title": "Envelope[ConsentStatus]"
+      },
+      "Envelope_CoverageIO_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CoverageIO"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[CoverageIO]"
       },
       "Envelope_DecisionOut_": {
         "properties": {
@@ -5278,6 +5420,28 @@
           "data"
         ],
         "title": "Envelope[WorkerReferralOut]"
+      },
+      "Envelope_WorkerStats_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WorkerStats"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[WorkerStats]"
       },
       "Envelope_WorkerTriageStartOut_": {
         "properties": {
@@ -6015,6 +6179,16 @@
             },
             "type": "array",
             "title": "Warnings"
+          },
+          "accepts_nhia": {
+            "type": "boolean",
+            "title": "Accepts Nhia",
+            "default": false
+          },
+          "free_maternal_care": {
+            "type": "boolean",
+            "title": "Free Maternal Care",
+            "default": false
           }
         },
         "type": "object",
@@ -9845,6 +10019,47 @@
           "overdue_at"
         ],
         "title": "WorkerReferralOut"
+      },
+      "WorkerStats": {
+        "properties": {
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "patients_referred": {
+            "type": "integer",
+            "title": "Patients Referred"
+          },
+          "reached_hospital": {
+            "type": "integer",
+            "title": "Reached Hospital"
+          },
+          "emergencies": {
+            "type": "integer",
+            "title": "Emergencies"
+          },
+          "all_time_reached": {
+            "type": "integer",
+            "title": "All Time Reached"
+          },
+          "badges": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Badges"
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "patients_referred",
+          "reached_hospital",
+          "emergencies",
+          "all_time_reached",
+          "badges"
+        ],
+        "title": "WorkerStats"
       },
       "WorkerTriageIn": {
         "properties": {

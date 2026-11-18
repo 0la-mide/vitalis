@@ -18,7 +18,7 @@ from app.engines.model_client import client as model_client
 from app.engines.triage import care, red_flags
 from app.engines.triage.data import region_codes, symptom_index, symptoms
 from app.engines.triage.state import TriageState
-from app.models import FacilityAlert, ModelPrediction, SymptomTap, TriageReport, Vital
+from app.models import FacilityAlert, ModelPrediction, Patient, SymptomTap, TriageReport, Vital
 from app.models.enums import TriageStatus
 from app.realtime.broker import broker
 
@@ -217,7 +217,9 @@ async def evaluate(db: AsyncSession, r: TriageReport, *, call_model: bool = True
     # 4. Matching.
     lat, lng, approx = report_location(r)
     snaps = await load_snapshots(db, r.id)
-    result = match(snaps, care_type, lat, lng, utcnow(), get_settings().city_speed_kmh)
+    patient = await db.get(Patient, r.patient_id)
+    result = match(snaps, care_type, lat, lng, utcnow(), get_settings().city_speed_kmh,
+                   prefer_nhia=bool(patient and patient.nhia_number))
 
     heads_up = False
     if first_fire and r.heads_up_sent_at is None:

@@ -144,6 +144,14 @@ consent (24 h, revocable). The AI and the safety check use exactly what the doct
 
 The worker sees care type, danger-sign message and suggested hospitals — never model likelihoods.
 
+## Offline, coverage, recognition
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/offline/bundle` | public; rules, symptoms, care types and verified hospitals for on-phone triage (cached 5 min) |
+| GET/PUT | `/hospital/coverage` | `{accepts_nhia, free_maternal_care}`; PUT by the hospital admin (audited) |
+| GET | `/worker/stats` | the chemist's month: patients referred, reached hospital, emergencies, badges |
+
 ## Public
 
 `GET /facilities?care_type=&lat=&lng=` — verified facilities ranked for a care type. `GET /health`.
