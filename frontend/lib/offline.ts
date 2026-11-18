@@ -36,6 +36,15 @@ export type Bundle = {
   };
   matching: { nearby_km: number; confirmed_h: number; stale_h: number; speed_kmh: number };
   facilities: OfflineFacility[];
+  lines?: Lines;
+};
+
+export type Line = { name: string; number: string };
+export type Lines = {
+  national: Line;
+  max_km: number;
+  ambulances: Record<string, Line>;
+  lgas: { name: string; lat: number; lng: number; state?: string | null }[];
 };
 
 // ---------------- the bundle on this phone ----------------
@@ -261,6 +270,17 @@ function match(b: Bundle, ct: string | null, lat: number, lng: number, now: numb
   return { nearby, matches, excluded };
 }
 
+/** The state ambulance for where she is: the named LGA's state, or the nearest known LGA within max_km. Same as the server. */
+export function ambulanceFor(l: Lines | undefined, lat: number, lng: number, lgaName?: string | null): Line | null {
+  if (!l?.lgas.length) return null;
+  let state: string | null | undefined = lgaName ? l.lgas.find((x) => x.name === lgaName)?.state : undefined;
+  if (state === undefined) {
+    const best = l.lgas.reduce((a, c) => (km(lat, lng, c.lat, c.lng) < km(lat, lng, a.lat, a.lng) ? c : a));
+    state = km(lat, lng, best.lat, best.lng) <= l.max_km ? best.state : null;
+  }
+  return (state && l.ambulances[state]) || null;
+}
+
 /** The same answer the server would give, minus the hospital alert. */
 export function evaluateOffline(r: LocalReport, b: Bundle, now = Date.now()): TriageOut {
   const st = state(r);
@@ -292,5 +312,6 @@ export function evaluateOffline(r: LocalReport, b: Bundle, now = Date.now()): Tr
     context: r.context,
     answers: r.answers as unknown as TriageOut["answers"],
     active_referral_id: null,
+    ambulance: ambulanceFor(b.lines, lat, lng, r.lga),
   };
 }

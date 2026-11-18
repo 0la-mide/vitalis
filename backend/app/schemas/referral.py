@@ -88,6 +88,9 @@ class IncomingItem(BaseModel):
     expected_arrival_at: datetime | None
     decision_reason: str | None
     referred_by: str | None
+    # "ussd": dialled from a basic phone. callback_phone lets the hospital call them back.
+    channel: str | None = None
+    callback_phone: str | None = None
     accepted_at: datetime | None
     arrived_at: datetime | None
     overdue_at: datetime | None

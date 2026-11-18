@@ -56,6 +56,11 @@ class Settings(BaseSettings):
 
     rate_limit_enabled: bool = True
 
+    # USSD (Africa's Talking style callback: form fields sessionId, serviceCode, phoneNumber, text; reply CON/END).
+    # The gateway calls POST /api/v1/ussd?key=USSD_SECRET. Empty secret: the endpoint is off in prod.
+    ussd_code: str = "*384*8482#"
+    ussd_secret: str = ""
+
     # One-tap "open a demo patient's phone" on /card (synthetic data only). Staff always use email + password.
     # On by default: this is a demo build. Set DEMO_LOGINS=false before any real pilot.
     demo_logins: bool = True

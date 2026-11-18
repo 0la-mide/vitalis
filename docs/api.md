@@ -154,6 +154,19 @@ The worker sees care type, danger-sign message and suggested hospitals — never
 | GET/PUT | `/hospital/coverage` | `{accepts_nhia, free_maternal_care}`; PUT by the hospital admin (audited) |
 | GET | `/worker/stats` | the chemist's month: patients referred, reached hospital, emergencies, badges |
 
+## USSD and emergency numbers (healthcare for everyone)
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/lines` | public; `{national, ambulances, ussd_code}`: 112, the state ambulances VITALIS knows (today: Ogun State Ambulance, 08112000033), and the USSD code |
+| POST | `/ussd?key=USSD_SECRET` | the USSD gateway's callback (Africa's Talking format, form fields `sessionId, serviceCode, phoneNumber, text`); replies `CON …` or `END …` as plain text. Off in prod until `USSD_SECRET` is set. See [ussd.md](ussd.md) |
+| POST | `/demo/ussd` | `{phone, text}` → `{reply, done}`; the website simulator; demo numbers `0000 000 0xxx` only |
+| GET | `/demo/sms?phone=` | the texts a demo number would have received (never sent through a real gateway) |
+
+Triage results (`TriageOut`) carry `ambulance: {name, number} | null` for where she is, and the offline bundle carries
+`lines` so the phone picks the same ambulance with no signal. Hospital Incoming items carry `channel` (`"ussd"` when
+dialled from a basic phone) and `callback_phone`.
+
 ## Public
 
 `GET /facilities?care_type=&lat=&lng=` — verified facilities ranked for a care type. `GET /health`.

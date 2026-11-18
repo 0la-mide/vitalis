@@ -16,7 +16,7 @@ from app.engines.matching.loader import load_snapshots
 from app.models import Facility, Patient, Referral, TriageReport, User
 from app.models.enums import REFERRAL_TRANSITIONS, ReferralStatus, TriageStatus
 from app.realtime.broker import broker
-from app.services import push
+from app.services import lines, push
 from app.services.notify import sms
 from app.services.triage import report_location
 
@@ -166,15 +166,18 @@ async def _text_family(db: AsyncSession, ref: Referral, target: ReferralStatus, 
     facility = await db.get(Facility, ref.facility_id)
     if not patient or not facility:
         return
+    report = await db.get(TriageReport, ref.report_id)
+    calls = lines.call_text(*report_location(report)[:2], report.lga) if report else lines.call_text(None, None)
     if target == ReferralStatus.accepted:
         eta = f" in about {ref.eta_minutes} min" if ref.eta_minutes else ""
-        msg = (f"VITALIS: {facility.name} is ready for {patient.vitalis_id} and expects you{eta}. "
-               "Show this ID at reception. Emergency: call 112.")
+        call = f" Hospital: {facility.phone}." if facility.phone else ""
+        msg = (f"VITALIS: {facility.name} is ready for {patient.vitalis_id} and expects you{eta}.{call} "
+               f"Show this ID at reception. {calls}")
     else:
         other = await db.get(Facility, nxt.facility_id) if nxt else None
         msg = (f"VITALIS: {facility.name} cannot take {patient.vitalis_id} now. "
-               + (f"We have asked {other.name}. Wait for their answer." if other
-                  else "Go to the nearest hospital or call 112."))
+               + (f"We have asked {other.name}. Wait for their answer. {calls}" if other
+                  else f"Go to the nearest hospital now. {calls}"))
     worker = await db.get(User, ref.worker_id) if ref.worker_id else None
     for phone in {p for p in (patient.phone, worker.phone if worker else None) if p}:
         await sms().send(phone, msg)

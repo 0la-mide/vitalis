@@ -15,6 +15,7 @@ from app.engines.matching.engine import CONFIRMED_H, NEARBY_KM, STALE_H
 from app.engines.matching.loader import load_snapshots
 from app.engines.triage.data import care_types, red_flags, symptoms
 from app.schemas.triage import Taxonomy
+from app.services import lines
 from app.services import triage as svc
 
 router = APIRouter(prefix="/offline", tags=["offline"])
@@ -45,6 +46,7 @@ async def bundle(response: Response, db: AsyncSession = Depends(get_db)):
         },
         "matching": {"nearby_km": NEARBY_KM, "confirmed_h": CONFIRMED_H, "stale_h": STALE_H,
                      "speed_kmh": get_settings().city_speed_kmh},
+        "lines": lines.bundle(),
         "facilities": [
             {"id": str(f.id), "name": f.name, "lga": f.lga, "type": f.type, "lat": f.lat, "lng": f.lng,
              "phone": f.phone, "accepts_nhia": f.accepts_nhia, "free_maternal_care": f.free_maternal_care,

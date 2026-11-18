@@ -2,9 +2,10 @@
 
 import { isQueued, sendOrQueue } from "@/lib/outbox";
 import { PatientName } from "@/components/hospital/PatientName";
+import { localPhone } from "@/components/Lines";
 import { AlertsButton } from "@/components/ui/AlertsButton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BellRing, CheckCircle2, Clock, Radio, Siren, UserRound } from "lucide-react";
+import { BellRing, CheckCircle2, Clock, Radio, Siren, Smartphone, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -182,6 +183,19 @@ function IncomingCard({
             {p.pregnant ? " · pregnant" : ""}
             {i.referred_by ? ` · via ${i.referred_by}` : ""}
           </p>
+          {i.channel === "ussd" ? (
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm">
+              <span className="inline-flex items-center gap-1 font-semibold text-calm">
+                <Smartphone className="h-4 w-4" aria-hidden /> Dialled by USSD, no app or data
+              </span>
+              {i.callback_phone ? (
+                <a href={`tel:${i.callback_phone}`} className="font-semibold underline underline-offset-2">
+                  Call back {localPhone(i.callback_phone)}
+                </a>
+              ) : null}
+              <span className="text-muted-foreground">· your answer reaches them by SMS</span>
+            </p>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-1.5">
           <Badge tone="info">{careLabel}</Badge>

@@ -1,0 +1,14 @@
+{
+  "note": "Numbers people can call. The ambulance shown is the one for the state of the nearest LGA in lgas.json, within max_km. Add a state's LGAs and its ambulance to cover more of Nigeria.",
+  "national": {
+    "name": "National emergency",
+    "number": "112"
+  },
+  "max_km": 40,
+  "ambulances": {
+    "Ogun": {
+      "name": "Ogun State Ambulance",
+      "number": "08112000033"
+    }
+  }
+}

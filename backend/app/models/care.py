@@ -14,6 +14,8 @@ class TriageReport(IdMixin, TimestampMixin, Base):
     patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id", ondelete="CASCADE"), index=True)
     worker_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), index=True)
     entry: Mapped[str | None] = mapped_column(String(32))  # emergency button code or "other"
+    # How the request came in: None = the app (family or chemist), "ussd" = dialled from any phone, no data needed.
+    channel: Mapped[str | None] = mapped_column(String(8))
     status: Mapped[str] = mapped_column(String(16), default=TriageStatus.open)
     # Patient context: age_group, sex, pregnant, who
     context: Mapped[dict] = mapped_column(JSON, default=dict)

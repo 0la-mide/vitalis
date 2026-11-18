@@ -12,6 +12,7 @@ import { RecoverySlip } from "@/components/triage/RecoverySlip";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api, type ReferralPatientOut } from "@/lib/api";
+import { AmbulanceButtons } from "@/components/Lines";
 import { useT } from "@/lib/i18n";
 import { subscribe } from "@/lib/sse";
 import { cn } from "@/lib/utils";
@@ -144,6 +145,7 @@ export default function ReferralPage() {
           {t("emergency.call")}
         </a>
       ) : null}
+      {(status === "declined" && !ref.next_referral_id) || status === "overdue" ? <AmbulanceButtons /> : null}
 
       <Card className="text-center">
         <p className="text-sm text-muted-foreground">{t("referral.show_id")}</p>

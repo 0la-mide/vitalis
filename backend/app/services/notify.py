@@ -6,6 +6,8 @@ Nigerian numbers and give free sign-up credit. A failed SMS is logged and never 
 
 import asyncio
 import logging
+from collections import deque
+from datetime import UTC, datetime
 from typing import Protocol
 
 import httpx
@@ -97,7 +99,37 @@ class BulkSmsNigeria(_HttpSms):
         )
 
 
+# Demo phones (the USSD simulator on the website): 0000 000 0xxx. Their texts are kept here, never sent.
+DEMO_PREFIX = "2340000000"
+_demo_inbox: dict[str, deque] = {}
+
+
+def is_demo_phone(phone: str) -> bool:
+    return to_international(phone).startswith(DEMO_PREFIX)
+
+
+def demo_inbox(phone: str) -> list[dict]:
+    return list(_demo_inbox.get(to_international(phone), ()))
+
+
+class _DemoGuard:
+    def __init__(self, inner: SmsProvider):
+        self.inner = inner
+
+    async def send(self, phone: str, message: str) -> None:
+        if is_demo_phone(phone):
+            box = _demo_inbox.setdefault(to_international(phone), deque(maxlen=20))
+            box.append({"at": datetime.now(UTC).isoformat(), "text": message})
+            log.info("sms (demo phone, kept)", extra={"fields": {"to": mask_phone(phone)}})
+            return
+        await self.inner.send(phone, message)
+
+
 def sms() -> SmsProvider:
+    return _DemoGuard(_provider())
+
+
+def _provider() -> SmsProvider:
     provider = get_settings().sms_provider
     if provider == "termii":
         return TermiiSms()

@@ -1,7 +1,8 @@
 "use client";
 
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Smartphone } from "lucide-react";
+import { AmbulanceButtons, useLines } from "@/components/Lines";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -16,6 +17,7 @@ export default function Home() {
   const label = useLabel();
   const router = useRouter();
   const { data: tax } = useTaxonomy();
+  const { data: lines } = useLines();
   const { reset, begin, setLocation } = useTriage();
 
   useEffect(() => {
@@ -94,6 +96,20 @@ export default function Home() {
       >
         {t("emergency.call")}
       </a>
+      <div className="mt-3">
+        <AmbulanceButtons compact />
+      </div>
+
+      <Link
+        href="/ussd"
+        className="mt-3 flex items-center gap-3 rounded-2xl bg-mint px-4 py-3 text-sm leading-snug"
+      >
+        <Smartphone className="h-6 w-6 shrink-0 text-primary" aria-hidden />
+        <span>
+          {t("home.no_data")} <b className="font-mono text-base">{lines?.ussd_code ?? "*384*8482#"}</b>{" "}
+          {t("home.no_data_any_phone")}
+        </span>
+      </Link>
 
       <footer className="mt-auto flex justify-between pt-6 text-sm text-muted-foreground">
         <Link href="/card" className="underline-offset-4 hover:underline">

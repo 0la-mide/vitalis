@@ -20,8 +20,10 @@ from app.schemas.triage import (
     TriageOut,
     TriageStartIn,
 )
+from app.services import lines
 from app.services import triage as svc
 from app.services.referrals import OPEN_STATUSES
+from app.services.triage import report_location
 
 router = APIRouter(prefix="/triage", tags=["triage"])
 
@@ -76,6 +78,7 @@ def to_out(ev: svc.Evaluation, active_referral_id: uuid.UUID | None = None) -> T
         context=r.context or {},
         answers=r.answers or {},
         active_referral_id=active_referral_id,
+        ambulance=lines.ambulance(*report_location(r)[:2], r.lga),
     )
 
 

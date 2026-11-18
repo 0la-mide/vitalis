@@ -7,6 +7,13 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 
+class Line(BaseModel):
+    """A number to call, e.g. Ogun State Ambulance."""
+
+    name: str
+    number: str
+
+
 class PatientStartIn(BaseModel):
     phone: str | None = Field(default=None, max_length=20, pattern=r"^\+?[0-9 ]{7,20}$")
 
@@ -102,6 +109,8 @@ class TriageOut(BaseModel):
     context: dict
     answers: dict
     active_referral_id: uuid.UUID | None = None
+    # The state ambulance for where she is (e.g. Ogun State Ambulance), shown beside 112.
+    ambulance: Line | None = None
 
 
 # ---------- UI taxonomy (public) ----------

@@ -3747,6 +3747,154 @@
           }
         }
       }
+    },
+    "/api/v1/lines": {
+      "get": {
+        "tags": [
+          "ussd"
+        ],
+        "summary": "Numbers",
+        "description": "Public: the national emergency line, the state ambulances VITALIS knows, and the USSD code.",
+        "operationId": "numbers_api_v1_lines_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_LinesOut_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ussd": {
+      "post": {
+        "tags": [
+          "ussd"
+        ],
+        "summary": "Ussd Callback",
+        "operationId": "ussd_callback_api_v1_ussd_post",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/ussd": {
+      "post": {
+        "tags": [
+          "ussd"
+        ],
+        "summary": "Demo Ussd",
+        "operationId": "demo_ussd_api_v1_demo_ussd_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoUssdIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_DemoUssdOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/sms": {
+      "get": {
+        "tags": [
+          "ussd"
+        ],
+        "summary": "Demo Sms",
+        "operationId": "demo_sms_api_v1_demo_sms_get",
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Phone"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_DemoSms__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4479,6 +4627,63 @@
         ],
         "title": "DemoPatientOut"
       },
+      "DemoSms": {
+        "properties": {
+          "at": {
+            "type": "string",
+            "title": "At"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "at",
+          "text"
+        ],
+        "title": "DemoSms"
+      },
+      "DemoUssdIn": {
+        "properties": {
+          "phone": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Phone"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 120,
+            "pattern": "^[0-9*#]*$",
+            "title": "Text",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "phone"
+        ],
+        "title": "DemoUssdIn"
+      },
+      "DemoUssdOut": {
+        "properties": {
+          "reply": {
+            "type": "string",
+            "title": "Reply"
+          },
+          "done": {
+            "type": "boolean",
+            "title": "Done"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reply",
+          "done"
+        ],
+        "title": "DemoUssdOut"
+      },
       "DraftDecisionIn": {
         "properties": {
           "action": {
@@ -4994,6 +5199,28 @@
         ],
         "title": "Envelope[DemoPatientOut]"
       },
+      "Envelope_DemoUssdOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DemoUssdOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[DemoUssdOut]"
+      },
       "Envelope_DraftOut_": {
         "properties": {
           "data": {
@@ -5081,6 +5308,28 @@
           "data"
         ],
         "title": "Envelope[IncomingItem]"
+      },
+      "Envelope_LinesOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LinesOut"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[LinesOut]"
       },
       "Envelope_MeOut_": {
         "properties": {
@@ -5600,6 +5849,32 @@
           "data"
         ],
         "title": "Envelope[list[AuditOut]]"
+      },
+      "Envelope_list_DemoSms__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/DemoSms"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[DemoSms]]"
       },
       "Envelope_list_EncounterListItem__": {
         "properties": {
@@ -6468,6 +6743,28 @@
             ],
             "title": "Referred By"
           },
+          "channel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Channel"
+          },
+          "callback_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Callback Phone"
+          },
           "accepted_at": {
             "anyOf": [
               {
@@ -6624,6 +6921,50 @@
           "patient"
         ],
         "title": "LabQueueItem"
+      },
+      "Line": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "number": {
+            "type": "string",
+            "title": "Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "number"
+        ],
+        "title": "Line",
+        "description": "A number to call, e.g. Ogun State Ambulance."
+      },
+      "LinesOut": {
+        "properties": {
+          "national": {
+            "$ref": "#/components/schemas/Line"
+          },
+          "ambulances": {
+            "items": {
+              "$ref": "#/components/schemas/Line"
+            },
+            "type": "array",
+            "title": "Ambulances"
+          },
+          "ussd_code": {
+            "type": "string",
+            "title": "Ussd Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "national",
+          "ambulances",
+          "ussd_code"
+        ],
+        "title": "LinesOut"
       },
       "LoginIn": {
         "properties": {
@@ -9397,6 +9738,16 @@
               }
             ],
             "title": "Active Referral Id"
+          },
+          "ambulance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Line"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",

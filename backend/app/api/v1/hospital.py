@@ -93,6 +93,8 @@ async def _item(db: AsyncSession, report: TriageReport, *, ref: Referral | None,
         symptoms=syms,
         vitals=vitals,
         referred_by=referred_by,
+        channel=report.channel,
+        callback_phone=patient.phone if report.channel == "ussd" else None,
     )
     if ref:
         expected = ref.accepted_at + timedelta(minutes=ref.eta_minutes or 0) if ref.accepted_at else None

@@ -40,6 +40,7 @@ for (const [name, taps] of Object.entries(scenarios)) {
   const phone = eng.evaluateOffline(r, bundle);
   const pick = (x) => ({
     red_flag: x.red_flag.fired, message: x.red_flag.message, care_type: x.care_type, action: x.action_level,
+    ambulance: x.ambulance?.number ?? null,
     top: x.hospitals.top.slice(0, 3).map((h) => h.name), excluded: x.hospitals.excluded.map((e) => e.name).sort(),
   });
   const a = pick(server), b = pick(phone);

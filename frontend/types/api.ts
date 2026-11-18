@@ -1531,6 +1531,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Numbers
+         * @description Public: the national emergency line, the state ambulances VITALIS knows, and the USSD code.
+         */
+        get: operations["numbers_api_v1_lines_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ussd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ussd Callback */
+        post: operations["ussd_callback_api_v1_ussd_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/ussd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Demo Ussd */
+        post: operations["demo_ussd_api_v1_demo_ussd_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/demo/sms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Demo Sms */
+        get: operations["demo_sms_api_v1_demo_sms_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1787,6 +1858,30 @@ export interface components {
             /** Device Key */
             device_key: string;
         };
+        /** DemoSms */
+        DemoSms: {
+            /** At */
+            at: string;
+            /** Text */
+            text: string;
+        };
+        /** DemoUssdIn */
+        DemoUssdIn: {
+            /** Phone */
+            phone: string;
+            /**
+             * Text
+             * @default
+             */
+            text: string;
+        };
+        /** DemoUssdOut */
+        DemoUssdOut: {
+            /** Reply */
+            reply: string;
+            /** Done */
+            done: boolean;
+        };
         /** DraftDecisionIn */
         DraftDecisionIn: {
             /**
@@ -1945,6 +2040,11 @@ export interface components {
             data: components["schemas"]["DemoPatientOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[DemoUssdOut] */
+        Envelope_DemoUssdOut_: {
+            data: components["schemas"]["DemoUssdOut"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[DraftOut] */
         Envelope_DraftOut_: {
             data: components["schemas"]["DraftOut"];
@@ -1963,6 +2063,11 @@ export interface components {
         /** Envelope[IncomingItem] */
         Envelope_IncomingItem_: {
             data: components["schemas"]["IncomingItem"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[LinesOut] */
+        Envelope_LinesOut_: {
+            data: components["schemas"]["LinesOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[MeOut] */
@@ -2082,6 +2187,12 @@ export interface components {
         Envelope_list_AuditOut__: {
             /** Data */
             data: components["schemas"]["AuditOut"][];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[DemoSms]] */
+        Envelope_list_DemoSms__: {
+            /** Data */
+            data: components["schemas"]["DemoSms"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[list[EncounterListItem]] */
@@ -2373,6 +2484,10 @@ export interface components {
             decision_reason: string | null;
             /** Referred By */
             referred_by: string | null;
+            /** Channel */
+            channel?: string | null;
+            /** Callback Phone */
+            callback_phone?: string | null;
             /** Accepted At */
             accepted_at: string | null;
             /** Arrived At */
@@ -2408,6 +2523,24 @@ export interface components {
             /** Emergency */
             emergency: boolean;
             patient: components["schemas"]["IncomingPatient"];
+        };
+        /**
+         * Line
+         * @description A number to call, e.g. Ogun State Ambulance.
+         */
+        Line: {
+            /** Name */
+            name: string;
+            /** Number */
+            number: string;
+        };
+        /** LinesOut */
+        LinesOut: {
+            national: components["schemas"]["Line"];
+            /** Ambulances */
+            ambulances: components["schemas"]["Line"][];
+            /** Ussd Code */
+            ussd_code: string;
         };
         /** LoginIn */
         LoginIn: {
@@ -3349,6 +3482,7 @@ export interface components {
             };
             /** Active Referral Id */
             active_referral_id?: string | null;
+            ambulance?: components["schemas"]["Line"] | null;
         };
         /** TriageStartIn */
         TriageStartIn: {
@@ -6368,6 +6502,121 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    numbers_api_v1_lines_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_LinesOut_"];
+                };
+            };
+        };
+    };
+    ussd_callback_api_v1_ussd_post: {
+        parameters: {
+            query?: {
+                key?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    demo_ussd_api_v1_demo_ussd_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemoUssdIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_DemoUssdOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    demo_sms_api_v1_demo_sms_get: {
+        parameters: {
+            query: {
+                phone: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_DemoSms__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

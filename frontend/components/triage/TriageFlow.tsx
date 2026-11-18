@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api, type TriageOut } from "@/lib/api";
+import { AmbulanceButton } from "@/components/Lines";
 import { useT } from "@/lib/i18n";
 import { sessionTaps, triageBase, useTriage, type Mode } from "@/lib/triage-store";
 import { savePending, type PendingRequest } from "@/lib/offline";
@@ -475,6 +476,7 @@ function EmergencyStep({
       >
         <Phone className="h-6 w-6" aria-hidden /> {t("emergency.call")}
       </a>
+      {result?.ambulance ? <AmbulanceButton line={result.ambulance} /> : null}
       {result?.heads_up_sent ? (
         <p className="text-center text-sm text-muted-foreground">{t("emergency.heads_up")}</p>
       ) : null}
