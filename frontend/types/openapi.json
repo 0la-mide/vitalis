@@ -2463,6 +2463,40 @@
             }
           },
           {
+            "name": "actor_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 16
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Type"
+            }
+          },
+          {
+            "name": "who",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Who"
+            }
+          },
+          {
             "name": "actor_id",
             "in": "query",
             "required": false,
@@ -3895,6 +3929,324 @@
           }
         }
       }
+    },
+    "/api/v1/admin/console/overview": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Overview",
+        "operationId": "overview_api_v1_admin_console_overview_get",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 90,
+              "minimum": 7,
+              "default": 30,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Overview_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/console/accounts": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Accounts",
+        "operationId": "accounts_api_v1_admin_console_accounts_get",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Role"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 16
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_AccountRow__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/console/devices": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Devices",
+        "operationId": "devices_api_v1_admin_console_devices_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Devices_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/console/models": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Models",
+        "operationId": "models_api_v1_admin_console_models_get",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 90,
+              "minimum": 7,
+              "default": 14,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Models_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/console/audit.csv": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Audit Csv",
+        "description": "Up to 10,000 events as CSV. Patients appear only as 'patient' (never named). The export itself is audited.",
+        "operationId": "audit_csv_api_v1_admin_console_audit_csv_get",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Action"
+            }
+          },
+          {
+            "name": "actor_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 16
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Type"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3935,6 +4287,100 @@
           "events"
         ],
         "title": "AccessLog"
+      },
+      "AccountRow": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "facility": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Facility"
+          },
+          "business": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "last_login_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Login At"
+          },
+          "sign_ins_30d": {
+            "type": "integer",
+            "title": "Sign Ins 30D"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "full_name",
+          "email",
+          "phone",
+          "role",
+          "status",
+          "facility",
+          "business",
+          "created_at",
+          "last_login_at",
+          "sign_ins_30d"
+        ],
+        "title": "AccountRow"
       },
       "Allowed": {
         "properties": {
@@ -4495,6 +4941,60 @@
         ],
         "title": "CoverageIO"
       },
+      "DayRow": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "app": {
+            "type": "integer",
+            "title": "App",
+            "default": 0
+          },
+          "chemist": {
+            "type": "integer",
+            "title": "Chemist",
+            "default": 0
+          },
+          "ussd": {
+            "type": "integer",
+            "title": "Ussd",
+            "default": 0
+          },
+          "emergencies": {
+            "type": "integer",
+            "title": "Emergencies",
+            "default": 0
+          },
+          "referrals": {
+            "type": "integer",
+            "title": "Referrals",
+            "default": 0
+          },
+          "new_patients": {
+            "type": "integer",
+            "title": "New Patients",
+            "default": 0
+          },
+          "new_accounts": {
+            "type": "integer",
+            "title": "New Accounts",
+            "default": 0
+          },
+          "sign_ins": {
+            "type": "integer",
+            "title": "Sign Ins",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "title": "DayRow"
+      },
       "DecideIn": {
         "properties": {
           "decision": {
@@ -4683,6 +5183,102 @@
           "done"
         ],
         "title": "DemoUssdOut"
+      },
+      "DeviceRow": {
+        "properties": {
+          "owner": {
+            "type": "string",
+            "title": "Owner"
+          },
+          "browser": {
+            "type": "string",
+            "title": "Browser"
+          },
+          "os": {
+            "type": "string",
+            "title": "Os"
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Since"
+          }
+        },
+        "type": "object",
+        "required": [
+          "owner",
+          "browser",
+          "os",
+          "since"
+        ],
+        "title": "DeviceRow"
+      },
+      "Devices": {
+        "properties": {
+          "phones_with_card": {
+            "type": "integer",
+            "title": "Phones With Card"
+          },
+          "phones_active_24h": {
+            "type": "integer",
+            "title": "Phones Active 24H"
+          },
+          "phones_active_7d": {
+            "type": "integer",
+            "title": "Phones Active 7D"
+          },
+          "phones_active_30d": {
+            "type": "integer",
+            "title": "Phones Active 30D"
+          },
+          "alerts_total": {
+            "type": "integer",
+            "title": "Alerts Total"
+          },
+          "alerts_patients": {
+            "type": "integer",
+            "title": "Alerts Patients"
+          },
+          "alerts_staff": {
+            "type": "integer",
+            "title": "Alerts Staff"
+          },
+          "by_browser": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "By Browser"
+          },
+          "by_os": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "By Os"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/DeviceRow"
+            },
+            "type": "array",
+            "title": "Recent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "phones_with_card",
+          "phones_active_24h",
+          "phones_active_7d",
+          "phones_active_30d",
+          "alerts_total",
+          "alerts_patients",
+          "alerts_staff",
+          "by_browser",
+          "by_os",
+          "recent"
+        ],
+        "title": "Devices"
       },
       "DraftDecisionIn": {
         "properties": {
@@ -5221,6 +5817,28 @@
         ],
         "title": "Envelope[DemoUssdOut]"
       },
+      "Envelope_Devices_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Devices"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[Devices]"
+      },
       "Envelope_DraftOut_": {
         "properties": {
           "data": {
@@ -5375,6 +5993,28 @@
         ],
         "title": "Envelope[Metrics]"
       },
+      "Envelope_Models_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Models"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[Models]"
+      },
       "Envelope_MyRecord_": {
         "properties": {
           "data": {
@@ -5440,6 +6080,28 @@
           "data"
         ],
         "title": "Envelope[OrderRow]"
+      },
+      "Envelope_Overview_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Overview"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[Overview]"
       },
       "Envelope_PatientIdentityOut_": {
         "properties": {
@@ -5823,6 +6485,32 @@
           "data"
         ],
         "title": "Envelope[dict]"
+      },
+      "Envelope_list_AccountRow__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/AccountRow"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PageMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "Envelope[list[AccountRow]]"
       },
       "Envelope_list_AuditOut__": {
         "properties": {
@@ -7192,6 +7880,176 @@
         ],
         "title": "Metrics"
       },
+      "ModelDay": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "ok": {
+            "type": "integer",
+            "title": "Ok",
+            "default": 0
+          },
+          "failed": {
+            "type": "integer",
+            "title": "Failed",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "title": "ModelDay"
+      },
+      "Models": {
+        "properties": {
+          "service_up": {
+            "type": "boolean",
+            "title": "Service Up"
+          },
+          "service_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Ms"
+          },
+          "triage_calls": {
+            "type": "integer",
+            "title": "Triage Calls"
+          },
+          "triage_calls_24h": {
+            "type": "integer",
+            "title": "Triage Calls 24H"
+          },
+          "triage_ok_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triage Ok Rate"
+          },
+          "triage_avg_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triage Avg Ms"
+          },
+          "triage_p95_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triage P95 Ms"
+          },
+          "triage_versions": {
+            "items": {
+              "$ref": "#/components/schemas/VersionRow"
+            },
+            "type": "array",
+            "title": "Triage Versions"
+          },
+          "triage_last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triage Last Error"
+          },
+          "triage_last_error_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Triage Last Error At"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/ModelDay"
+            },
+            "type": "array",
+            "title": "Series"
+          },
+          "risk_models_enabled": {
+            "type": "boolean",
+            "title": "Risk Models Enabled"
+          },
+          "ai_drafts": {
+            "type": "integer",
+            "title": "Ai Drafts"
+          },
+          "ai_by_provider": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Ai By Provider"
+          },
+          "ai_by_action": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Ai By Action"
+          },
+          "ai_model_versions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Ai Model Versions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "service_up",
+          "service_ms",
+          "triage_calls",
+          "triage_calls_24h",
+          "triage_ok_rate",
+          "triage_avg_ms",
+          "triage_p95_ms",
+          "triage_versions",
+          "triage_last_error",
+          "triage_last_error_at",
+          "series",
+          "risk_models_enabled",
+          "ai_drafts",
+          "ai_by_provider",
+          "ai_by_action",
+          "ai_model_versions"
+        ],
+        "title": "Models"
+      },
       "MyRecord": {
         "properties": {
           "vitalis_id": {
@@ -7608,6 +8466,102 @@
           "items"
         ],
         "title": "OrdersIn"
+      },
+      "Overview": {
+        "properties": {
+          "days": {
+            "type": "integer",
+            "title": "Days"
+          },
+          "patients": {
+            "type": "integer",
+            "title": "Patients"
+          },
+          "patients_active_7d": {
+            "type": "integer",
+            "title": "Patients Active 7D"
+          },
+          "patients_active_24h": {
+            "type": "integer",
+            "title": "Patients Active 24H"
+          },
+          "patients_by_chemist": {
+            "type": "integer",
+            "title": "Patients By Chemist"
+          },
+          "patients_by_ussd": {
+            "type": "integer",
+            "title": "Patients By Ussd"
+          },
+          "accounts_by_role": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Accounts By Role"
+          },
+          "accounts_by_status": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Accounts By Status"
+          },
+          "facilities_by_status": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Facilities By Status"
+          },
+          "devices_with_alerts": {
+            "type": "integer",
+            "title": "Devices With Alerts"
+          },
+          "requests_by_channel": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Requests By Channel"
+          },
+          "funnel": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Funnel"
+          },
+          "sign_ins_24h": {
+            "type": "integer",
+            "title": "Sign Ins 24H"
+          },
+          "series": {
+            "items": {
+              "$ref": "#/components/schemas/DayRow"
+            },
+            "type": "array",
+            "title": "Series"
+          }
+        },
+        "type": "object",
+        "required": [
+          "days",
+          "patients",
+          "patients_active_7d",
+          "patients_active_24h",
+          "patients_by_chemist",
+          "patients_by_ussd",
+          "accounts_by_role",
+          "accounts_by_status",
+          "facilities_by_status",
+          "devices_with_alerts",
+          "requests_by_channel",
+          "funnel",
+          "sign_ins_24h",
+          "series"
+        ],
+        "title": "Overview"
       },
       "PageMeta": {
         "properties": {
@@ -10033,6 +10987,29 @@
           "documents"
         ],
         "title": "VerificationOut"
+      },
+      "VersionRow": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "calls": {
+            "type": "integer",
+            "title": "Calls"
+          },
+          "ok_rate": {
+            "type": "number",
+            "title": "Ok Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "calls",
+          "ok_rate"
+        ],
+        "title": "VersionRow"
       },
       "VitalIn": {
         "properties": {

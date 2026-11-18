@@ -50,13 +50,15 @@ def vapid_keys() -> tuple[str, str]:
 
 
 async def subscribe(db: AsyncSession, *, endpoint: str, p256dh: str, auth: str,
-                    patient_id: uuid.UUID | None = None, user_id: uuid.UUID | None = None) -> None:
+                    patient_id: uuid.UUID | None = None, user_id: uuid.UUID | None = None,
+                    user_agent: str | None = None) -> None:
     """One row per browser endpoint; re-subscribing moves it to the current owner."""
     row = (await db.execute(select(PushSubscription).where(PushSubscription.endpoint == endpoint))).scalar_one_or_none()
     if not row:
         row = PushSubscription(endpoint=endpoint, p256dh=p256dh, auth=auth)
         db.add(row)
     row.p256dh, row.auth, row.patient_id, row.user_id = p256dh, auth, patient_id, user_id
+    row.user_agent = (user_agent or "")[:255] or None
     await db.commit()
 
 

@@ -62,6 +62,8 @@ class Patient(IdMixin, TimestampMixin, Base):
     pregnant: Mapped[bool] = mapped_column(default=False)
     date_of_birth: Mapped[date | None]
     created_by_worker_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
+    # When this phone last used VITALIS (updated at most every 10 minutes): powers "active phones" for the admin.
+    last_seen_at: Mapped[datetime | None]
 
 
 class AuditEvent(IdMixin, Base):
@@ -86,6 +88,7 @@ class PushSubscription(IdMixin, TimestampMixin, Base):
     endpoint: Mapped[str] = mapped_column(Text, unique=True)
     p256dh: Mapped[str] = mapped_column(String(255))
     auth: Mapped[str] = mapped_column(String(255))
+    user_agent: Mapped[str | None] = mapped_column(String(255))  # browser and OS, for the admin's device list
 
 
 class PatientHistoryEntry(IdMixin, Base):

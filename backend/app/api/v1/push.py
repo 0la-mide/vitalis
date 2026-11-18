@@ -1,6 +1,6 @@
 """Web Push sign-up: the patient's phone (device key) or a signed-in staff/worker browser."""
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,16 +38,18 @@ async def key():
 
 
 @router.post("/me/push", response_model=Envelope[dict])
-async def patient_subscribe(body: SubscriptionIn, patient: Patient = Depends(current_patient),
+async def patient_subscribe(request: Request, body: SubscriptionIn, patient: Patient = Depends(current_patient),
                             db: AsyncSession = Depends(get_db)):
     await push.subscribe(db, endpoint=body.endpoint, p256dh=body.keys.p256dh, auth=body.keys.auth,
-                         patient_id=patient.id)
+                         patient_id=patient.id, user_agent=request.headers.get("user-agent"))
     return ok({"subscribed": True})
 
 
 @router.post("/push/subscribe", response_model=Envelope[dict])
-async def staff_subscribe(body: SubscriptionIn, user: User = Depends(current_user), db: AsyncSession = Depends(get_db)):
-    await push.subscribe(db, endpoint=body.endpoint, p256dh=body.keys.p256dh, auth=body.keys.auth, user_id=user.id)
+async def staff_subscribe(request: Request, body: SubscriptionIn, user: User = Depends(current_user),
+                          db: AsyncSession = Depends(get_db)):
+    await push.subscribe(db, endpoint=body.endpoint, p256dh=body.keys.p256dh, auth=body.keys.auth, user_id=user.id,
+                         user_agent=request.headers.get("user-agent"))
     return ok({"subscribed": True})
 
 

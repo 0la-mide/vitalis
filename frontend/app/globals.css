@@ -20,6 +20,10 @@
   --muted: #eef2f0;
   --muted-foreground: #4b5a55;    /* 7.3:1 on paper */
   --card: #ffffff;
+  /* Chart series (validated: colour-blind safe, fixed order): app, chemist, USSD */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
   --border: #e3e7e5;              /* hairline */
   --primary: #0f5c4a;             /* brand-700 */
   --primary-strong: #0c4a3c;
@@ -47,6 +51,9 @@
   --muted: #14201c;
   --muted-foreground: #a3b1ac;
   --card: #101a17;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
   --border: #22302b;
   --primary: #4a9c84;
   --primary-strong: #7dbba6;
@@ -77,6 +84,9 @@
     --muted: #14201c;
     --muted-foreground: #a3b1ac;
     --card: #101a17;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
     --border: #22302b;
     --primary: #4a9c84;
     --primary-strong: #7dbba6;

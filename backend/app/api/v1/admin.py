@@ -7,7 +7,7 @@ from typing import Literal
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit
@@ -123,6 +123,8 @@ class AuditOut(BaseModel):
 @router.get("/audit", response_model=Envelope[list[AuditOut]])
 async def audit_log(
     action: str | None = Query(None, max_length=64),
+    actor_type: str | None = Query(None, max_length=16),
+    who: str | None = Query(None, max_length=80),  # staff name or email
     actor_id: uuid.UUID | None = None,
     facility_id: uuid.UUID | None = None,
     since: datetime | None = None,
@@ -135,6 +137,11 @@ async def audit_log(
     q = select(AuditEvent)
     if action:
         q = q.where(AuditEvent.action.startswith(action))
+    if actor_type:
+        q = q.where(AuditEvent.actor_type == actor_type)
+    if who:
+        like = f"%{who.strip()}%"
+        q = q.where(AuditEvent.actor_id.in_(select(User.id).where(or_(User.full_name.ilike(like), User.email.ilike(like)))))
     if actor_id:
         q = q.where(AuditEvent.actor_id == actor_id)
     if facility_id:

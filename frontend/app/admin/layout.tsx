@@ -1,12 +1,15 @@
 "use client";
 
-import { BadgeCheck, LayoutDashboard, ScrollText } from "lucide-react";
+import { BadgeCheck, BrainCircuit, LayoutDashboard, ScrollText, Smartphone, Users } from "lucide-react";
 import { StaffShell, type NavItem } from "@/components/staff/StaffShell";
 import { useRequireNetworkAdmin } from "@/lib/staff";
 
 const NAV: NavItem[] = [
   { href: "/admin", label: "Network overview", icon: <LayoutDashboard />, exact: true },
+  { href: "/admin/accounts", label: "Accounts", icon: <Users /> },
   { href: "/admin/verifications", label: "Verifications", icon: <BadgeCheck /> },
+  { href: "/admin/devices", label: "Devices", icon: <Smartphone /> },
+  { href: "/admin/models", label: "Models", icon: <BrainCircuit /> },
   { href: "/admin/audit", label: "Audit & governance", icon: <ScrollText /> },
 ];
 

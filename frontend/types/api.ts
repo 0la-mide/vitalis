@@ -1602,6 +1602,94 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/console/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Overview */
+        get: operations["overview_api_v1_admin_console_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/console/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Accounts */
+        get: operations["accounts_api_v1_admin_console_accounts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/console/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Devices */
+        get: operations["devices_api_v1_admin_console_devices_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/console/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Models */
+        get: operations["models_api_v1_admin_console_models_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/console/audit.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Audit Csv
+         * @description Up to 10,000 events as CSV. Patients appear only as 'patient' (never named). The export itself is audited.
+         */
+        get: operations["audit_csv_api_v1_admin_console_audit_csv_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1620,6 +1708,37 @@ export interface components {
             consents: components["schemas"]["ConsentRow"][];
             /** Events */
             events: components["schemas"]["LookEvent"][];
+        };
+        /** AccountRow */
+        AccountRow: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Full Name */
+            full_name: string;
+            /** Email */
+            email: string;
+            /** Phone */
+            phone: string | null;
+            /** Role */
+            role: string;
+            /** Status */
+            status: string;
+            /** Facility */
+            facility: string | null;
+            /** Business */
+            business: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Last Login At */
+            last_login_at: string | null;
+            /** Sign Ins 30D */
+            sign_ins_30d: number;
         };
         /** Allowed */
         Allowed: {
@@ -1807,6 +1926,54 @@ export interface components {
             /** Free Maternal Care */
             free_maternal_care: boolean;
         };
+        /** DayRow */
+        DayRow: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * App
+             * @default 0
+             */
+            app: number;
+            /**
+             * Chemist
+             * @default 0
+             */
+            chemist: number;
+            /**
+             * Ussd
+             * @default 0
+             */
+            ussd: number;
+            /**
+             * Emergencies
+             * @default 0
+             */
+            emergencies: number;
+            /**
+             * Referrals
+             * @default 0
+             */
+            referrals: number;
+            /**
+             * New Patients
+             * @default 0
+             */
+            new_patients: number;
+            /**
+             * New Accounts
+             * @default 0
+             */
+            new_accounts: number;
+            /**
+             * Sign Ins
+             * @default 0
+             */
+            sign_ins: number;
+        };
         /** DecideIn */
         DecideIn: {
             /**
@@ -1881,6 +2048,47 @@ export interface components {
             reply: string;
             /** Done */
             done: boolean;
+        };
+        /** DeviceRow */
+        DeviceRow: {
+            /** Owner */
+            owner: string;
+            /** Browser */
+            browser: string;
+            /** Os */
+            os: string;
+            /**
+             * Since
+             * Format: date-time
+             */
+            since: string;
+        };
+        /** Devices */
+        Devices: {
+            /** Phones With Card */
+            phones_with_card: number;
+            /** Phones Active 24H */
+            phones_active_24h: number;
+            /** Phones Active 7D */
+            phones_active_7d: number;
+            /** Phones Active 30D */
+            phones_active_30d: number;
+            /** Alerts Total */
+            alerts_total: number;
+            /** Alerts Patients */
+            alerts_patients: number;
+            /** Alerts Staff */
+            alerts_staff: number;
+            /** By Browser */
+            by_browser: {
+                [key: string]: number;
+            };
+            /** By Os */
+            by_os: {
+                [key: string]: number;
+            };
+            /** Recent */
+            recent: components["schemas"]["DeviceRow"][];
         };
         /** DraftDecisionIn */
         DraftDecisionIn: {
@@ -2045,6 +2253,11 @@ export interface components {
             data: components["schemas"]["DemoUssdOut"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[Devices] */
+        Envelope_Devices_: {
+            data: components["schemas"]["Devices"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[DraftOut] */
         Envelope_DraftOut_: {
             data: components["schemas"]["DraftOut"];
@@ -2080,6 +2293,11 @@ export interface components {
             data: components["schemas"]["Metrics"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
+        /** Envelope[Models] */
+        Envelope_Models_: {
+            data: components["schemas"]["Models"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
         /** Envelope[MyRecord] */
         Envelope_MyRecord_: {
             data: components["schemas"]["MyRecord"];
@@ -2093,6 +2311,11 @@ export interface components {
         /** Envelope[OrderRow] */
         Envelope_OrderRow_: {
             data: components["schemas"]["OrderRow"];
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[Overview] */
+        Envelope_Overview_: {
+            data: components["schemas"]["Overview"];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[PatientIdentityOut] */
@@ -2181,6 +2404,12 @@ export interface components {
             data: {
                 [key: string]: unknown;
             };
+            meta?: components["schemas"]["PageMeta"] | null;
+        };
+        /** Envelope[list[AccountRow]] */
+        Envelope_list_AccountRow__: {
+            /** Data */
+            data: components["schemas"]["AccountRow"][];
             meta?: components["schemas"]["PageMeta"] | null;
         };
         /** Envelope[list[AuditOut]] */
@@ -2616,6 +2845,63 @@ export interface components {
             /** Workers Pending */
             workers_pending: number;
         };
+        /** ModelDay */
+        ModelDay: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /**
+             * Ok
+             * @default 0
+             */
+            ok: number;
+            /**
+             * Failed
+             * @default 0
+             */
+            failed: number;
+        };
+        /** Models */
+        Models: {
+            /** Service Up */
+            service_up: boolean;
+            /** Service Ms */
+            service_ms: number | null;
+            /** Triage Calls */
+            triage_calls: number;
+            /** Triage Calls 24H */
+            triage_calls_24h: number;
+            /** Triage Ok Rate */
+            triage_ok_rate: number | null;
+            /** Triage Avg Ms */
+            triage_avg_ms: number | null;
+            /** Triage P95 Ms */
+            triage_p95_ms: number | null;
+            /** Triage Versions */
+            triage_versions: components["schemas"]["VersionRow"][];
+            /** Triage Last Error */
+            triage_last_error: string | null;
+            /** Triage Last Error At */
+            triage_last_error_at: string | null;
+            /** Series */
+            series: components["schemas"]["ModelDay"][];
+            /** Risk Models Enabled */
+            risk_models_enabled: boolean;
+            /** Ai Drafts */
+            ai_drafts: number;
+            /** Ai By Provider */
+            ai_by_provider: {
+                [key: string]: number;
+            };
+            /** Ai By Action */
+            ai_by_action: {
+                [key: string]: number;
+            };
+            /** Ai Model Versions */
+            ai_model_versions: string[];
+        };
         /** MyRecord */
         MyRecord: {
             /** Vitalis Id */
@@ -2756,6 +3042,47 @@ export interface components {
         OrdersIn: {
             /** Items */
             items: components["schemas"]["OrderItemIn"][];
+        };
+        /** Overview */
+        Overview: {
+            /** Days */
+            days: number;
+            /** Patients */
+            patients: number;
+            /** Patients Active 7D */
+            patients_active_7d: number;
+            /** Patients Active 24H */
+            patients_active_24h: number;
+            /** Patients By Chemist */
+            patients_by_chemist: number;
+            /** Patients By Ussd */
+            patients_by_ussd: number;
+            /** Accounts By Role */
+            accounts_by_role: {
+                [key: string]: number;
+            };
+            /** Accounts By Status */
+            accounts_by_status: {
+                [key: string]: number;
+            };
+            /** Facilities By Status */
+            facilities_by_status: {
+                [key: string]: number;
+            };
+            /** Devices With Alerts */
+            devices_with_alerts: number;
+            /** Requests By Channel */
+            requests_by_channel: {
+                [key: string]: number;
+            };
+            /** Funnel */
+            funnel: {
+                [key: string]: number;
+            };
+            /** Sign Ins 24H */
+            sign_ins_24h: number;
+            /** Series */
+            series: components["schemas"]["DayRow"][];
         };
         /** PageMeta */
         PageMeta: {
@@ -3563,6 +3890,15 @@ export interface components {
             };
             /** Documents */
             documents: components["schemas"]["UploadOut"][];
+        };
+        /** VersionRow */
+        VersionRow: {
+            /** Version */
+            version: string;
+            /** Calls */
+            calls: number;
+            /** Ok Rate */
+            ok_rate: number;
         };
         /** VitalIn */
         VitalIn: {
@@ -5564,6 +5900,8 @@ export interface operations {
         parameters: {
             query?: {
                 action?: string | null;
+                actor_type?: string | null;
+                who?: string | null;
                 actor_id?: string | null;
                 facility_id?: string | null;
                 since?: string | null;
@@ -6608,6 +6946,157 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_list_DemoSms__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    overview_api_v1_admin_console_overview_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Overview_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    accounts_api_v1_admin_console_accounts_get: {
+        parameters: {
+            query?: {
+                role?: string | null;
+                status?: string | null;
+                q?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_AccountRow__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    devices_api_v1_admin_console_devices_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Devices_"];
+                };
+            };
+        };
+    };
+    models_api_v1_admin_console_models_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Models_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    audit_csv_api_v1_admin_console_audit_csv_get: {
+        parameters: {
+            query?: {
+                action?: string | null;
+                actor_type?: string | null;
+                since?: string | null;
+                until?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

@@ -65,6 +65,20 @@ Documents: PDF/JPG/PNG by **magic bytes**, max 5 MB, random file names in `UPLOA
 | GET | `/admin/audit?action=&actor_id=&facility_id=&since=&until=` | `action` is a prefix match (e.g. `verification.`) |
 | GET | `/admin/metrics` | counts only: triage, red flags, referrals, median acceptance time, arrival rate, overdue, pending queues |
 
+## Network admin console (role `network_admin`)
+
+Patients are counted, never named, in the console: no VITALIS IDs or names. Staff and chemists are listed.
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/admin/console/overview?days=7..90` | patients (total, active 24 h / 7 d, started by a chemist, reached by USSD), accounts by role and status, hospitals by status, devices with alerts, requests by channel (app / chemist / USSD), the request → referred → accepted → arrived funnel, and a per-day series (Lagos days) of requests by channel, emergencies, referrals, sign-ups and sign-ins |
+| GET | `/admin/console/accounts?role=&status=&q=` | every staff and chemist account: role, hospital or shop, status, signed up, last sign-in, sign-ins in 30 days (paged) |
+| GET | `/admin/console/devices` | phones with a VITALIS card and how many were active (24 h / 7 d / 30 d), devices with alerts by browser and OS, the latest 100 (patients shown only as "Patient phone") |
+| GET | `/admin/console/models?days=` | disease-model service health check, calls, success rate, average and 95th-percentile time, calls per day, versions, last failure; risk models on/off; doctor's AI drafts by provider and by what the doctor did |
+| GET | `/admin/console/audit.csv?action=&actor_type=&since=&until=` | up to 10,000 audit events as CSV (the export is itself audited) |
+
+`GET /admin/audit` also takes `actor_type` (user, patient, system) and `who` (a staff name or email).
+
 ## Hospital (cookie auth + `X-CSRF-Token` on mutations; scoped to the user's facility)
 
 | Method | Path | Roles |

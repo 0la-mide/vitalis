@@ -3,18 +3,20 @@
 import hmac
 import uuid
 from collections.abc import Callable, Iterable
+from datetime import timedelta
 
 from fastapi import Depends, Request
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.db import get_db
+from app.core.db import get_db, utcnow
 from app.core.errors import AppError, forbidden
 from app.core.security import ACCESS_COOKIE, CSRF_COOKIE, CSRF_HEADER, decode_token, sha256_hex
 from app.models import Facility, Patient, User
 from app.models.enums import HOSPITAL_ROLES, Role, VerificationStatus
 
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+SEEN_EVERY = timedelta(minutes=10)  # how often a patient's "last seen" is written
 
 
 def check_csrf(request: Request) -> None:
@@ -91,4 +93,8 @@ async def current_patient(request: Request, db: AsyncSession = Depends(get_db)) 
     ).scalar_one_or_none()
     if not patient:
         raise AppError(401, "patient_key_invalid", "Device key not recognised")
+    now = utcnow()
+    if patient.last_seen_at is None or now - patient.last_seen_at > SEEN_EVERY:
+        await db.execute(update(Patient).where(Patient.id == patient.id).values(last_seen_at=now))
+        await db.commit()
     return patient
