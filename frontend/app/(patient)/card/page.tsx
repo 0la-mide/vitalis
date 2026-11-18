@@ -10,8 +10,9 @@ import { DemoPatients } from "@/components/auth/DemoAccounts";
 import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/components/ui/card";
 import { inputCls } from "@/components/ui/field";
-import { api, type PatientKeysOut, type Schemas } from "@/lib/api";
-import { getIdentity, saveIdentity, setPendingRecovery } from "@/lib/patient-store";
+import { api, ApiError, type PatientKeysOut, type Schemas } from "@/lib/api";
+import { isNetworkError } from "@/lib/offline";
+import { clearIdentity, getIdentity, saveIdentity, setPendingRecovery } from "@/lib/patient-store";
 import { cn } from "@/lib/utils";
 import { vitalLabel } from "@/lib/vitals";
 
@@ -55,8 +56,45 @@ export default function MyRecordPage() {
   );
 }
 
+// A card the server no longer knows (opened on another phone, or the demo was reset) must not retry forever.
+const retryUnlessRefused = (n: number, e: unknown) => !(e instanceof ApiError && e.status < 500) && n < 2;
+
 function useMyRecord() {
-  return useQuery({ queryKey: ["my-record"], queryFn: () => api<Rec>("/me/records", { patient: true }) });
+  return useQuery({ queryKey: ["my-record"], queryFn: () => api<Rec>("/me/records", { patient: true }), retry: retryUnlessRefused });
+}
+
+/** What to show while the record is not here: loading, a card the server refused, no signal, or another error. */
+function Pending({ error, retry }: { error: unknown; retry: () => void }) {
+  if (!error) return <p className="text-muted-foreground">Loading…</p>;
+  if (error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+    return (
+      <Card className="space-y-3">
+        <p className="font-semibold">This phone&apos;s VITALIS card is no longer active</p>
+        <p className="text-sm text-muted-foreground">
+          It was opened on another phone, or the demo data was reset. Open it again with your VITALIS ID and recovery code.
+        </p>
+        <Button
+          className="w-full"
+          onClick={async () => {
+            await clearIdentity();
+            window.location.reload();
+          }}
+        >
+          Open my card again
+        </Button>
+      </Card>
+    );
+  }
+  const offline = isNetworkError(error);
+  return (
+    <Card className="space-y-3">
+      <p className="font-semibold">{offline ? "No signal" : "Could not load your record"}</p>
+      <p className="text-sm text-muted-foreground">
+        {offline ? "Your record needs a connection. Try again when you have signal." : (error as Error).message}
+      </p>
+      <Button variant="outline" className="w-full" onClick={retry}>Try again</Button>
+    </Card>
+  );
 }
 
 function Requests() {
@@ -237,8 +275,8 @@ function AddToRecord() {
 }
 
 function RecordTab() {
-  const { data } = useMyRecord();
-  if (!data) return <p className="text-muted-foreground">Loading…</p>;
+  const { data, error, refetch } = useMyRecord();
+  if (!data) return <Pending error={error} retry={() => void refetch()} />;
   const by = (k: string) => data.history.filter((h) => (h as { kind: string }).kind === k) as Entry[];
   const allergies = by("allergy");
   return (
@@ -267,8 +305,8 @@ function RecordTab() {
 }
 
 function VisitsTab() {
-  const { data } = useMyRecord();
-  if (!data) return <p className="text-muted-foreground">Loading…</p>;
+  const { data, error, refetch } = useMyRecord();
+  if (!data) return <Pending error={error} retry={() => void refetch()} />;
   type Visit = { encounter_id: string; facility: string; date: string; complaint: string | null; disposition: string | null;
     vitals: { kind: string; value: number; unit: string }[]; results: { test: string; text: string; abnormal: boolean }[];
     notes: { body: string }[]; prescriptions: { drug: string; dose: string }[] };
@@ -374,12 +412,12 @@ function ShareTab() {
 
 function AccessTab() {
   const qc = useQueryClient();
-  const { data } = useQuery({ queryKey: ["my-access"], queryFn: () => api<Schemas["AccessLog"]>("/me/access-log", { patient: true }), refetchInterval: 8000 });
+  const { data, error, refetch } = useQuery({ queryKey: ["my-access"], queryFn: () => api<Schemas["AccessLog"]>("/me/access-log", { patient: true }), refetchInterval: 8000, retry: retryUnlessRefused });
   const revoke = useMutation({
     mutationFn: (id: string) => api(`/me/consents/${id}`, { method: "DELETE", patient: true }),
     onSettled: () => qc.invalidateQueries({ queryKey: ["my-access"] }),
   });
-  if (!data) return <p className="text-muted-foreground">Loading…</p>;
+  if (!data) return <Pending error={error} retry={() => void refetch()} />;
   const active = data.consents.filter((c) => c.active);
   return (
     <div className="space-y-3">
