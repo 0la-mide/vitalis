@@ -87,6 +87,7 @@ yb = column(16 + colw + gap, "VITALIS", "Healthcare coordination platform", GREE
     "Suggests only **hospitals that can treat** the case, and alerts them before the patient arrives.",
     "**Live referrals**: the hospital accepts on its screen; the family gets directions, an alert and an SMS.",
     "One **VITALIS ID** per person: a shared record that opens **only with the patient's consent**.",
+    "**Works with no signal**: the nearest ready hospitals are saved on the phone.",
     "Answers: **\"Where do I go right now, and are they ready?\"**",
 ])
 pdf.set_y(max(ya, yb) + 3)
@@ -120,18 +121,18 @@ pdf.ln(4)
 # together
 pdf.set_fill_color(*MINT)
 y = pdf.get_y()
-pdf.rect(16, y, W, 51, style="F")
+pdf.rect(16, y, W, 50, style="F")
 pdf.set_fill_color(*GREEN)
-pdf.rect(16, y, 1.6, 51, style="F")
+pdf.rect(16, y, 1.6, 50, style="F")
 pdf.set_xy(22, y + 4)
 pdf.set_font("helvetica", "B", 12)
 pdf.cell(0, 6, "Working together", new_x="LMARGIN", new_y="NEXT")
 pdf.set_font("helvetica", "", 10.5)
 together = [
-    "**Today:** a patient can add her NHIA number to her VITALIS ID; reception sees it the moment she arrives, so "
+    "**Today:** a patient adds her NHIA number to her VITALIS ID; reception sees it the moment she arrives, so "
     "coverage can be checked without another form.",
-    "**Next (planned):** show which suggested hospitals are NHIA-accredited, so an insured patient is sent where her "
-    "cover works.",
+    "**Today:** hospitals show **Accepts NHIA** and **Free maternal care**; an insured patient sees those first, "
+    "but only among hospitals that can treat her. Saved on the phone, so it works with no signal.",
     "**Next (planned):** referral and arrival records that can support claims and help the NHIA see where care is "
     "needed most.",
 ]
