@@ -27,8 +27,10 @@ generates `frontend/types/api.ts` (`make types`).
 
 | Method | Path | Notes |
 |---|---|---|
-| GET/PATCH | `/me/profile` | `{full_name?, nhia_number?}`: the patient's own name and NHIA (formerly NHIS) number; "" clears |
-| GET | `/me/records` | the patient's own record: history entries and visits at every hospital |
+| GET/PATCH | `/me/profile` | `{full_name?, nhia_number?, phone?}`: the patient's own name, NHIA (formerly NHIS) number and optional phone for SMS alerts; "" clears. No email is collected |
+| GET | `/me/records` | the patient's own record: history entries (each with `id` and `patient_reported`) and visits at every hospital |
+| POST | `/me/history` | `{kind: allergy|condition|medication|family, text, detail?, onset_age?}`: the patient adds to her own record; shown as "Reported by you" / "Patient-reported"; allergies are used by the prescribing safety check; max 40 active |
+| DELETE | `/me/history/{id}` | remove an entry she reported herself (hospital entries cannot be removed) |
 | POST | `/me/consents` | `{facility_id?, scope: full|summary}` → `{consent_id, url, qr_png, expires_at}`; the QR works once and expires in 10 min; `facility_id` null = any verified hospital |
 | DELETE | `/me/consents/{id}` | stop sharing (revokes the consent and any unused QR) |
 | GET | `/me/access-log` | who can see the record now + every view/request (from the audit log) |

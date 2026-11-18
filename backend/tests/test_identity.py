@@ -12,8 +12,11 @@ async def test_patient_sets_own_name_and_nhia(client):
     r = await client.patch("/api/v1/me/profile", json={"full_name": "  Ada   Okafor ", "nhia_number": "nhia/og/001234"})
     assert r.status_code == 200, r.text
     d = r.json()["data"]
-    assert d == {"vitalis_id": me["vitalis_id"], "full_name": "Ada Okafor", "nhia_number": "NHIA/OG/001234"}
+    assert d == {"vitalis_id": me["vitalis_id"], "full_name": "Ada Okafor", "nhia_number": "NHIA/OG/001234",
+                 "phone": None}
     assert (await client.patch("/api/v1/me/profile", json={"nhia_number": "<script>"})).status_code == 422
+    assert (await client.patch("/api/v1/me/profile", json={"phone": "+234 803 000 0000"})).json()["data"]["phone"] == "+234 803 000 0000"
+    assert (await client.patch("/api/v1/me/profile", json={"phone": "call me"})).status_code == 422
     # Leaving a field out keeps it; "" clears it.
     d = (await client.patch("/api/v1/me/profile", json={"nhia_number": ""})).json()["data"]
     assert d["full_name"] == "Ada Okafor" and d["nhia_number"] is None

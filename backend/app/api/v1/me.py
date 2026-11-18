@@ -8,8 +8,8 @@ from typing import Literal
 
 import qrcode
 from fastapi import APIRouter, Depends, Request
-from pydantic import BaseModel
-from sqlalchemy import select
+from pydantic import BaseModel, Field
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.audit import audit
@@ -19,7 +19,17 @@ from app.core.deps import current_patient
 from app.core.errors import AppError, Envelope, ok
 from app.core.ratelimit import limiter, patient_key
 from app.core.security import new_secret, sha256_hex
-from app.models import AccessRequest, AuditEvent, Consent, Facility, Patient, QRGrant, Referral, User
+from app.models import (
+    AccessRequest,
+    AuditEvent,
+    Consent,
+    Facility,
+    Patient,
+    PatientHistoryEntry,
+    QRGrant,
+    Referral,
+    User,
+)
 from app.models.enums import VerificationStatus
 from app.schemas.encounter import PatientIdentityIn, PatientIdentityOut
 from app.services import records as rsvc
@@ -96,7 +106,7 @@ class DecideIn(BaseModel):
 @router.get("/profile", response_model=Envelope[PatientIdentityOut])
 async def my_profile(patient: Patient = Depends(current_patient)):
     return ok(PatientIdentityOut(vitalis_id=patient.vitalis_id, full_name=patient.full_name,
-                                 nhia_number=patient.nhia_number))
+                                 nhia_number=patient.nhia_number, phone=patient.phone))
 
 
 @router.patch("/profile", response_model=Envelope[PatientIdentityOut])
@@ -104,12 +114,59 @@ async def update_profile(body: PatientIdentityIn, patient: Patient = Depends(cur
                          db: AsyncSession = Depends(get_db)):
     """The patient sets their own name and NHIA (formerly NHIS) number. Hospitals see it on their next visit."""
     changed = apply_identity(patient, body.full_name, body.nhia_number)
+    if body.phone is not None and (body.phone.strip() or None) != patient.phone:
+        patient.phone = body.phone.strip() or None  # only used to text her about her referrals
+        changed.append("phone")
     if changed:
         await audit(db, "patient.identity.update", actor_type="patient", actor_id=patient.id, subject_type="patient",
                     subject_id=patient.id, details={"fields": changed})
         await db.commit()
     return ok(PatientIdentityOut(vitalis_id=patient.vitalis_id, full_name=patient.full_name,
-                                 nhia_number=patient.nhia_number))
+                                 nhia_number=patient.nhia_number, phone=patient.phone))
+
+
+# ---------- what she tells us about herself ----------
+MAX_SELF_REPORTED = 40
+
+
+class SelfReportIn(BaseModel):
+    kind: Literal["allergy", "condition", "medication", "family"]
+    text: str = Field(min_length=2, max_length=200)
+    detail: str | None = Field(default=None, max_length=200)
+    onset_age: int | None = Field(default=None, ge=0, le=120)
+
+
+@router.post("/history", response_model=Envelope[MyRecord])
+@limiter.limit("30/minute", key_func=patient_key)
+async def add_my_history(request: Request, body: SelfReportIn, patient: Patient = Depends(current_patient),
+                         db: AsyncSession = Depends(get_db)):
+    """The patient adds an allergy, condition, medicine or family history. It is labelled "Patient-reported" for
+    every hospital until a clinician records it, and allergies she reports still trigger medicine-safety checks."""
+    n = (await db.execute(select(func.count()).select_from(PatientHistoryEntry).where(
+        PatientHistoryEntry.patient_id == patient.id, PatientHistoryEntry.facility_id.is_(None),
+        PatientHistoryEntry.recorded_by.is_(None), PatientHistoryEntry.active.is_(True)))).scalar_one()
+    if n >= MAX_SELF_REPORTED:
+        raise AppError(422, "too_many", "That's a lot of entries. A clinic can help you review your record.")
+    db.add(PatientHistoryEntry(patient_id=patient.id, kind=body.kind, text=" ".join(body.text.split()),
+                               detail=(body.detail or "").strip() or None, onset_age=body.onset_age))
+    await audit(db, "record.self_report", actor_type="patient", actor_id=patient.id, subject_type="patient",
+                subject_id=patient.id, details={"kind": body.kind})
+    await db.commit()
+    return ok(MyRecord(vitalis_id=patient.vitalis_id, **(await rsvc.patient_timeline(db, patient.id))))
+
+
+@router.delete("/history/{entry_id}", response_model=Envelope[MyRecord])
+async def remove_my_history(entry_id: uuid.UUID, patient: Patient = Depends(current_patient),
+                            db: AsyncSession = Depends(get_db)):
+    """She can remove what she reported herself, never what a hospital recorded."""
+    h = await db.get(PatientHistoryEntry, entry_id)
+    if not h or h.patient_id != patient.id or h.facility_id is not None or h.recorded_by is not None:
+        raise AppError(404, "not_found", "Not found")
+    h.active = False
+    await audit(db, "record.self_report.remove", actor_type="patient", actor_id=patient.id, subject_type="patient",
+                subject_id=patient.id, details={"kind": h.kind})
+    await db.commit()
+    return ok(MyRecord(vitalis_id=patient.vitalis_id, **(await rsvc.patient_timeline(db, patient.id))))
 
 
 @router.get("/records", response_model=Envelope[MyRecord])

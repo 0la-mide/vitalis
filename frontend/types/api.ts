@@ -1172,6 +1172,47 @@ export interface paths {
         patch: operations["update_profile_api_v1_me_profile_patch"];
         trace?: never;
     };
+    "/api/v1/me/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add My History
+         * @description The patient adds an allergy, condition, medicine or family history. It is labelled "Patient-reported" for
+         *     every hospital until a clinician records it, and allergies she reports still trigger medicine-safety checks.
+         */
+        post: operations["add_my_history_api_v1_me_history_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/history/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove My History
+         * @description She can remove what she reported herself, never what a hospital recorded.
+         */
+        delete: operations["remove_my_history_api_v1_me_history__entry_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me/records": {
         parameters: {
             query?: never;
@@ -2594,13 +2635,15 @@ export interface components {
         };
         /**
          * PatientIdentityIn
-         * @description Name and NHIA (formerly NHIS) number. Send "" to clear a field; leave it out to keep it.
+         * @description Name, NHIA (formerly NHIS) number and phone. Send "" to clear a field; leave it out to keep it.
          */
         PatientIdentityIn: {
             /** Full Name */
             full_name?: string | null;
             /** Nhia Number */
             nhia_number?: string | null;
+            /** Phone */
+            phone?: string | null;
         };
         /** PatientIdentityOut */
         PatientIdentityOut: {
@@ -2610,6 +2653,8 @@ export interface components {
             full_name: string | null;
             /** Nhia Number */
             nhia_number: string | null;
+            /** Phone */
+            phone?: string | null;
         };
         /** PatientKeysOut */
         PatientKeysOut: {
@@ -2866,6 +2911,20 @@ export interface components {
         SafetyIn: {
             /** Drug */
             drug: string;
+        };
+        /** SelfReportIn */
+        SelfReportIn: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "allergy" | "condition" | "medication" | "family";
+            /** Text */
+            text: string;
+            /** Detail */
+            detail?: string | null;
+            /** Onset Age */
+            onset_age?: number | null;
         };
         /** ServicePatchIn */
         ServicePatchIn: {
@@ -5724,6 +5783,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_PatientIdentityOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_my_history_api_v1_me_history_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SelfReportIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_MyRecord_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_my_history_api_v1_me_history__entry_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_MyRecord_"];
                 };
             };
             /** @description Validation Error */

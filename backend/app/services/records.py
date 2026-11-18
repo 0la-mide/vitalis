@@ -119,8 +119,9 @@ async def history_rows(db: AsyncSession, where) -> list[dict]:
     rows = (await db.execute(select(PatientHistoryEntry, Facility.name)
                              .outerjoin(Facility, Facility.id == PatientHistoryEntry.facility_id)
                              .where(where).order_by(PatientHistoryEntry.kind, PatientHistoryEntry.recorded_at))).all()
-    return [{"kind": h.kind, "text": h.text, "detail": h.detail, "onset_age": h.onset_age,
-             "source": _short(fac) if fac else "Patient-reported", "recorded_at": h.recorded_at.isoformat()}
+    return [{"id": str(h.id), "kind": h.kind, "text": h.text, "detail": h.detail, "onset_age": h.onset_age,
+             "source": _short(fac) if fac else "Patient-reported", "recorded_at": h.recorded_at.isoformat(),
+             "patient_reported": h.facility_id is None and h.recorded_by is None}
             for h, fac in rows]
 
 

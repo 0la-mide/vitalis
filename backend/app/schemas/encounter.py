@@ -199,13 +199,15 @@ NHIA_PATTERN = r"^[A-Za-z0-9/ .-]{4,24}$"
 
 
 class PatientIdentityIn(BaseModel):
-    """Name and NHIA (formerly NHIS) number. Send "" to clear a field; leave it out to keep it."""
+    """Name, NHIA (formerly NHIS) number and phone. Send "" to clear a field; leave it out to keep it."""
 
     full_name: str | None = Field(default=None, max_length=NAME_MAX)
     nhia_number: str | None = Field(default=None, max_length=24)
+    phone: str | None = Field(default=None, max_length=20, pattern=r"^$|^\+?[0-9 ]{7,20}$")
 
 
 class PatientIdentityOut(BaseModel):
     vitalis_id: str
     full_name: str | None
     nhia_number: str | None
+    phone: str | None = None

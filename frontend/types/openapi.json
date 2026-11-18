@@ -3010,6 +3010,92 @@
         }
       }
     },
+    "/api/v1/me/history": {
+      "post": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Add My History",
+        "description": "The patient adds an allergy, condition, medicine or family history. It is labelled \"Patient-reported\" for\nevery hospital until a clinician records it, and allergies she reports still trigger medicine-safety checks.",
+        "operationId": "add_my_history_api_v1_me_history_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelfReportIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MyRecord_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/history/{entry_id}": {
+      "delete": {
+        "tags": [
+          "my record"
+        ],
+        "summary": "Remove My History",
+        "description": "She can remove what she reported herself, never what a hospital recorded.",
+        "operationId": "remove_my_history_api_v1_me_history__entry_id__delete",
+        "parameters": [
+          {
+            "name": "entry_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Entry Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_MyRecord_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/me/records": {
       "get": {
         "tags": [
@@ -7230,11 +7316,24 @@
               }
             ],
             "title": "Nhia Number"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "pattern": "^$|^\\+?[0-9 ]{7,20}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
           }
         },
         "type": "object",
         "title": "PatientIdentityIn",
-        "description": "Name and NHIA (formerly NHIS) number. Send \"\" to clear a field; leave it out to keep it."
+        "description": "Name, NHIA (formerly NHIS) number and phone. Send \"\" to clear a field; leave it out to keep it."
       },
       "PatientIdentityOut": {
         "properties": {
@@ -7263,6 +7362,17 @@
               }
             ],
             "title": "Nhia Number"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
           }
         },
         "type": "object",
@@ -7998,6 +8108,57 @@
           "drug"
         ],
         "title": "SafetyIn"
+      },
+      "SelfReportIn": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "allergy",
+              "condition",
+              "medication",
+              "family"
+            ],
+            "title": "Kind"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Text"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "onset_age": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 120.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Age"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "text"
+        ],
+        "title": "SelfReportIn"
       },
       "ServicePatchIn": {
         "properties": {

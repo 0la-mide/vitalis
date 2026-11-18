@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BellRing, ChevronLeft, Eye, FileText, Pencil, QrCode, ShieldCheck, ShieldOff, X } from "lucide-react";
+import { BellRing, ChevronLeft, Eye, FileText, Pencil, Plus, QrCode, ShieldCheck, ShieldOff, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RecoverySlip } from "@/components/triage/RecoverySlip";
@@ -103,7 +103,7 @@ function MyDetails({ vitalisId }: { vitalisId: string }) {
   const { data } = useQuery({ queryKey: ["my-profile"], queryFn: () => api<Schemas["PatientIdentityOut"]>("/me/profile", { patient: true }) });
   const [editing, setEditing] = useState(false);
   const save = useMutation({
-    mutationFn: (body: { full_name: string; nhia_number: string }) =>
+    mutationFn: (body: { full_name: string; nhia_number: string; phone: string }) =>
       api<Schemas["PatientIdentityOut"]>("/me/profile", { method: "PATCH", body, patient: true }),
     onSuccess: (d) => {
       qc.setQueryData(["my-profile"], d);
@@ -120,13 +120,18 @@ function MyDetails({ vitalisId }: { vitalisId: string }) {
         <form className="grid gap-2" onSubmit={(e) => {
           e.preventDefault();
           const fd = new FormData(e.currentTarget);
-          save.mutate({ full_name: String(fd.get("full_name") ?? ""), nhia_number: String(fd.get("nhia_number") ?? "") });
+          save.mutate({ full_name: String(fd.get("full_name") ?? ""), nhia_number: String(fd.get("nhia_number") ?? ""),
+            phone: String(fd.get("phone") ?? "") });
         }}>
           <label className="grid gap-1 text-sm font-medium">Your name
             <input name="full_name" defaultValue={data?.full_name ?? ""} maxLength={120} autoComplete="name" className={inputCls} />
           </label>
           <label className="grid gap-1 text-sm font-medium">NHIA number (formerly NHIS), if you have one
             <input name="nhia_number" defaultValue={data?.nhia_number ?? ""} maxLength={24} className={cn(inputCls, "font-mono uppercase")} />
+          </label>
+          <label className="grid gap-1 text-sm font-medium">Phone number (optional)
+            <input name="phone" type="tel" inputMode="tel" defaultValue={data?.phone ?? ""} maxLength={20} placeholder="0803 000 0000" className={inputCls} />
+            <span className="font-normal text-muted-foreground">Only used to text you about your referrals, even when the app is closed. Never shared.</span>
           </label>
           {save.error ? <p className="text-sm text-emergency">{(save.error as Error).message}</p> : null}
           <div className="flex gap-2">
@@ -150,18 +155,100 @@ function MyDetails({ vitalisId }: { vitalisId: string }) {
   );
 }
 
+type Entry = { id: string; text: string; detail: string | null; source: string; recorded_at: string;
+  onset_age: number | null; patient_reported?: boolean };
+
+/** Where an entry came from. What she reported herself says so, and only she can remove it. */
+function Source({ h }: { h: Entry }) {
+  const qc = useQueryClient();
+  const remove = useMutation({
+    mutationFn: () => api<Rec>(`/me/history/${h.id}`, { method: "DELETE", patient: true }),
+    onSuccess: (r) => qc.setQueryData(["my-record"], r),
+  });
+  return (
+    <span className="flex items-center gap-2 text-xs text-muted-foreground">
+      {h.patient_reported ? "Reported by you" : h.source} · {fmt(h.recorded_at)}
+      {h.patient_reported ? (
+        <button type="button" className="underline" disabled={remove.isPending} onClick={() => remove.mutate()}>Remove</button>
+      ) : null}
+    </span>
+  );
+}
+
+const KINDS = [
+  { v: "allergy", label: "Allergy", text: "What are you allergic to?", textPh: "e.g. Penicillin, peanuts", detail: "What happens?", detailPh: "e.g. Rash, swelling, can't breathe" },
+  { v: "condition", label: "Condition", text: "Condition", textPh: "e.g. Asthma, diabetes, sickle cell", detail: "Since when? (optional)", detailPh: "e.g. Since 2019" },
+  { v: "medication", label: "Medicine", text: "Medicine you take", textPh: "e.g. Metformin", detail: "How much? (optional)", detailPh: "e.g. 500 mg twice a day" },
+  { v: "family", label: "Family history", text: "Condition in the family", textPh: "e.g. Diabetes, stroke", detail: "Who?", detailPh: "e.g. Mother" },
+] as const;
+
+/** She knows her allergies best: let her say so. Hospitals see it as patient-reported. */
+function AddToRecord() {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [kind, setKind] = useState<(typeof KINDS)[number]["v"]>("allergy");
+  const k = KINDS.find((x) => x.v === kind)!;
+  const add = useMutation({
+    mutationFn: (body: { kind: string; text: string; detail: string | null }) =>
+      api<Rec>("/me/history", { body, patient: true }),
+    onSuccess: (r) => {
+      qc.setQueryData(["my-record"], r);
+      setOpen(false);
+    },
+  });
+  if (!open) {
+    return (
+      <Button variant="outline" size="lg" className="w-full" onClick={() => setOpen(true)}>
+        <Plus className="h-5 w-5" /> Add to my record
+      </Button>
+    );
+  }
+  return (
+    <Card className="space-y-3">
+      <h2 className="font-bold">Add to my record</h2>
+      <div className="grid grid-cols-2 gap-2">
+        {KINDS.map((x) => (
+          <button key={x.v} type="button" onClick={() => setKind(x.v)}
+            className={cn("min-h-12 rounded-lg border-2 font-semibold", kind === x.v ? "border-primary bg-mint" : "border-border")}>
+            {x.label}
+          </button>
+        ))}
+      </div>
+      <form className="grid gap-2" onSubmit={(e) => {
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        add.mutate({ kind, text: String(fd.get("text") ?? ""), detail: String(fd.get("detail") ?? "") || null });
+      }}>
+        <label className="grid gap-1 text-sm font-medium">{k.text}
+          <input key={`t-${kind}`} name="text" required minLength={2} maxLength={200} placeholder={k.textPh} className={inputCls} />
+        </label>
+        <label className="grid gap-1 text-sm font-medium">{k.detail}
+          <input key={`d-${kind}`} name="detail" maxLength={200} placeholder={k.detailPh} className={inputCls} />
+        </label>
+        <p className="text-sm text-muted-foreground">Hospitals will see this as reported by you, until a doctor or nurse confirms it.</p>
+        {add.error ? <p className="text-sm text-emergency">{(add.error as Error).message}</p> : null}
+        <div className="flex gap-2">
+          <Button type="submit" size="lg" className="flex-1" disabled={add.isPending}>Save</Button>
+          <Button type="button" size="lg" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+        </div>
+      </form>
+    </Card>
+  );
+}
+
 function RecordTab() {
   const { data } = useMyRecord();
   if (!data) return <p className="text-muted-foreground">Loading…</p>;
-  const by = (k: string) => data.history.filter((h) => (h as { kind: string }).kind === k) as { text: string; detail: string | null; source: string; recorded_at: string; onset_age: number | null }[];
+  const by = (k: string) => data.history.filter((h) => (h as { kind: string }).kind === k) as Entry[];
   const allergies = by("allergy");
   return (
     <div className="space-y-3">
       <MyDetails vitalisId={data.vitalis_id} />
+      <AddToRecord />
       <Card className={cn(allergies.length && "border-l-4 border-l-emergency")}>
         <h2 className="font-bold">Allergies</h2>
         {allergies.length ? allergies.map((a, i) => (
-          <p key={i} className="mt-1"><b>{a.text}</b>{a.detail ? ` · ${a.detail}` : ""}<span className="block text-xs text-muted-foreground">{a.source} · {fmt(a.recorded_at)}</span></p>
+          <p key={i} className="mt-1"><b>{a.text}</b>{a.detail ? ` · ${a.detail}` : ""}<Source h={a} /></p>
         )) : <p className="text-sm text-muted-foreground">None recorded.</p>}
       </Card>
       {([["condition", "Conditions"], ["medication", "Medicines"], ["family", "Family history"]] as const).map(([k, title]) => (
@@ -170,7 +257,7 @@ function RecordTab() {
           {by(k).length ? by(k).map((h, i) => (
             <p key={i} className="mt-1">
               {k === "family" ? `${h.detail ?? "Relative"}: ${h.text}` : h.text}{k === "medication" && h.detail ? ` · ${h.detail}` : ""}
-              <span className="block text-xs text-muted-foreground">{h.source} · {fmt(h.recorded_at)}</span>
+              <Source h={h} />
             </p>
           )) : <p className="text-sm text-muted-foreground">None recorded.</p>}
         </Card>
