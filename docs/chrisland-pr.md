@@ -1,6 +1,6 @@
 # VITALIS: healthcare coordination for Nigeria (ITDC 2026)
 
-This brings VITALIS into the team repo with its full history (49 commits). VITALIS gets a patient from "something is
+This brings VITALIS into the team repo with its full history (44 commits). VITALIS gets a patient from "something is
 wrong" to "a hospital that can treat this is ready for you", on a smartphone, a basic phone (USSD), or with no signal
 at all.
 
