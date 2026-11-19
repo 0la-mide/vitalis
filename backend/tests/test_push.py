@@ -65,3 +65,28 @@ async def test_gone_subscription_removed(client, monkeypatch):
     await _drain()
     async with sessionmaker()() as db:
         assert not (await db.execute(select(PushSubscription))).scalars().all()
+
+
+async def test_test_alert_reaches_only_this_persons_devices(client, staff_client, monkeypatch):
+    sent: list[tuple[str, str]] = []
+    monkeypatch.setattr(push, "_send_one", lambda e, p, a, payload: sent.append((e, payload)) or 201)
+    await new_patient(client)
+    assert (await client.post("/api/v1/me/push/test")).json()["data"]["devices"] == 0  # not registered: says so
+    await client.post("/api/v1/me/push", json=SUB)
+    assert (await client.post("/api/v1/me/push/test")).json()["data"]["devices"] == 1
+    doctor = await staff_client("doctor.central@vitalis.demo")
+    await doctor.post("/api/v1/push/subscribe", json={**SUB, "endpoint": "https://push.example.test/doc"})
+    assert (await doctor.post("/api/v1/push/test")).json()["data"]["devices"] == 1
+    await _drain()
+    assert sorted(e.rsplit("/", 1)[1] for e, _ in sent) == ["abc", "doc"]
+    assert all("test alert" in p for _, p in sent)
+
+
+async def test_a_phone_handed_to_someone_else_moves_its_alerts(client, staff_client):
+    """Demo phones change hands: re-registering the same browser moves its alerts to whoever uses it now."""
+    doctor = await staff_client("doctor.central@vitalis.demo")
+    await doctor.post("/api/v1/push/subscribe", json=SUB)
+    nurse = await staff_client("nurse.central@vitalis.demo")
+    await nurse.post("/api/v1/push/subscribe", json=SUB)
+    assert (await doctor.post("/api/v1/push/test")).json()["data"]["devices"] == 0
+    assert (await nurse.post("/api/v1/push/test")).json()["data"]["devices"] == 1

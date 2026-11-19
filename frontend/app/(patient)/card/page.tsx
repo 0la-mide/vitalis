@@ -5,6 +5,7 @@ import { BellRing, ChevronLeft, Eye, FileText, Pencil, Plus, QrCode, ShieldCheck
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RecoverySlip } from "@/components/triage/RecoverySlip";
+import { AlertsButton } from "@/components/ui/AlertsButton";
 import { Logo } from "@/components/staff/StaffShell";
 import { DemoPatients } from "@/components/auth/DemoAccounts";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export default function MyRecordPage() {
       {hasId ? (
         <>
           <Requests />
+          <AlertsButton who="patient" />
           <div className="grid grid-cols-4 gap-1 rounded-lg bg-muted p-1 text-sm font-semibold">
             {([["record", "Record"], ["visits", "Visits"], ["share", "Share"], ["access", "Who looked"]] as const).map(([k, l]) => (
               <button key={k} type="button" onClick={() => setTab(k)}

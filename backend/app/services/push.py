@@ -116,7 +116,9 @@ async def _deliver(targets: list[tuple[str, str, str]], payload: str) -> None:
             continue
         if status in (404, 410):
             gone.append(endpoint)
-        log.info("push", extra={"fields": {"status": status}})
+        host = endpoint.split("/")[2] if "://" in endpoint else "?"
+        # 201 = delivered to the push service. 403 usually means the key changed; 404/410 = the browser dropped it.
+        (log.info if status in (200, 201) else log.warning)("push", extra={"fields": {"status": status, "service": host}})
     if gone:
         async with sessionmaker()() as db:
             await db.execute(delete(PushSubscription).where(PushSubscription.endpoint.in_(gone)))
